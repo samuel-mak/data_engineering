@@ -1,9 +1,44 @@
-# Introduction
+# Basic computing
 
-This is a book created from markdown and executable code.
+**Computer programme**
 
-See @knuth84 for additional discussion of literate programming.
+- **Definition**
+  - A set of computerised instructions (e.g. codes) executed by a computer(s) to perform specific tasks
+  
+**Software**
 
-```{r}
-1 + 1
-```
+- **Definition**
+  - A package of computer programmes, data, and documents for computers to perform a set of specific and usually related tasks and manage the package (e.g. organising, updating, memory management)
+  
+  
+**Application**
+
+- **Definition**
+  - Usually refers to the front-end of a usually lighter-weight software 
+  
+**Server**
+
+- **Definition**
+  - A computer programme that serves a client or clients in a network by receiving and responding to service request from individual clients
+  - There are different types of servers, e.g. web server, database server, file server, gaming server, application server 
+  
+  
+**Client**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

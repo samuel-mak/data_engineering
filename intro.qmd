@@ -24,12 +24,88 @@
   
   
 **Client**
+- A client is something that sends requests to a server
 
 
 
+**Engine**
+
+- **Definition**
+  - The core component of something that serves as the foundation of the thing (e.g. performs the fundamental functionality of that thing) 
+
+**Data**
+
+- **Definition**
+  - Computerised information
+  - Information that is essentially transformed into a series of 1s and 0s to represent that information
 
 
+**Database**
+  
+- **Definition**
+  - A collection of data that are usually related in some way (e.g. meaning/process/data flow/purpose)
+  
+  
+**Data store**
 
+- **Definition**
+  - A repository for storing/organising and/or managing data 
+  - It can be as simple as a file system (e.g. text files, csv files, JSON files) or as complex as a DBMS
+  
+  
+**Database server**
+
+- **Definition**
+  - A server of a DBMS 
+  - A server that serves clients with regards to a DBMS
+  - E.g. MS SQL Server is a database server of the MS SQL DBMS, end-users might communicate with the server through its GUI called MS SQL Server Management Studio
+  
+  
+**Database management system (DBMS)**
+  
+- **Definition**
+  - A system for managing data (e.g. storage, organisation, optimisation)
+  - E.g. Microsoft SQL Server, Microsoft Access, Oracle, MySQL, PostgreSQL, MariaDB, SQLite
+  - A DBMS involves a database engine for storing and managing data and may involve a database server, a GUI for end-users to interact with the engine, and other service and tools (depending on the DBMS and edition/version)
+  
+**Database system**
+
+- **Definition**
+  - A database system refers to the combination of data, the DBMS that manages them, and any hardware hosting them
+  
+**Data lake/warehouse/mart**
+
+- **Introduction**
+  - This is a data management system that cut all available data into subsets in order to support business needs 
+
+- **Data lake**
+  - A database that stores data that are not necessarily ready to be used by downstream users (usually raw and unstructured)
+- **Data warehouse**
+  - A database that stores data that are ready to be used by all downstream users (usually relatively structured, clean, concise, accessible/intuitive compared to those in data lake)
+- **Data mart**
+  - A subset of data warehouse that is targeted for specific downstream users (e.g. a department/team or unit within a department)
+  
+**Open Database Connectivity (ODBC)**
+
+- **Definition**
+  - An ODBC is a connection between an software/application (e.g. R, Python, SPSS, Excel) and a DBMS
+  
+**ODBC interface**
+
+- **Definition**
+  - An API that manages one or more ODBCs
+  - Provides a standard and general set of calls/commands (via ODBC functions) for softwares/applications to ODBC compliant DBMS (e.g. executing an SQL script), this standarisation and generalisation enables an ODBC to be independent of applications
+  - Developed by Microsoft in early 1990s
+  
+  
+**ODBC driver**
+
+- **Concept**
+  - An ODBC driver provides a connection between an ODBC interface and a DBMS
+  - An ODBC interface connects to different ODBC drivers as different DBMSs operate differently thus have their own specific DBMS function calls
+  - An ODBC driver translates ODBC function calls into DBMS-specific function calls and passes them to the specific DBMS
+  - This enables an ODBC interface to be independent of DBMSs
+  - E.g. The old SQL Server and the new ODBC for SQL Server (these are drivers, despite having the word "servers" in their names)
 
 
 

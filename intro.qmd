@@ -2,25 +2,26 @@
 
 **Computer programme**
 
-- **Definition**
+- **Concept**
   - A set of computerised instructions (e.g. codes) executed by a computer(s) to perform specific tasks
   
 **Software**
 
-- **Definition**
+- **Concept**
   - A package of computer programmes, data, and documents for computers to perform a set of specific and usually related tasks and manage the package (e.g. organising, updating, memory management)
   
   
 **Application**
 
-- **Definition**
+- **Concept**
   - Usually refers to the front-end of a usually lighter-weight software 
   
 **Server**
 
-- **Definition**
+- **Concept**
   - A computer programme that serves a client or clients in a network by receiving and responding to service request from individual clients
   - There are different types of servers, e.g. web server, database server, file server, gaming server, application server 
+  
   
   
 **Client**
@@ -30,32 +31,39 @@
 
 **Engine**
 
-- **Definition**
+- **Concept**
   - The core component of something that serves as the foundation of the thing (e.g. performs the fundamental functionality of that thing) 
+  
+  
+**Data engineering**
+
+- **Concept**
+  - Any activities relating to the development (design and implementation) and maintenance of systems and processes for managing data (e.g. scripts/automation pipelines for procedures, legality, documentation, handling procedures), which generally involves the acquisition of raw data from various data sources, the production of more usable data from these raw data for targeted downstream users or uses at various levels (e.g. statisticians/data scientists, data analyst, customers, management), and storing these data.  
+  
 
 **Data**
 
-- **Definition**
+- **Concept**
   - Computerised information
   - Information that is essentially transformed into a series of 1s and 0s to represent that information
 
 
 **Database**
   
-- **Definition**
+- **Concept**
   - A collection of data that are usually related in some way (e.g. meaning/process/data flow/purpose)
   
   
 **Data store**
 
-- **Definition**
+- **Concept**
   - A repository for storing/organising and/or managing data 
   - It can be as simple as a file system (e.g. text files, csv files, JSON files) or as complex as a DBMS
   
   
 **Database server**
 
-- **Definition**
+- **Concept**
   - A server of a DBMS 
   - A server that serves clients with regards to a DBMS
   - E.g. MS SQL Server is a database server of the MS SQL DBMS, end-users might communicate with the server through its GUI called MS SQL Server Management Studio
@@ -63,21 +71,20 @@
   
 **Database management system (DBMS)**
   
-- **Definition**
+- **Concept**
   - A system for managing data (e.g. storage, organisation, optimisation)
   - E.g. Microsoft SQL Server, Microsoft Access, Oracle, MySQL, PostgreSQL, MariaDB, SQLite
   - A DBMS involves a database engine for storing and managing data and may involve a database server, a GUI for end-users to interact with the engine, and other service and tools (depending on the DBMS and edition/version)
   
 **Database system**
 
-- **Definition**
+- **Concept**
   - A database system refers to the combination of data, the DBMS that manages them, and any hardware hosting them
   
 **Data lake/warehouse/mart**
 
 - **Introduction**
   - This is a data management system that cut all available data into subsets in order to support business needs 
-
 - **Data lake**
   - A database that stores data that are not necessarily ready to be used by downstream users (usually raw and unstructured)
 - **Data warehouse**
@@ -85,14 +92,24 @@
 - **Data mart**
   - A subset of data warehouse that is targeted for specific downstream users (e.g. a department/team or unit within a department)
   
+
+**Extract, transform, load (ETL)**
+
+- **Concept**
+  - A process that first involve selecting (the "extract" in ETL) key data from multiple sources (e.g. databases, files, applications, other data repositories), modifying (the "transform" in ETL) these selected data according to downstream users (e.g. cleaning, tidying, deriving higher-order data, aggregating, changing the representation/organisation of the information), and finally transferring (the "load" in ETL) the output to specific databases or data warehouse/mart
+  - ETL typically refers to the process for the output that would be transferred to the data warehouse/mart
+  - This concept is meaningful in the context of automated pipeline for data flow 
+     
+
+  
 **Open Database Connectivity (ODBC)**
 
-- **Definition**
+- **Concept**
   - An ODBC is a connection between an software/application (e.g. R, Python, SPSS, Excel) and a DBMS
   
 **ODBC interface**
 
-- **Definition**
+- **Concept**
   - An API that manages one or more ODBCs
   - Provides a standard and general set of calls/commands (via ODBC functions) for softwares/applications to ODBC compliant DBMS (e.g. executing an SQL script), this standarisation and generalisation enables an ODBC to be independent of applications
   - Developed by Microsoft in early 1990s

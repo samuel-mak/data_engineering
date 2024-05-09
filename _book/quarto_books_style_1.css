@@ -69,7 +69,9 @@ summary:hover{
   transition: 0.2s;
 }
 
-
+code {
+  color: #8FC4B7;
+}
 
 
 

@@ -10,6 +10,8 @@ book:
   chapters:
     - index.qmd
     - intro.qmd
+    - r.qmd
+    - odbc.qmd
     - references.qmd
 
 bibliography: references.bib
@@ -25,6 +27,8 @@ format:
     css: quarto_books_style_1.css
     number-sections: false
     section-divs: true
+    monobackgroundcolor: "#303030"
+    code-overflow: wrap
   
     grid: 
       body-width: 1100px

@@ -1,4 +1,4 @@
-# Basic computing
+# The basic data engineering shits to know as analysts in an organisation
 
 **Computer programme**
 
@@ -86,9 +86,10 @@
 - **Introduction**
   - This is a data management system that cut all available data into subsets in order to support business needs 
 - **Data lake**
-  - A database that stores data that are not necessarily ready to be used by downstream users (usually raw and unstructured)
+  - A database that stores data that are not necessarily ready to be used by downstream users (usually described as raw and unstructured)
 - **Data warehouse**
-  - A database that stores data that are ready to be used by all downstream users (usually relatively structured, clean, concise, accessible/intuitive compared to those in data lake)
+  - A database that stores data that are ready to be used by all downstream users (usually described as relatively structured, clean, concise, accessible/intuitive compared to those in data lake)
+  - This is where different teams/units/groups/departments within an organisation can potentially access other teams' data marts (supporting cross-team collaborations)
 - **Data mart**
   - A subset of data warehouse that is targeted for specific downstream users (e.g. a department/team or unit within a department)
   

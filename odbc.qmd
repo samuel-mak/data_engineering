@@ -1,0 +1,10 @@
+# Working with DBMS
+
+
+odbc - Connects R with the database 
+- Helps DBI package to interface with the ODBC driver in ODBC interface 
+
+
+
+DBI - An interface 
+Uses S4 

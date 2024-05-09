@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data Engineering - The basic data engineering shits to know as analysts in an organisation</title>
+<title>Data Engineering - Working with DBMS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./r.html" rel="next">
-<link href="./index.html" rel="prev">
+<link href="./references.html" rel="next">
+<link href="./r.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -75,7 +75,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./intro.html"><span class="chapter-title">The basic data engineering shits to know as analysts in an organisation</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./odbc.html"><span class="chapter-title">Working with DBMS</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
     </div>
@@ -100,12 +100,17 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./intro.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">The basic data engineering shits to know as analysts in an organisation</span></a>
+  <a href="./intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">The basic data engineering shits to know as analysts in an organisation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./r.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./odbc.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Working with DBMS</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -125,7 +130,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">The basic data engineering shits to know as analysts in an organisation</span></h1>
+<h1 class="title"><span class="chapter-title">Working with DBMS</span></h1>
 </div>
 
 
@@ -146,154 +151,8 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p><strong>Computer programme</strong></p>
-<ul>
-<li><strong>Concept</strong>
-<ul>
-<li>A set of computerised instructions (e.g.&nbsp;codes) executed by a computer(s) to perform specific tasks</li>
-</ul></li>
-</ul>
-<p><strong>Software</strong></p>
-<ul>
-<li><strong>Concept</strong>
-<ul>
-<li>A package of computer programmes, data, and documents for computers to perform a set of specific and usually related tasks and manage the package (e.g.&nbsp;organising, updating, memory management)</li>
-</ul></li>
-</ul>
-<p><strong>Application</strong></p>
-<ul>
-<li><strong>Concept</strong>
-<ul>
-<li>Usually refers to the front-end of a usually lighter-weight software</li>
-</ul></li>
-</ul>
-<p><strong>Server</strong></p>
-<ul>
-<li><strong>Concept</strong>
-<ul>
-<li>A computer programme that serves a client or clients in a network by receiving and responding to service request from individual clients</li>
-<li>There are different types of servers, e.g.&nbsp;web server, database server, file server, gaming server, application server</li>
-</ul></li>
-</ul>
-<p><strong>Client</strong> - A client is something that sends requests to a server</p>
-<p><strong>Engine</strong></p>
-<ul>
-<li><strong>Concept</strong>
-<ul>
-<li>The core component of something that serves as the foundation of the thing (e.g.&nbsp;performs the fundamental functionality of that thing)</li>
-</ul></li>
-</ul>
-<p><strong>Data engineering</strong></p>
-<ul>
-<li><strong>Concept</strong>
-<ul>
-<li>Any activities relating to the development (design and implementation) and maintenance of systems and processes for managing data (e.g.&nbsp;scripts/automation pipelines for procedures, legality, documentation, handling procedures), which generally involves the acquisition of raw data from various data sources, the production of more usable data from these raw data for targeted downstream users or uses at various levels (e.g.&nbsp;statisticians/data scientists, data analyst, customers, management), and storing these data.</li>
-</ul></li>
-</ul>
-<p><strong>Data</strong></p>
-<ul>
-<li><strong>Concept</strong>
-<ul>
-<li>Computerised information</li>
-<li>Information that is essentially transformed into a series of 1s and 0s to represent that information</li>
-</ul></li>
-</ul>
-<p><strong>Database</strong></p>
-<ul>
-<li><strong>Concept</strong>
-<ul>
-<li>A collection of data that are usually related in some way (e.g.&nbsp;meaning/process/data flow/purpose)</li>
-</ul></li>
-</ul>
-<p><strong>Data store</strong></p>
-<ul>
-<li><strong>Concept</strong>
-<ul>
-<li>A repository for storing/organising and/or managing data</li>
-<li>It can be as simple as a file system (e.g.&nbsp;text files, csv files, JSON files) or as complex as a DBMS</li>
-</ul></li>
-</ul>
-<p><strong>Database server</strong></p>
-<ul>
-<li><strong>Concept</strong>
-<ul>
-<li>A server of a DBMS</li>
-<li>A server that serves clients with regards to a DBMS</li>
-<li>E.g. MS SQL Server is a database server of the MS SQL DBMS, end-users might communicate with the server through its GUI called MS SQL Server Management Studio</li>
-</ul></li>
-</ul>
-<p><strong>Database management system (DBMS)</strong></p>
-<ul>
-<li><strong>Concept</strong>
-<ul>
-<li>A system for managing data (e.g.&nbsp;storage, organisation, optimisation)</li>
-<li>E.g. Microsoft SQL Server, Microsoft Access, Oracle, MySQL, PostgreSQL, MariaDB, SQLite</li>
-<li>A DBMS involves a database engine for storing and managing data and may involve a database server, a GUI for end-users to interact with the engine, and other service and tools (depending on the DBMS and edition/version)</li>
-</ul></li>
-</ul>
-<p><strong>Database system</strong></p>
-<ul>
-<li><strong>Concept</strong>
-<ul>
-<li>A database system refers to the combination of data, the DBMS that manages them, and any hardware hosting them</li>
-</ul></li>
-</ul>
-<p><strong>Data lake/warehouse/mart</strong></p>
-<ul>
-<li><strong>Introduction</strong>
-<ul>
-<li>This is a data management system that cut all available data into subsets in order to support business needs</li>
-</ul></li>
-<li><strong>Data lake</strong>
-<ul>
-<li>A database that stores data that are not necessarily ready to be used by downstream users (usually described as raw and unstructured)</li>
-</ul></li>
-<li><strong>Data warehouse</strong>
-<ul>
-<li>A database that stores data that are ready to be used by all downstream users (usually described as relatively structured, clean, concise, accessible/intuitive compared to those in data lake)</li>
-<li>This is where different teams/units/groups/departments within an organisation can potentially access other teams’ data marts (supporting cross-team collaborations)</li>
-</ul></li>
-<li><strong>Data mart</strong>
-<ul>
-<li>A subset of data warehouse that is targeted for specific downstream users (e.g.&nbsp;a department/team or unit within a department)</li>
-</ul></li>
-</ul>
-<p><strong>Extract, transform, load (ETL)</strong></p>
-<ul>
-<li><strong>Concept</strong>
-<ul>
-<li>A process that first involve selecting (the “extract” in ETL) key data from multiple sources (e.g.&nbsp;databases, files, applications, other data repositories), modifying (the “transform” in ETL) these selected data according to downstream users (e.g.&nbsp;cleaning, tidying, deriving higher-order data, aggregating, changing the representation/organisation of the information), and finally transferring (the “load” in ETL) the output to specific databases or data warehouse/mart</li>
-<li>ETL typically refers to the process for the output that would be transferred to the data warehouse/mart</li>
-<li>This concept is meaningful in the context of automated pipeline for data flow</li>
-</ul></li>
-</ul>
-<p><strong>Open Database Connectivity (ODBC)</strong></p>
-<ul>
-<li><strong>Concept</strong>
-<ul>
-<li>An ODBC is a connection between an software/application (e.g.&nbsp;R, Python, SPSS, Excel) and a DBMS</li>
-</ul></li>
-</ul>
-<p><strong>ODBC interface</strong></p>
-<ul>
-<li><strong>Concept</strong>
-<ul>
-<li>An API that manages one or more ODBCs</li>
-<li>Provides a standard and general set of calls/commands (via ODBC functions) for softwares/applications to ODBC compliant DBMS (e.g.&nbsp;executing an SQL script), this standarisation and generalisation enables an ODBC to be independent of applications</li>
-<li>Developed by Microsoft in early 1990s</li>
-</ul></li>
-</ul>
-<p><strong>ODBC driver</strong></p>
-<ul>
-<li><strong>Concept</strong>
-<ul>
-<li>An ODBC driver provides a connection between an ODBC interface and a DBMS</li>
-<li>An ODBC interface connects to different ODBC drivers as different DBMSs operate differently thus have their own specific DBMS function calls</li>
-<li>An ODBC driver translates ODBC function calls into DBMS-specific function calls and passes them to the specific DBMS</li>
-<li>This enables an ODBC interface to be independent of DBMSs</li>
-<li>E.g. The old SQL Server and the new ODBC for SQL Server (these are drivers, despite having the word “servers” in their names)</li>
-</ul></li>
-</ul>
+<p>odbc - Connects R with the database - Helps DBI package to interface with the ODBC driver in ODBC interface</p>
+<p>DBI - An interface Uses S4</p>
 
 
 
@@ -533,13 +392,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./index.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Preface</span>
+      <a href="./r.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">R</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./r.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-title">R</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./references.html" class="pagination-link">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

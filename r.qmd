@@ -1,0 +1,142 @@
+# R
+
+**Object-Oriented Programming (OOP) in R**
+
+- **Introduction**
+  - R has 3 native OOP systems through the `base` package and other add-on OOP systems from other external packages:
+    - Native OOP systems in R
+      - S3
+      - S4
+      - Reference Class (RC)
+    - Add-on OOP systems in R
+      - OOP with References Using Standard R Code through the `R.oo` package [@bengtsson_2003]
+      - Prototype Programming through the `proto` package [@kates_petzoldt_2016]
+      - Encapsulated OOP through the `R6` package [@chang_2021]
+      - "R7" OOP through the `R7` package (still under development)
+      
+    
+    
+## S3
+- **Introduction**
+  - An OOP system developed by John Chambers, Rick Becker and colleagues at Bell Labs in the early 1990s for the S programming language and implemented for the R programming language 
+      
+## S4
+
+**Introduction**
+
+  - An OOP system developed by John Chambers and members of the R Core Team in the mid-1990s for the S programming language and is implemented in the R programming language
+  - It was developed and introduced as a more formal, rigorous, and complex OOP system than S3
+  - Features of S4:
+    - Methods belong to functions
+    - Follows a more functional programming style
+    - More formal and rigorous than S3
+    - Classes have formal definitions for their fields and inheritance (thus more formal and rigorous than S3)
+    - Multiple dispatch (thus more complicated than S3)
+    - Multiple inheritance (thus more complicated than S3)
+    
+**Classes**
+
+- **Introduction**
+  - S4 classes have a more formal definition than S3 classes 
+- **Class definition**
+  - An S4 class is defined by the name of the class, a set of parameters and their data types
+  - The set of parameters is referred to as the "representation" and individual parameters are referred to as slots or representations (conceptualised as similar to the concept of attributes in S3 classes)
+  - A class is created by the `setClass` function and with its definitions specified by inputs to arguments to the function
+    - The `Class` argument specifies the name of the class
+    - The `representation` argument specifies the representation and the data types of the slots
+    - The `prototype` argument specifies the default values of the slots, these must conform to their specified data types
+    - The `contains` argument specifies any subclasses of the class from which slots are inherited
+- **Example**
+
+```{r eval = F, include = T}
+# Define a class "general_linear_model" by two slots of "y", an outcome as a character string with no default values, and "x", the predictors as a list of character strings with an empty list as the default value 
+
+setClass(
+  Class = "general_linear_model",
+  representation = representation(
+    y = "character", # The outcome (univariate only)
+    x = "list" # The predictor(s)
+  ),
+  prototype = prototype(
+    x = list() # Setting the default value for the "x" parameter as an empty list
+  )
+)
+
+# Define a class "generalised_linear_model" by the definition of the subclass "general_linear_model" and an additional slot "family", a function for specifying the link function and the exponential sampling distribution of the outcome
+
+setClass(
+  Class = "generalised_linear_model",
+  representation = representation(
+    family = "function" # The exponential sampling distribution of the outcome and the link function
+  ),
+  prototype = prototype(
+    family = identity  # Setting the identity function as the default link function 
+  ),
+  contains = "general_linear_model" # Specifying that this class, "generalised_linear_model", is an extension/superclass of the class "general_linear" mode, in other words, the class "general_linear_model" is a special case/subclass of this class, "generalised_linear_model". This effectively inherits all class definitions of the class "general_linear_model" (i.e. "x" and "y"). Hence, this class has a total of three slots.
+)
+
+# Look at the properties of the class "generalised_linear_model"
+showClass("generalised_linear_model")
+```
+
+**Objects**
+
+- **Introduction**
+  - There is not much to say here
+- **Example**
+
+```{r eval = F, include = T}
+# Create an object of class "general_linear_model"
+# Specifically, a model with the outcome of "ks2_maths" and predictors of "ks1_maths" (prior attainment) and "school_teaching_quality"
+
+maths_general_linear_model <- new(
+  Class = "general_linear_model",
+  y = "ks2_maths",
+  x = list("ks1_maths", "school_teaching_quality")
+)
+
+
+# Look at the properties of the object "maths_general_linear_model"
+str(maths_general_linear_model)
+
+# Look at whether the object "maths_general_linear_model" is an S4 object
+isS4(maths_general_linear_model)
+
+
+# Create an object of class "generalised_linear_model" with the default identity link function
+maths_generalised_linear_model <- new(
+  Class = "generalised_linear_model",
+  y = "ks2_maths",
+  x = list("ks1_maths", "school_teaching_quality")
+)
+
+
+# Access the value of specific slots of an object 
+
+# Method 1: Using the @ symbol (similar to the $ symbol in S3 objects)
+maths_generalised_linear_model@y
+
+# Method 2: Using the slot function
+slot(maths_generalised_linear_model, "y")
+
+
+# Specify or re-specify values of slots of an object after object creation
+
+# Method 1: Using the @ symbol (like $ in S3)
+maths_generalised_linear_model@family <- function(){poisson(link = "log")}
+
+# Method 2: Using the slot function
+slot(maths_generalised_linear_model, "x") <- list("ks1_maths", "school_teaching_quality", "idaci")
+
+```
+
+    
+    
+  
+    
+    
+    
+    
+    
+- Multiple dispatch - Methods dispatch can be based on multiple arguments to a generic 
+- Multiple inheritance - A class can inherit properties from multiple parent classes 

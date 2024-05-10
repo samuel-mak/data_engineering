@@ -140,6 +140,14 @@ maths_generalised_linear_model <- generalised_linear_model(
 )
 
 
+# Create a second object of class "generalised_linear_model" using the generator function
+reading_generalised_linear_model <- generalised_linear_model(
+  y = "ks2_reading",
+  x = list("ks1_maths", "school_teaching_quality"),
+  family = function(){binomial(link = "logit")}
+)
+
+
 # Access the value of specific slots of an object 
 
 # Method 1: Using the @ symbol (similar to the $ symbol in S3 objects)
@@ -159,15 +167,157 @@ slot(maths_generalised_linear_model, "x") <- list("ks1_maths", "school_teaching_
 
 ```
 
-    
+**Generic functions (generics)**
+- A generalised function 
+- Specifically, a function that is generalised to different types of inputs to its arguments so that the specific methods being called depends on the type of inputs to its arguments 
+
+
+**Generics and methods**
+
+**Generics**
+- **Creating a generic**
+  - The `setGeneric` function creates or coerces an existing function as an S4 generic 
+  - The `setGeneric` function has the general form
+    - `setGeneric(name, def)`
+      - ***Where***
+        - `name` is the name of the generic
+        - `def` is the "skeleton" of the generic or the non-generic (default) method of the generic as a function. This function should also include the `standardGeneric` function (specifically `standardGeneric(f = "generic_name")`) for initiating the S4 methods dispatch mechanism. (All of these are needed only when creating a generic)
+- **Example**
+```{r}
+# The goal is to create a generic "model_description" that would take in one or two models and summaries them in a meaningful way. The way the model(s) is/are summarised depends on the type of model (a General Linear Model vs Generalised Linear Model) and the number of models fed into this generic. 
+
+# Create a generic "model_description" with the output define to be a character string
+setGeneric(
+  name = "model_description",
+  def = function(model_1 = NULL, model_2 = NULL){
+    standardGeneric(f = "model_description")
+  },
+  valueClass = "character"
+)
+
+# Coerce an the file.choose function (an existing function) as an S4 generic
+setGeneric(
+  name = "file.choose"
+)
+```
+
+**Methods**
+- **Creating a method**       
+  - The `setMethod` function creates a method for a generic
+  - The `setMethod` function has the general form
+    - `setMethod(f, definition)`
+      - ***Where***
+        - `f` is the name of the generic
+        - `signature` is for specifying the case for the method (the classes of the value of the inputs to the arguments to the generic) through the `signature` function
+        - `definition` is the method for the generic as a function
+- **Tips**
+  - All methods of a generic can be assessed by the `showMethod` function (`showMethod(f = generic)`)
+- **Example**
+```{r}
+# Create a method for the case when both objects are of the class "general_linear_model"
+setMethod(
+  f = "model_description",
+  signature = signature(model_1 = "general_linear_model", model_2 = "general_linear_model"),
+  definition = function(model_1, model_2){
+    if(model_1@y == model_2@y){
+      if(identical(unlist(model_1@x), unlist(model_2@x))){
+        paste0("Both models are General Linear Models and have the same outcome and predictors")
+      }else{
+          paste0("Both models are General Linear Models and have the same outcome and but different predictors")
+      }
+    }else{
+      if(identical(unlist(model_1@x), unlist(model_2@x))){
+        paste0("Both models are General Linear Models and but have a different outcome and same predictors")
+      }else{
+          paste0("Both models are General Linear Models and have different outcome and predictors ")
+      }
+    }
+  }
+)
+
+# Create a method for the case when both objects are of the class "generalised_linear_model"
+setMethod(
+  f = "model_description",
+  signature = signature(model_1 = "generalised_linear_model", model_2 = "generalised_linear_model"),
+  definition = function(model_1, model_2){
+    if(model_1@y == model_2@y){
+      if(identical(unlist(model_1@x), unlist(model_2@x))){
+        if(model_1@family()$family == model_2@family()$family){
+          paste0("Both models are Generalised Linear Models and have the same outcome, predictors, and family")
+        }else{
+          paste0("Both models are Generalised Linear Models and have the same outcome and predictors but different families")
+        }
+        
+      }else{
+        if(model_1@family()$family == model_2@family()$family){
+          paste0("Both models are Generalised Linear Models and have the same outcome and family but different predictors")
+        }else{
+          paste0("Both models are Generalised Linear Models and have the same outcome but different predictors and families")
+        }
+      }
+    }else{
+      if(identical(unlist(model_1@x), unlist(model_2@x))){
+        if(model_1@family()$family == model_2@family()$family){
+          paste0("Both models are Generalised Linear Models and have same predictors and family but a different outcome")
+        }else{
+          paste0("Both models are Generalised Linear Models and have same predictors but a different outcome and families")
+        }
+        paste0("Both models are Generalised Linear Models and have same predictors but a different outcome ")
+      }else{
+        if(model_1@family()$family == model_2@family()$family){
+          paste0("Both models are Generalised Linear Models and the same family but different outcome and predictors")
+        }else{
+          paste0("Both models are Generalised Linear Models but have different outcome, predictors and families")
+        }
+      }
+    }
+  }
+)
+
+model_description(maths_generalised_linear_model, reading_generalised_linear_model)
+
+showMethods(f = model_description)
+
+showMethods(class = "general_linear_model")
+
+
+```
+
+- 
+
+- **Coerce a non-S4 generic as an S4 generic**
     
 ```{r}
 # browseURL(here::here("_book/index.html"))
 ```
     
     
-    
-    
+# Things to add
+- History of R
+- How R works 
+- How you work in R
+- Updating R
+- Connecting to databases 
+
+
+install.packages("installr")
+installr::updater()
+
+
+This downloads the installer (.exe file) from CRAN (https://cran.r-project.org/bin/windows/base/) and run it. You will go through several installation setup wizards, including one for specifying whether you want to migrate all your packages from your old R to your new. All of these can be done manually, but the updater() function does all of them automatically. Might worth noting that updating R using the installr package only works for Windows, for MacOS, use the updateR package
+
+After all those installation wizards, make sure RStudio is using the latest R version, otherwise change that. To do that, go to the "Tools" tab (in the top-most bar), then go to "Global Options", this opens an Options dialog box. In the dialog box, go to "General" and then "Basic". Make sure the "R version" is set to the path to the new R, which may look something like C:\Users\username\AppData\Local\Programs\R\R-4.4.0. If not then change it by clicking "change", which opens another dialog box, and select the appropriate one under "Choose a specific version of R". Then restart RStudio.
+
+# Updating R
+- Download the newest R file from R 
+- The R file includes an .exe installer 
+- Run the .exe file 
+- 
+```{r}
+rstudioapi::getThemes()
+```
+
+22 Oct 2022 at 9:46
     
 - Multiple dispatch - Methods dispatch can be based on multiple arguments to a generic 
 - Multiple inheritance - A class can inherit properties from multiple parent classes 

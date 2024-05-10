@@ -38,18 +38,24 @@
 
 - **Introduction**
   - S4 classes have a more formal definition than S3 classes 
-- **Class definition**
   - An S4 class is defined by the name of the class, a set of parameters and their data types
-  - The set of parameters is referred to as the "representation" and individual parameters are referred to as slots or representations (conceptualised as similar to the concept of attributes in S3 classes)
-  - A class is created by the `setClass` function and with its definitions specified by inputs to arguments to the function
-    - The `Class` argument specifies the name of the class
-    - The `representation` argument specifies the representation and the data types of the slots
-    - The `prototype` argument specifies the default values of the slots, these must conform to their specified data types
-    - The `contains` argument specifies any subclasses of the class from which slots are inherited
+  - The set of parameters is referred to as the "representation" and individual parameters are referred to as "slots" or "representations" (conceptualised as similar to the concept of "attributes" in S3 classes)
+- **Class creation**
+  - The `setClass` function creates an S4 class with its definition specified through its arguments and returns an object generator function of the class (hereinafter referred to as "generator function"). 
+  - The generator function provides one of two ways of creating objects of the class (more details in the objects section). More relevant here is that purely calling `setClass` would only return the generator function (and create the class) but not registering the returned generator function as an object in the variable environment that could be used. The output of `setClass` needs to be assigned to an object, ideally with its name the same as the class name for clarity, for the generator function to be used. As mentioned, the generator function is only one of two ways of creating objects of the class, hence, creating a class by simply calling `setClass` without assigning the output to an object is sufficient, but additionally assigning the output to an object is recommended as this eliminates any ambiguity if two classes from different packages have the same name with relative ease.
+  - The `setClass` function has the general usage
+    - `class_name <- setClass(Class = "class_name", representation, prototype, contains)`
+      - ***Where***
+        - The `Class` argument specifies the name of the class
+        - The `representation` argument specifies the representation and the data types of the slots
+        - The `prototype` argument specifies the default values of the slots, these must conform to their specified data types
+        - The `contains` argument specifies any subclasses of the class from which slots are inherited
+        - 
+
 - **Example**
 
 ```{r eval = F, include = T}
-# Define a class "general_linear_model" by two slots of "y", an outcome as a character string with no default values, and "x", the predictors as a list of character strings with an empty list as the default value 
+# Create a class "general_linear_model" that's defined by two slots of "y", an outcome as a character string with no default values, and "x", the predictors as a list of character strings with an empty list as the default value.
 
 setClass(
   Class = "general_linear_model",
@@ -62,9 +68,9 @@ setClass(
   )
 )
 
-# Define a class "generalised_linear_model" by the definition of the subclass "general_linear_model" and an additional slot "family", a function for specifying the link function and the exponential sampling distribution of the outcome
+# Create a class "generalised_linear_model" defined by the subclass "general_linear_model" and an additional slot "family", a function for specifying the link function and the exponential sampling distribution of the outcome. Assign the returning generator function to an object called "generalised_linear_model".
 
-setClass(
+generalised_linear_model <- setClass(
   Class = "generalised_linear_model",
   representation = representation(
     family = "function" # The exponential sampling distribution of the outcome and the link function
@@ -81,12 +87,36 @@ showClass("generalised_linear_model")
 
 **Objects**
 
-- **Introduction**
-  - There is not much to say here
+- **Object creation**
+  - S4 objects are created by the `new` function with its class and values of slots specified through its arguments 
+  - The `new` function has the general form
+    - `new(Class, ...)`
+      - ***Where***
+        - The `Class` argument specifies the name of the class the object is of
+        - `...` is the set of slots of the specified class as arguments that specify values of the slots for the object
+  - S4 objects of a class can also be created indirectly by the generator function with its values of slots specified through its arguments (applicable only if the generator function was assigned to an object to be used), the generator function would in turn call the `new` function to create the object
+  - The generator function has similar form as the `new` function (only difference is that it doesn't have the `Class` argument)
+    - `generator_function(...)`
+      - ***Where***
+        - `...` is the set of slots of the specified class as arguments that specify values of the slots for the object
+  
+- **Access and modify values of slots of objects**
+  - Values of slots of objects can be assessed using two methods, either through the `@` symbol or the `slot` function
+  - Assessed values can then be modified using the assignment operator `<-`
+  - **Using the `@` symbol**
+    - **Access values of slots of objects**
+      - `object@slot_name`
+    - **Modify the assessed values of slots of objects**
+      - `object@slot_name <- value`
+  - **Using the `slot` function**
+    - **Access values of slots of objects**
+      - `slot(object, "slot_name")`
+     - **Modify the assessed values of slots of objects**
+      - `slot(object, "slot_name") <- value` 
 - **Example**
 
 ```{r eval = F, include = T}
-# Create an object of class "general_linear_model"
+# Create an object of class "general_linear_model" using the new function
 # Specifically, a model with the outcome of "ks2_maths" and predictors of "ks1_maths" (prior attainment) and "school_teaching_quality"
 
 maths_general_linear_model <- new(
@@ -94,7 +124,7 @@ maths_general_linear_model <- new(
   y = "ks2_maths",
   x = list("ks1_maths", "school_teaching_quality")
 )
-
+ 
 
 # Look at the properties of the object "maths_general_linear_model"
 str(maths_general_linear_model)
@@ -103,9 +133,8 @@ str(maths_general_linear_model)
 isS4(maths_general_linear_model)
 
 
-# Create an object of class "generalised_linear_model" with the default identity link function
-maths_generalised_linear_model <- new(
-  Class = "generalised_linear_model",
+# Create an object of class "generalised_linear_model" using its generator function (as the generator function was assigned to an object)
+maths_generalised_linear_model <- generalised_linear_model(
   y = "ks2_maths",
   x = list("ks1_maths", "school_teaching_quality")
 )
@@ -132,7 +161,9 @@ slot(maths_generalised_linear_model, "x") <- list("ks1_maths", "school_teaching_
 
     
     
-  
+```{r}
+# browseURL(here::here("_book/index.html"))
+```
     
     
     

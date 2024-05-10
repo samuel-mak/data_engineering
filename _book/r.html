@@ -195,7 +195,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">May 9, 2024</p>
+      <p class="date-modified">May 10, 2024</p>
     </div>
   </div>
     
@@ -256,23 +256,32 @@ div.csl-indent {
 <li><strong>Introduction</strong>
 <ul>
 <li>S4 classes have a more formal definition than S3 classes</li>
-</ul></li>
-<li><strong>Class definition</strong>
-<ul>
 <li>An S4 class is defined by the name of the class, a set of parameters and their data types</li>
-<li>The set of parameters is referred to as the “representation” and individual parameters are referred to as slots or representations (conceptualised as similar to the concept of attributes in S3 classes)</li>
-<li>A class is created by the <code>setClass</code> function and with its definitions specified by inputs to arguments to the function
+<li>The set of parameters is referred to as the “representation” and individual parameters are referred to as “slots” or “representations” (conceptualised as similar to the concept of “attributes” in S3 classes)</li>
+</ul></li>
+<li><strong>Class creation</strong>
+<ul>
+<li>The <code>setClass</code> function creates an S4 class with its definition specified through its arguments and returns an object generator function of the class (hereinafter referred to as “generator function”).</li>
+<li>The generator function provides one of two ways of creating objects of the class (more details in the objects section). More relevant here is that purely calling <code>setClass</code> would only return the generator function (and create the class) but not registering the returned generator function as an object in the variable environment that could be used. The output of <code>setClass</code> needs to be assigned to an object, ideally with its name the same as the class name for clarity, for the generator function to be used. As mentioned, the generator function is only one of two ways of creating objects of the class, hence, creating a class by simply calling <code>setClass</code> without assigning the output to an object is sufficient, but additionally assigning the output to an object is recommended as this eliminates any ambiguity if two classes from different packages have the same name with relative ease.</li>
+<li>The <code>setClass</code> function has the general usage
+<ul>
+<li><code>class_name &lt;- setClass(Class = "class_name", representation, prototype, contains)</code>
+<ul>
+<li><strong><em>Where</em></strong>
 <ul>
 <li>The <code>Class</code> argument specifies the name of the class</li>
 <li>The <code>representation</code> argument specifies the representation and the data types of the slots</li>
 <li>The <code>prototype</code> argument specifies the default values of the slots, these must conform to their specified data types</li>
 <li>The <code>contains</code> argument specifies any subclasses of the class from which slots are inherited</li>
+<li></li>
+</ul></li>
+</ul></li>
 </ul></li>
 </ul></li>
 <li><strong>Example</strong></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a class "general_linear_model" by two slots of "y", an outcome as a character string with no default values, and "x", the predictors as a list of character strings with an empty list as the default value </span></span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a class "general_linear_model" that's defined by two slots of "y", an outcome as a character string with no default values, and "x", the predictors as a list of character strings with an empty list as the default value.</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">setClass</span>(</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Class =</span> <span class="st">"general_linear_model"</span>,</span>
@@ -285,9 +294,9 @@ div.csl-indent {
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a class "generalised_linear_model" by the definition of the subclass "general_linear_model" and an additional slot "family", a function for specifying the link function and the exponential sampling distribution of the outcome</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a class "generalised_linear_model" defined by the subclass "general_linear_model" and an additional slot "family", a function for specifying the link function and the exponential sampling distribution of the outcome. Assign the returning generator function to an object called "generalised_linear_model".</span></span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">setClass</span>(</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>generalised_linear_model <span class="ot">&lt;-</span> <span class="fu">setClass</span>(</span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">Class =</span> <span class="st">"generalised_linear_model"</span>,</span>
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">representation =</span> <span class="fu">representation</span>(</span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> <span class="st">"function"</span> <span class="co"># The exponential sampling distribution of the outcome and the link function</span></span>
@@ -303,14 +312,61 @@ div.csl-indent {
 </div>
 <p><strong>Objects</strong></p>
 <ul>
-<li><strong>Introduction</strong>
+<li><strong>Object creation</strong>
 <ul>
-<li>There is not much to say here</li>
+<li>S4 objects are created by the <code>new</code> function with its class and values of slots specified through its arguments</li>
+<li>The <code>new</code> function has the general form
+<ul>
+<li><code>new(Class, ...)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li>The <code>Class</code> argument specifies the name of the class the object is of</li>
+<li><code>...</code> is the set of slots of the specified class as arguments that specify values of the slots for the object</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li>S4 objects of a class can also be created indirectly by the generator function with its values of slots specified through its arguments (applicable only if the generator function was assigned to an object to be used), the generator function would in turn call the <code>new</code> function to create the object</li>
+<li>The generator function has similar form as the <code>new</code> function (only difference is that it doesn’t have the <code>Class</code> argument)
+<ul>
+<li><code>generator_function(...)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>...</code> is the set of slots of the specified class as arguments that specify values of the slots for the object</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><strong>Access and modify values of slots of objects</strong>
+<ul>
+<li>Values of slots of objects can be assessed using two methods, either through the <code>@</code> symbol or the <code>slot</code> function</li>
+<li>Assessed values can then be modified using the assignment operator <code>&lt;-</code></li>
+<li><strong>Using the <code>@</code> symbol</strong>
+<ul>
+<li><strong>Access values of slots of objects</strong>
+<ul>
+<li><code>object@slot_name</code></li>
+</ul></li>
+<li><strong>Modify the assessed values of slots of objects</strong>
+<ul>
+<li><code>object@slot_name &lt;- value</code></li>
+</ul></li>
+</ul></li>
+<li><strong>Using the <code>slot</code> function</strong>
+<ul>
+<li><strong>Access values of slots of objects</strong>
+<ul>
+<li><code>slot(object, "slot_name")</code></li>
+</ul></li>
+<li><strong>Modify the assessed values of slots of objects</strong></li>
+<li><code>slot(object, "slot_name") &lt;- value</code></li>
+</ul></li>
 </ul></li>
 <li><strong>Example</strong></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an object of class "general_linear_model"</span></span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an object of class "general_linear_model" using the new function</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Specifically, a model with the outcome of "ks2_maths" and predictors of "ks1_maths" (prior attainment) and "school_teaching_quality"</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>maths_general_linear_model <span class="ot">&lt;-</span> <span class="fu">new</span>(</span>
@@ -318,7 +374,7 @@ div.csl-indent {
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="st">"ks2_maths"</span>,</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">list</span>(<span class="st">"ks1_maths"</span>, <span class="st">"school_teaching_quality"</span>)</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a> </span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Look at the properties of the object "maths_general_linear_model"</span></span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(maths_general_linear_model)</span>
@@ -327,30 +383,32 @@ div.csl-indent {
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">isS4</span>(maths_general_linear_model)</span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an object of class "generalised_linear_model" with the default identity link function</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>maths_generalised_linear_model <span class="ot">&lt;-</span> <span class="fu">new</span>(</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">Class =</span> <span class="st">"generalised_linear_model"</span>,</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="st">"ks2_maths"</span>,</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">list</span>(<span class="st">"ks1_maths"</span>, <span class="st">"school_teaching_quality"</span>)</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an object of class "generalised_linear_model" using its generator function (as the generator function was assigned to an object)</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>maths_generalised_linear_model <span class="ot">&lt;-</span> <span class="fu">generalised_linear_model</span>(</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="st">"ks2_maths"</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">list</span>(<span class="st">"ks1_maths"</span>, <span class="st">"school_teaching_quality"</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Access the value of specific slots of an object </span></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Method 1: Using the @ symbol (similar to the $ symbol in S3 objects)</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>maths_generalised_linear_model<span class="sc">@</span>y</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Method 2: Using the slot function</span></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="fu">slot</span>(maths_generalised_linear_model, <span class="st">"y"</span>)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Access the value of specific slots of an object </span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Method 1: Using the @ symbol (similar to the $ symbol in S3 objects)</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>maths_generalised_linear_model<span class="sc">@</span>y</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Method 2: Using the slot function</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="fu">slot</span>(maths_generalised_linear_model, <span class="st">"y"</span>)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify or re-specify values of slots of an object after object creation</span></span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Method 1: Using the @ symbol (like $ in S3)</span></span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>maths_generalised_linear_model<span class="sc">@</span>family <span class="ot">&lt;-</span> <span class="cf">function</span>(){<span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>)}</span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Method 2: Using the slot function</span></span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="fu">slot</span>(maths_generalised_linear_model, <span class="st">"x"</span>) <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="st">"ks1_maths"</span>, <span class="st">"school_teaching_quality"</span>, <span class="st">"idaci"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify or re-specify values of slots of an object after object creation</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Method 1: Using the @ symbol (like $ in S3)</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>maths_generalised_linear_model<span class="sc">@</span>family <span class="ot">&lt;-</span> <span class="cf">function</span>(){<span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>)}</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Method 2: Using the slot function</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="fu">slot</span>(maths_generalised_linear_model, <span class="st">"x"</span>) <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="st">"ks1_maths"</span>, <span class="st">"school_teaching_quality"</span>, <span class="st">"idaci"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># browseURL(here::here("_book/index.html"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
 <li>Multiple dispatch - Methods dispatch can be based on multiple arguments to a generic</li>

@@ -55,6 +55,21 @@
 - **Example**
 
 ```{r eval = F, include = T}
+# Create some data
+attainment_data <- data.frame(
+  ks1_maths = rnorm(100, mean = 0, sd = 15),
+  ks2_maths = rnorm(100, mean = 0, sd = 15),
+  ks2_science = rnorm(100, mean = 0, sd = 15),
+  ks2_english = rnorm(100, mean = 0, sd = 15),
+  ks2_art = rnorm(100, mean = 0, sd = 15),
+  school_teaching_quality = rnorm(100, mean = 0, sd = 15),
+  idaci = rnorm(100, mean = 0, sd = 15),
+  ses = rpois(n = 100, lambda = 0),
+  home_to_school_travel_time = rpois(n = 100, lambda = 50),
+  age = rpois(n = 100, lambda = 0)
+)
+
+
 # Create a class "general_linear_model" that's defined by two slots of "y", an outcome as a character string with no default values, and "x", the predictors as a list of character strings with an empty list as the default value.
 
 setClass(
@@ -83,6 +98,16 @@ generalised_linear_model <- setClass(
 
 # Look at the properties of the class "generalised_linear_model"
 showClass("generalised_linear_model")
+
+
+# Create a class "neural_network_model" defined by "x", the predictors, "y", the outcomes, and "n_layers", the number of layers
+neural_network_model <- setClass(
+  Class = "neural_network_model",
+  representation = representation(
+    y = "character",
+    x = "character"
+  )
+)
 ```
 
 **Objects**
@@ -141,12 +166,17 @@ maths_generalised_linear_model <- generalised_linear_model(
 
 
 # Create a second object of class "generalised_linear_model" using the generator function
-reading_generalised_linear_model <- generalised_linear_model(
-  y = "ks2_reading",
-  x = list("ks1_maths", "school_teaching_quality"),
-  family = function(){binomial(link = "logit")}
+ses_generalised_linear_model <- generalised_linear_model(
+  y = "ses",
+  x = list("home_to_school_travel_time"),
+  family = function(){poisson(link = "log")}
 )
 
+# Create an object of class "neural_network_nodel" using the generator function
+science_neural_network_model <- neural_network_model(
+  y = "ks2_science",
+  x = c("age", "ses", "idaci", "home_to_school_travel_time")
+)
 
 # Access the value of specific slots of an object 
 
@@ -182,6 +212,7 @@ slot(maths_generalised_linear_model, "x") <- list("ks1_maths", "school_teaching_
       - ***Where***
         - `name` is the name of the generic
         - `def` is the "skeleton" of the generic or the non-generic (default) method of the generic as a function. This function should also include the `standardGeneric` function (specifically `standardGeneric(f = "generic_name")`) for initiating the S4 methods dispatch mechanism. (All of these are needed only when creating a generic)
+
 - **Example**
 ```{r}
 # The goal is to create a generic "model_description" that would take in one or two models and summaries them in a meaningful way. The way the model(s) is/are summarised depends on the type of model (a General Linear Model vs Generalised Linear Model) and the number of models fed into this generic. 
@@ -195,10 +226,24 @@ setGeneric(
   valueClass = "character"
 )
 
-# Coerce an the file.choose function (an existing function) as an S4 generic
+
+# Create a generic for fitting any types of models 
 setGeneric(
-  name = "file.choose"
+  name = "fit",
+  def = function(model = NULL, data){
+    standardGeneric(f = "fit")
+  }
 )
+
+# Coerce the summary function (an existing function) as an S4 generic
+setGeneric(
+  name = "summary",
+  def = function(model = NULL){
+    standardGeneric(f = "summary")
+  }
+)
+
+
 ```
 
 **Methods**
@@ -208,10 +253,11 @@ setGeneric(
     - `setMethod(f, definition)`
       - ***Where***
         - `f` is the name of the generic
-        - `signature` is for specifying the case for the method (the classes of the value of the inputs to the arguments to the generic) through the `signature` function
+        - `signature` is the case of the classes of the inputs to the arguments to the generic for the method specified through the `signature` function
         - `definition` is the method for the generic as a function
 - **Tips**
-  - All methods of a generic can be assessed by the `showMethod` function (`showMethod(f = generic)`)
+  - All signatures of a generic can be assessed by the `showMethod` function (`showMethod(f = generic)`)
+  - All generics and their signatures for objects of one or more classes can be assessed by the `showMethods` function (`showMethods(classes = "classname")`
 - **Example**
 ```{r}
 # Create a method for the case when both objects are of the class "general_linear_model"
@@ -279,16 +325,118 @@ model_description(maths_generalised_linear_model, reading_generalised_linear_mod
 showMethods(f = model_description)
 
 showMethods(class = "general_linear_model")
+maths_generalised_linear_model@family()$family
+
+setClass(Class = "general_linear_model_fit")
+setClass(Class = "generalised_linear_model_fit")
+setClass(Class = "neural_network_model_fit")
+
+setMethod(
+  f = "fit",
+  signature = signature(model = "general_linear_model"),
+  definition = function(model, data){
+    formula <- paste0(model@y, " ~ " ,paste0(unlist(model@x), collapse = " + "))
+      
+    general_linear_model_fit <- lm(formula = formula, data = data)
+    class(general_linear_model_fit) <- "general_linear_model_fit"
+    return(general_linear_model_fit)
+  }
+)
+setMethod(
+  f = "fit",
+  signature = signature(model = "generalised_linear_model"),
+  definition = function(model, data){
+    formula <- paste0(model@y, " ~ " ,paste0(unlist(model@x), collapse = " + "))
+      
+    generalised_linear_model_fit <- glm(formula = formula, data = data, family = "poisson")
+    class(generalised_linear_model_fit) <- "generalised_linear_model_fit"
+    return(generalised_linear_model_fit)
+  }
+)
+
+setMethod(
+  f = "fit",
+  signature = signature(model = "neural_network_model"),
+  definition = function(model, data){
+    formula <- paste0(model@y, " ~ " ,paste0(unlist(model@x), collapse = " + "))
+      
+    neural_network_model_fit <- neuralnet::neuralnet(formula = formula, data = data)
+    class(neural_network_model_fit) <- "neural_network_model_fit"
+    return(neural_network_model_fit)
+  }
+)
+
+ses_generalised_linear_model_fit <- fit(science_neural_network_model, attainment_data)
 
 
+neuralfit <- neuralnet(
+  formula = ks2_maths ~ school_teaching_quality + idaci + ses,
+  data = attainment_data,
+  hidden = 3
+)
+e?neuralnet
+neuralfit |> coefficients()
+
+plot(neuralfit)
+
+setClassUnion("GLM", members = c("general_linear_model", "generalised_linear_model"))
+rm(summary)
+
+
+getMode
 ```
 
-- 
+
 
 - **Coerce a non-S4 generic as an S4 generic**
     
 ```{r}
 # browseURL(here::here("_book/index.html"))
+?showMethods
+
+
+setGeneric("some_function",
+           function(object, ...) {
+             standardGeneric("some_function")
+           }
+           )
+
+setMethod("some_function",
+          signature(object = "character"),
+          function(object, character_argument) {
+            # Your customized summary method here
+            
+            print(paste0("This is my character: ",character_argument))
+          })
+setMethod("some_function",
+          signature(object = "numeric"),
+          function(object, number_argument) {
+            # Your customized summary method here
+            
+            print(paste0("This is my number: ", number_argument))
+          })
+
+# Now let's add an argument to the generic
+setMethod("some_function",
+          signature(object = "ANY", digits = "numeric"),
+          function(object, digits = 2, ...) {
+            # Your customized summary method here
+            print(paste("Customized summary method with digits =", digits))
+          })
+
+summary
+
+some_function(object = 1, number_argument = "this is my message")
+rm(summary)
+
+
+# Arguments depend on classes to other arguments (just like in DBI drv argument)
+summary
+
+model
+
+fit_summary generic
+If general then have  
 ```
     
     
@@ -315,9 +463,27 @@ After all those installation wizards, make sure RStudio is using the latest R ve
 - 
 ```{r}
 rstudioapi::getThemes()
+
+124.8/12
+
+10000000
+
+86.3/12
+
+7,000,000
+
+8.99
+
+Sys.which("R")
+?Sys.which
 ```
 
 22 Oct 2022 at 9:46
     
 - Multiple dispatch - Methods dispatch can be based on multiple arguments to a generic 
 - Multiple inheritance - A class can inherit properties from multiple parent classes 
+
+
+- What is R
+- R is a programming language and the interpreter of R
+Rscript is a command line utility (like git) which is used to run R codes in the command line (terminal)

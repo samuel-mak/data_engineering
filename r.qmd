@@ -93,7 +93,7 @@ generalised_linear_model <- setClass(
   prototype = prototype(
     family = identity  # Setting the identity function as the default link function 
   ),
-  contains = "general_linear_model" # Specifying that this class, "generalised_linear_model", is an extension/superclass of the class "general_linear" mode, in other words, the class "general_linear_model" is a special case/subclass of this class, "generalised_linear_model". This effectively inherits all class definitions of the class "general_linear_model" (i.e. "x" and "y"). Hence, this class has a total of three slots.
+  contains = "general_linear_model" # Specifying that this class, "generalised_linear_model", is a superclass of the class "general_linear" mode, in other words, the class "general_linear_model" is a special case/subclass of this class, "generalised_linear_model". This effectively inherits all class definitions of the class "general_linear_model" (i.e. "x" and "y"). Hence, this class has a total of three slots.
 )
 
 # Look at the properties of the class "generalised_linear_model"
@@ -108,6 +108,8 @@ neural_network_model <- setClass(
     x = "character"
   )
 )
+
+
 ```
 
 **Objects**
@@ -234,13 +236,10 @@ setGeneric(
     standardGeneric(f = "fit")
   }
 )
-
+rm(summary)
 # Coerce the summary function (an existing function) as an S4 generic
 setGeneric(
-  name = "summary",
-  def = function(model = NULL){
-    standardGeneric(f = "summary")
-  }
+  name = "summary"
 )
 
 
@@ -258,6 +257,7 @@ setGeneric(
 - **Tips**
   - All signatures of a generic can be assessed by the `showMethod` function (`showMethod(f = generic)`)
   - All generics and their signatures for objects of one or more classes can be assessed by the `showMethods` function (`showMethods(classes = "classname")`
+- **Method and super and subclasses**
 - **Example**
 ```{r}
 # Create a method for the case when both objects are of the class "general_linear_model"
@@ -327,32 +327,31 @@ showMethods(f = model_description)
 showMethods(class = "general_linear_model")
 maths_generalised_linear_model@family()$family
 
-setClass(Class = "general_linear_model_fit")
-setClass(Class = "generalised_linear_model_fit")
-setClass(Class = "neural_network_model_fit")
-
+general_linear_model_fit <- setClass("general_linear_model_fit", representation = representation(call = "character", coefficients = "ANY"))
 setMethod(
   f = "fit",
   signature = signature(model = "general_linear_model"),
   definition = function(model, data){
     formula <- paste0(model@y, " ~ " ,paste0(unlist(model@x), collapse = " + "))
-      
-    general_linear_model_fit <- lm(formula = formula, data = data)
-    class(general_linear_model_fit) <- "general_linear_model_fit"
-    return(general_linear_model_fit)
+    
+    general_linear_model_fit_object <- lm(formula = formula, data = data)
+    general_linear_model_fit_call <- paste0(as.character(general_linear_model_fit_object$call[1]), "(", as.character(general_linear_model_fit_object$call[2]), ", ",as.character(general_linear_model_fit_object$call[3]), ")")
+    return(general_linear_model_fit(call = general_linear_model_fit_call, coefficients = general_linear_model_fit_object$coefficients))
   }
 )
+generalised_linear_model_fit <- setClass("generalised_linear_model_fit", contains = "general_linear_model_fit")
 setMethod(
   f = "fit",
   signature = signature(model = "generalised_linear_model"),
   definition = function(model, data){
     formula <- paste0(model@y, " ~ " ,paste0(unlist(model@x), collapse = " + "))
       
-    generalised_linear_model_fit <- glm(formula = formula, data = data, family = "poisson")
-    class(generalised_linear_model_fit) <- "generalised_linear_model_fit"
-    return(generalised_linear_model_fit)
+    generalised_linear_model_fit_object <- glm(formula = formula, data = data, family = model@family()$family)
+    generalised_linear_model_fit_call <- paste0(as.character(generalised_linear_model_fit_object$call[1]), "(", as.character(generalised_linear_model_fit_object$call[2]), ", ",as.character(generalised_linear_model_fit_object$call[3]), ", ",as.character(generalised_linear_model_fit_object$call[4]), ")")
+    return(generalised_linear_model_fit(call = generalised_linear_model_fit_call, coefficients = generalised_linear_model_fit_object$coefficients))
   }
 )
+
 
 setMethod(
   f = "fit",
@@ -360,30 +359,59 @@ setMethod(
   definition = function(model, data){
     formula <- paste0(model@y, " ~ " ,paste0(unlist(model@x), collapse = " + "))
       
-    neural_network_model_fit <- neuralnet::neuralnet(formula = formula, data = data)
-    class(neural_network_model_fit) <- "neural_network_model_fit"
-    return(neural_network_model_fit)
+    neural_network_model_fit_object <- neuralnet::neuralnet(formula = formula, data = data)
+    return(neural_network_model_fit_object)
   }
 )
 
-ses_generalised_linear_model_fit <- fit(science_neural_network_model, attainment_data)
+
+maths_general_linear_model_fit <- fit(model = maths_general_linear_model, data = attainment_data)
+ses_generalised_linear_model_fit <- fit(model = ses_generalised_linear_model, data = attainment_data)
+science_neural_network_model_fit <- fit(model = science_neural_network_model, data = attainment_data)
+```
 
 
-neuralfit <- neuralnet(
-  formula = ks2_maths ~ school_teaching_quality + idaci + ses,
-  data = attainment_data,
-  hidden = 3
+```{r}
+# Methods for summary
+setMethod(
+  f = "summary",
+  signature = signature(object = "general_linear_model_fit"),
+  definition = function(object, show_beta = F){
+    print(object@call)
+    if(show_beta){
+    object@coefficients}
+    
+  }
 )
-e?neuralnet
-neuralfit |> coefficients()
+setGeneric(
+  name = "summary"
+)
 
-plot(neuralfit)
-
-setClassUnion("GLM", members = c("general_linear_model", "generalised_linear_model"))
 rm(summary)
+# Coerce the summary function (an existing function) as an S4 generic
 
+showMethods("summary")
+isS4(science_neural_network_model)
 
-getMode
+removeGeneric("summary")
+removeMethod("summary", signature = signature(object = "generalised_linear_model_fit"))
+removeMethod("summary", signature = signature(object = "general_linear_model_fit"))
+showMethods("summary")
+
+summary(maths_general_linear_model_fit)
+summary(ses_generalised_linear_model_fit)
+
+# Chat gpt was right 
+# This works at one level only 
+
+summary(science_neural_network_model_fit)
+rm(summary)
+# Call the method designed for the superclass
+print(obj)
+```
+
+```{r}
+science_neural_network_model_fit$weights
 ```
 
 
@@ -438,7 +466,28 @@ model
 fit_summary generic
 If general then have  
 ```
-    
+```{r}
+# methods for superclass works for all subclass 
+setClass("SuperClass",
+         representation(a = "numeric"))
+
+# Define a method for the superclass
+setMethod("print",
+          signature(x = "SuperClass"),
+          function(x) {
+            cat("SuperClass object with a =", x@a, "\n")
+          })
+
+# Define a subclass
+setClass("SubClass",
+         contains = "SuperClass",
+         representation(b = "character"))
+
+# Create an object of the subclass
+obj <- new("SubClass", a = 10, b = "Hello")
+
+```
+
     
 # Things to add
 - History of R

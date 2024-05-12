@@ -175,7 +175,7 @@ ses_generalised_linear_model <- generalised_linear_model(
 # Create an instance of class "neural_network_nodel" using its generator function
 science_neural_network_model <- neural_network_model(
   y = "ks2_science",
-  x = c("age", "ses", "idaci", "home_to_school_travel_time")
+  x = c("ses", "idaci", "home_to_school_travel_time", "diet_quality")
 )
 
 # Access the value of slot "y" in the instance "maths_generalised_linear_model" using the "@" operator
@@ -184,8 +184,8 @@ maths_generalised_linear_model@y
 # Access the value of a specific slot "x" in the instance "maths_generalised_linear_model" using the `slot` function
 slot(maths_generalised_linear_model, "x")
 
-# Modify the value of the slot "family" in the instance "maths_generalised_linear_model" using the "@" operator
-maths_generalised_linear_model@family <- function()poisson(link = "log")
+# Modify the value of the slot "family" in the instance "ses_generalised_linear_model" using the "@" operator
+ses_generalised_linear_model@family <- function()poisson(link = "log")
 
 # Modify the value of the slot "x" in the instance "maths_generalised_linear_model" using the `slot` function
 slot(maths_generalised_linear_model, "x") <- c("ks1_maths", "school_teaching_quality", "idaci")
@@ -209,20 +209,16 @@ slot(maths_generalised_linear_model, "x") <- c("ks1_maths", "school_teaching_qua
 
 - **Example**
 ```{r}
-# The goal is to create a generic "model_description" that would take in one or two models and summaries them in a meaningful way. The way the model(s) is/are summarised depends on the type of model (a General Linear Model vs Generalised Linear Model) and the number of models fed into this generic. 
-
-# Create a generic "model_description" with the output defined to be a character string
-# The goal of this generic is to take in one or two models and to summarise/compare them
+# Create a generic "model_description" that takes one or two models and summarises/compares them
 setGeneric(
   name = "model_description",
-  def = function(model_1 = NULL, model_2 = NULL){
-    standardGeneric(f = "model_description")
+  def = function(model_1 = NULL, model_2 = NULL){ # The generic is defined to have two generic arguments "model_1" and "model_2" for specifying the models to be described/compared
+    standardGeneric(f = "model_description") # This is for initiating the S4 methods dispatch mechanism 
   },
-  valueClass = "character"
+  valueClass = "character" # Defines the output to be of class character
 )
 
-# Create a generic "fit" for fitting any types of models 
-# The goal of this generic is to fit the specified model to data
+# Create a generic "fit" that would take a model specification and data and fit the specified model to the data 
 setGeneric(
   name = "fit",
   def = function(model = NULL, data){
@@ -231,7 +227,7 @@ setGeneric(
 )
 
 # Coerce the summary function (an existing function) as an S4 generic
-# The goal of this is to use this generic summary to summarise the models fitted by the fit generic by adding specific S4 methods to it 
+# The goal of this is to use this generic summary to summarise the models fitted by the fit generic by adding specific S4 methods to it later 
 setGeneric(name = "summary")
 ```
 
@@ -245,11 +241,10 @@ setGeneric(name = "summary")
         - `definition` is the method for the generic as a function
 - **Tips**
   - All signatures of a generic can be assessed by the `showMethod` function (`showMethod(f = generic)`)
-  - All generics and their signatures for objects of one or more classes can be assessed by the `showMethods` function (`showMethods(classes = "classname")`
-- **Method and super and subclasses**
+  - All generics and their signatures of a class can be assessed by the `showMethods` function (`showMethods(classes = "classname")`
 - **Example**
 ```{r}
-# Create a method for the case when both objects are of the class "general_linear_model"
+# Create a method for the generic "model_description" for the case when the input to both arguments are of the class "general_linear_model"
 setMethod(
   f = "model_description",
   signature = signature(model_1 = "general_linear_model", model_2 = "general_linear_model"),
@@ -270,7 +265,7 @@ setMethod(
   }
 )
 
-# Create a method for the case when both objects are of the class "generalised_linear_model"
+# Create a second method for the generic "model_description" for the case when the input to both arguments are of the class "generalised_linear_model"
 setMethod(
   f = "model_description",
   signature = signature(model_1 = "generalised_linear_model", model_2 = "generalised_linear_model"),
@@ -309,26 +304,32 @@ setMethod(
   }
 )
 
+# Check if the generic works 
 model_description(maths_generalised_linear_model, reading_generalised_linear_model)
 
+# Access all signatures of the generic "model_description"
 showMethods(f = model_description)
 
+# Access all generics and their signatures of objects of the class "general_linear_model"
 showMethods(class = "general_linear_model")
-maths_generalised_linear_model@family()$family
 
+
+# Create a method for the fit generic for the case when the input to the model argument is of the class "general_linear_model"
+# Define the output of this method to be of an S4 class "general_linear_model_fit". To do that, the class "general_linear_model_fit" and its generator function need to be created first before defining the method as the generator function would be used within the method to define the class of the output of the method 
 general_linear_model_fit <- setClass("general_linear_model_fit", representation = representation(call = "character", coefficients = "ANY"))
 setMethod(
   f = "fit",
   signature = signature(model = "general_linear_model"),
   definition = function(model, data){
     formula <- paste0(model@y, " ~ " ,paste0(unlist(model@x), collapse = " + "))
-    
     general_linear_model_fit_object <- lm(formula = formula, data = data)
     general_linear_model_fit_call <- paste0(as.character(general_linear_model_fit_object$call[1]), "(", as.character(general_linear_model_fit_object$call[2]), ", ",as.character(general_linear_model_fit_object$call[3]), ")")
     return(general_linear_model_fit(call = general_linear_model_fit_call, coefficients = general_linear_model_fit_object$coefficients))
   }
 )
 
+# Create a second method for the fit generic for the case when the input to the model argument is of the class "generalised_linear_model"
+# Define the output of this method to be of an S4 class "generalised_linear_model_fit". Similarly, this class and its generator function are created first before defining the method. In addition, "generalised_linear_model_fit" is defined to be a children of "general_linear_model_fit", this is used to demonstrate that methods defined for instance objects of a class would also be applicable to instance objects of its subclass (but not the other way round).
 generalised_linear_model_fit <- setClass("generalised_linear_model_fit", contains = "general_linear_model_fit")
 setMethod(
   f = "fit",
@@ -343,26 +344,23 @@ setMethod(
 )
 
 
+# Create a third method for the fit generic for the case when the input to the model argument is of the class "neural_network_model"
+# The class of the output of this method is defined to be "nn" by the neuralnet::neuralnet function
 setMethod(
   f = "fit",
   signature = signature(model = "neural_network_model"),
   definition = function(model, data){
     formula <- paste0(model@y, " ~ " ,paste0(unlist(model@x), collapse = " + "))
       
-    neural_network_model_fit_object <- neuralnet::neuralnet(formula = formula, data = data)
+    neural_network_model_fit_object <- neuralnet::neuralnet(formula = formula, data = data, linear.output = F)
     return(neural_network_model_fit_object)
   }
 )
 
 
-maths_general_linear_model_fit <- fit(model = maths_general_linear_model, data = attainment_data)
-ses_generalised_linear_model_fit <- fit(model = ses_generalised_linear_model, data = attainment_data)
-science_neural_network_model_fit <- fit(model = science_neural_network_model, data = attainment_data)
-```
-
-
-```{r}
-# Methods for summary
+# Create a same method for the summary generic for the case when the input to the object argument is either an instance of the class "general_linear_model_fit" or "generalised_linear_model_fit"
+# Since the class "general_linear_model_fit" is a superclass of its subclass "generalised_linear_model_fit", as defined in the inheritance structure when creating the class "generalised_linear_model_fit", any methods defined for instances of the class "general_linear_model_fit" would also be applicable to instances of the class "generalised_linear_model_fit".
+# This means that to create a method for objects of both the parent and child classes "general_linear_model_fit" or "generalised_linear_model_fit", the method only needs to be defined for the parent class "general_linear_model_fit"
 setMethod(
   f = "summary",
   signature = signature(object = "general_linear_model_fit"),
@@ -373,6 +371,25 @@ setMethod(
     
   }
 )
+
+# Create a second method for the summary generic for the case when the input to the object argument is an instance of the class "neural_network_model_fit"
+setMethod(
+  f = "summary",
+  signature = signature(object = "nn"),
+  definition = function(object, plot_model = F){
+    print(object$call)
+    if(plot_model){
+    plot(object)}
+    
+  }
+)
+science_neural_network_model_fit |> summary(plot_model = T)
+
+
+```
+
+- **Method and super and subclasses**
+```{r}
 
 rm(summary)
 # Coerce the summary function (an existing function) as an S4 generic
@@ -395,6 +412,12 @@ summary(science_neural_network_model_fit)
 rm(summary)
 # Call the method designed for the superclass
 print(obj)
+
+
+maths_general_linear_model_fit <- fit(model = maths_general_linear_model, data = attainment_data)
+ses_generalised_linear_model_fit <- fit(model = ses_generalised_linear_model, data = attainment_data)
+science_neural_network_model_fit <- fit(model = science_neural_network_model, data = attainment_data)
+
 ```
 
 ```{r}

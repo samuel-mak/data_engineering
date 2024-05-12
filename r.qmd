@@ -372,19 +372,60 @@ setMethod(
   }
 )
 
-# Create a second method for the summary generic for the case when the input to the object argument is an instance of the class "neural_network_model_fit"
+# Create a second method for the summary generic for the case when the input to the object argument is an instance of the class "neural_network_model_fit" in a way that the arguments to the summary generic would change accordingly, specifically, the "show_beta" argument would be removed and a new argument would be added, further, the "plot_model" argument can take inputs of different classes causing the summary function to operate differently by nesting another generic, specifically called "summary_2" in the method. Accordingly, the "summary" and "summary_2" generics may be referred to as the main/external and internal generics. This is to show how a generic can have different sets of arguments depending on the class of the inputs to one or more generic arguments and those new arguments can take inputs of different classes and operate differently according to them. This complex scenario is rare though.
+
+# Create the internal generic "summary_2" that would be nested within the methods of the main generic "summary" later 
+setGeneric(
+  "summary_2", 
+  def = function(object, plot_model){
+    standardGeneric(f = "summary_2")
+    }
+  )
+
+# Create a method for the internal generic "summary_2" for the case when the input to the argument "plot_model" is of the class "logical" 
+setMethod(
+  f = "summary_2", 
+  signature = signature(plot_model = "logical"),
+  definition = function(object, plot_model){
+            print("Input of the plot_model argument is logical")
+            #print(object$call)
+            if(plot_model){plot(object)}
+          })
+
+# Create a second method for the internal generic "summary_2" for the case when the input to the argument "plot_model" is of the class "numeric"
+setMethod(
+  f = "summary_2", 
+  signature = signature(plot_model = "numeric"),
+  definition = function(object, plot_model){
+            print("Input of the plot_model argument is an numeric")
+            print(object$call)
+            if(plot_model == 1){plot(object)}
+    }
+  )
+# Create a method for the main generic "summary" for the case when input to the "object" argument is of the class "nn" (the neural network model fit)
 setMethod(
   f = "summary",
   signature = signature(object = "nn"),
-  definition = function(object, plot_model = F){
-    print(object$call)
-    if(plot_model){
-    plot(object)}
-    
-  }
+  definition = function(object, plot_model){summary_2(object = object, plot_model = plot_model)}
 )
-science_neural_network_model_fit |> summary(plot_model = T)
 
+
+# Show how it all works in practice
+# Fit the models to the data using the fit generic
+# The fit generic can take various model specifications of various types of model and fit to the same data accordingly 
+# Fitting a General Linear Model
+maths_general_linear_model_fit <- fit(model = maths_general_linear_model, data = attainment_data)
+# Fitting a Generalised Linear Model 
+ses_generalised_linear_model_fit <- fit(model = ses_generalised_linear_model, data = attainment_data)
+# Fitting a Neural Network Model
+science_neural_network_model_fit <- fit(model = science_neural_network_model, data = attainment_data)
+
+# Access the model properties using the summary generic 
+# The summary generic can take inputs of different classes and change its arguments and operations/output
+summary(maths_general_linear_model_fit, show_beta = T)
+summary(ses_generalised_linear_model_fit, show_beta = F)
+summary(science_neural_network_model_fit, plot_model = T)
+summary(science_neural_network_model_fit, plot_model = 1)
 
 ```
 
@@ -414,9 +455,7 @@ rm(summary)
 print(obj)
 
 
-maths_general_linear_model_fit <- fit(model = maths_general_linear_model, data = attainment_data)
-ses_generalised_linear_model_fit <- fit(model = ses_generalised_linear_model, data = attainment_data)
-science_neural_network_model_fit <- fit(model = science_neural_network_model, data = attainment_data)
+
 
 ```
 

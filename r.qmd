@@ -26,13 +26,16 @@
 
   - An OOP system developed by John Chambers and members of the R Core Team in the mid-1990s for the S programming language and is implemented in the R programming language
   - It was developed and introduced as a more formal, rigorous, and complex OOP system than S3
-  - Features of S4:
+  - **Features of S4:**
     - Methods belong to functions
     - Follows a more functional programming style
     - More formal and rigorous than S3
     - Classes have formal definitions for their fields and inheritance (thus more formal and rigorous than S3)
     - Multiple dispatch (thus more complicated than S3)
     - Multiple inheritance (thus more complicated than S3)
+  - **Example**
+    - An example case is used to demonstrate the fundamentals of the S4 OOP system. In this example, the analytical flow of three data-learning models, specifically, the specification, fitting, and accessing parameters of the General Linear Model, the Generalised Linear Model, and the Neural Network Model, are implemented using the S4 OOP system. 
+    - Note that the relationship between the General Linear Model and the Generalised Linear Model can be viewed differently, depending on specific goals (e.g. pedagogy, implementation). It can be viewed that the Generalised Linear Model is a general class of models that includes the General Linear Model as a special case where the identity function is the link, this tends to be viewed in the field of statistics. It can also be viewed that the General Linear Model is a general class which includes the Generalised Linear Model as an extension by adding the link function, this view is more in line with the concept of classes in object-oriented programming. While both views are valid, the latter view is adapted to demonstrate the inheritance of classes in the S4 OOP system.
     
 **Classes**
 
@@ -55,6 +58,7 @@
 - **Example**
 
 ```{r eval = F, include = T}
+
 # Create some data
 attainment_data <- data.frame(
   ks1_maths = rnorm(100, mean = 0, sd = 15),
@@ -63,153 +67,141 @@ attainment_data <- data.frame(
   ks2_english = rnorm(100, mean = 0, sd = 15),
   ks2_art = rnorm(100, mean = 0, sd = 15),
   school_teaching_quality = rnorm(100, mean = 0, sd = 15),
-  idaci = rnorm(100, mean = 0, sd = 15),
-  ses = rpois(n = 100, lambda = 0),
+  idaci = abs(rnorm(100, mean = 0, sd = 15)),
+  ses = rpois(n = 100, lambda = 5),
   home_to_school_travel_time = rpois(n = 100, lambda = 50),
-  age = rpois(n = 100, lambda = 0)
+  diet_quality = rpois(n = 100, lambda = 10)
 )
 
-
-# Create a class "general_linear_model" that's defined by two slots of "y", an outcome as a character string with no default values, and "x", the predictors as a list of character strings with an empty list as the default value.
-
+# Create a class "general_linear_model" that's defined by two slots of "y", an outcome as a character string/vector with no default values, and "x", the predictors as a character string/vector with an NA character as the default value 
 setClass(
   Class = "general_linear_model",
   representation = representation(
-    y = "character", # The outcome (univariate only)
-    x = "list" # The predictor(s)
+    y = "character", # The outcome
+    x = "character" # The predictor(s)
   ),
   prototype = prototype(
-    x = list() # Setting the default value for the "x" parameter as an empty list
+    x = NA_character_ # Setting an NA character as the default for "x"
+    )
   )
-)
 
-# Create a class "generalised_linear_model" defined by the subclass "general_linear_model" and an additional slot "family", a function for specifying the link function and the exponential sampling distribution of the outcome. Assign the returning generator function to an object called "generalised_linear_model".
-
+# Create a class "generalised_linear_model" defined by (slots in) its superclass "general_linear_model" while extending it by adding a slot "family" for the link function. Assign the output (the returning generator function) to an object "generalised_linear_model", so that this object can be used as its generator function.
 generalised_linear_model <- setClass(
   Class = "generalised_linear_model",
   representation = representation(
-    family = "function" # The exponential sampling distribution of the outcome and the link function
-  ),
+    family = "function" # The link function
+    ),
   prototype = prototype(
     family = identity  # Setting the identity function as the default link function 
-  ),
-  contains = "general_linear_model" # Specifying that this class, "generalised_linear_model", is a superclass of the class "general_linear" mode, in other words, the class "general_linear_model" is a special case/subclass of this class, "generalised_linear_model". This effectively inherits all class definitions of the class "general_linear_model" (i.e. "x" and "y"). Hence, this class has a total of three slots.
-)
-
-# Look at the properties of the class "generalised_linear_model"
-showClass("generalised_linear_model")
+    ),
+  contains = "general_linear_model" # Specifying that the "generalised_linear_model" class is a subclass/childclass/extension/special case of the superclass/parentclass "general_linear_model" (it contains all the slots of the "general_linear_model" class). This effectively inherits all class definitions of the class "general_linear_model" (i.e. "x" and "y"). Hence, this class has a total of three slots.
+  )
 
 
-# Create a class "neural_network_model" defined by "x", the predictors, "y", the outcomes, and "n_layers", the number of layers
+
+# Create a class "neural_network_model" defined by slots of "x", the predictors, and "y", the outcomes
 neural_network_model <- setClass(
   Class = "neural_network_model",
   representation = representation(
     y = "character",
     x = "character"
+    )
   )
-)
+
+# Access basic properties of the class "generalised_linear_model"
+showClass("generalised_linear_model")
+
+# Access whether "generalised_linear_model" is an extension of "general_linear_model"
+extends(class1 = "generalised_linear_model", class2 = "general_linear_model")
+
+# Removing the class "general_linear_model"
+# removeClass("general_linear_model")
+# Removing a parent class does not remove its children, though, the inheritance structure would be lost and the children wouldn't be children 
 
 
 ```
 
-**Objects**
+**Instances**
 
-- **Object creation**
-  - S4 objects are created by the `new` function with its class and values of slots specified through its arguments 
+- **Introduction**    
+  - Instances are objects (instance object) representing cases of a class that take on specific slot values
+
+- **instance creation**
+  - S4 instances are created by the `new` function with its class and values of slots specified through its arguments 
   - The `new` function has the general form
     - `new(Class, ...)`
       - ***Where***
-        - The `Class` argument specifies the name of the class the object is of
-        - `...` is the set of slots of the specified class as arguments that specify values of the slots for the object
-  - S4 objects of a class can also be created indirectly by the generator function with its values of slots specified through its arguments (applicable only if the generator function was assigned to an object to be used), the generator function would in turn call the `new` function to create the object
-  - The generator function has similar form as the `new` function (only difference is that it doesn't have the `Class` argument)
+        - The `Class` argument specifies the name of the class the instance is of
+        - `...` is the set of slots of the specified class as arguments that specify values of the slots for the instance
+  - S4 instances of a class can also be created indirectly by its generator function with its values of slots specified through its arguments (applicable only if the generator function exists as a function object), calling the generator function would in turn call the `new` function to create the instance
+  - The generator function has similar form as the `new` function (only difference is that it doesn't have the `Class` argument because it has been specified)
     - `generator_function(...)`
       - ***Where***
-        - `...` is the set of slots of the specified class as arguments that specify values of the slots for the object
+        - `generator_function` is the name of the generator function 
+        - `...` is the set of slots of the specified class as arguments that specify values of the slots for the instance
   
-- **Access and modify values of slots of objects**
-  - Values of slots of objects can be assessed using two methods, either through the `@` symbol or the `slot` function
-  - Assessed values can then be modified using the assignment operator `<-`
-  - **Using the `@` symbol**
-    - **Access values of slots of objects**
-      - `object@slot_name`
-    - **Modify the assessed values of slots of objects**
-      - `object@slot_name <- value`
-  - **Using the `slot` function**
-    - **Access values of slots of objects**
-      - `slot(object, "slot_name")`
-     - **Modify the assessed values of slots of objects**
-      - `slot(object, "slot_name") <- value` 
+- **Access and modify values of slots of instances**
+  - Values of slots of instances can be assessed using two methods, either through the `@` symbol (`instance@slot_name`) or the `slot` function (`slot(object  = instance, name = "slot_name")`)
+  - Assessed values can then be modified using the assignment operator `<-` (i.e. `instance@slot_name <- value` or `slot(instance, "slot_name") <- value`)
 - **Example**
 
 ```{r eval = F, include = T}
-# Create an object of class "general_linear_model" using the new function
-# Specifically, a model with the outcome of "ks2_maths" and predictors of "ks1_maths" (prior attainment) and "school_teaching_quality"
-
+# Create an instance of class "general_linear_model" using the new function with the value of "y" being "ks2" and values of "x" being "ks1_maths" and "school_teaching_quality"
 maths_general_linear_model <- new(
   Class = "general_linear_model",
   y = "ks2_maths",
-  x = list("ks1_maths", "school_teaching_quality")
+  x = c("ks1_maths", "school_teaching_quality")
 )
  
-
-# Look at the properties of the object "maths_general_linear_model"
+# Access properties of the instance "maths_general_linear_model"
 str(maths_general_linear_model)
 
-# Look at whether the object "maths_general_linear_model" is an S4 object
+# Access whether the object "maths_general_linear_model" is an object of an S4 class
 isS4(maths_general_linear_model)
 
-
-# Create an object of class "generalised_linear_model" using its generator function (as the generator function was assigned to an object)
+# Create an instance of class "generalised_linear_model" using its generator function (as the generator function exists in the form of an object in the environment)
 maths_generalised_linear_model <- generalised_linear_model(
   y = "ks2_maths",
-  x = list("ks1_maths", "school_teaching_quality")
+  x = c("ks1_maths", "school_teaching_quality")
 )
 
-
-# Create a second object of class "generalised_linear_model" using the generator function
+# Create a second instance of class "generalised_linear_model" using its generator function
 ses_generalised_linear_model <- generalised_linear_model(
   y = "ses",
-  x = list("home_to_school_travel_time"),
-  family = function(){poisson(link = "log")}
+  x = "home_to_school_travel_time",
+  family = function()identity
 )
 
-# Create an object of class "neural_network_nodel" using the generator function
+# Create an instance of class "neural_network_nodel" using its generator function
 science_neural_network_model <- neural_network_model(
   y = "ks2_science",
   x = c("age", "ses", "idaci", "home_to_school_travel_time")
 )
 
-# Access the value of specific slots of an object 
-
-# Method 1: Using the @ symbol (similar to the $ symbol in S3 objects)
+# Access the value of slot "y" in the instance "maths_generalised_linear_model" using the "@" operator
 maths_generalised_linear_model@y
 
-# Method 2: Using the slot function
-slot(maths_generalised_linear_model, "y")
+# Access the value of a specific slot "x" in the instance "maths_generalised_linear_model" using the `slot` function
+slot(maths_generalised_linear_model, "x")
 
+# Modify the value of the slot "family" in the instance "maths_generalised_linear_model" using the "@" operator
+maths_generalised_linear_model@family <- function()poisson(link = "log")
 
-# Specify or re-specify values of slots of an object after object creation
-
-# Method 1: Using the @ symbol (like $ in S3)
-maths_generalised_linear_model@family <- function(){poisson(link = "log")}
-
-# Method 2: Using the slot function
-slot(maths_generalised_linear_model, "x") <- list("ks1_maths", "school_teaching_quality", "idaci")
+# Modify the value of the slot "x" in the instance "maths_generalised_linear_model" using the `slot` function
+slot(maths_generalised_linear_model, "x") <- c("ks1_maths", "school_teaching_quality", "idaci")
 
 ```
 
 **Generic functions (generics)**
-- A generalised function 
-- Specifically, a function that is generalised to different types of inputs to its arguments so that the specific methods being called depends on the type of inputs to its arguments 
 
 
-**Generics and methods**
 
-**Generics**
+**Generic functions (Generics) and Methods**
+- **Introduction**
+  - A generic is a function that is able to take different input (in terms of classes of the inputs to the arguments and/or the set of arguments) and operate differently according to the input by dispatching (matching and passing the inputs to the arguments in the generic) to a specific method, a function for the specific case, yet return a conceptually similar output
 - **Creating a generic**
   - The `setGeneric` function creates or coerces an existing function as an S4 generic 
-  - The `setGeneric` function has the general form
+  - The `setGeneric` function has the general form:
     - `setGeneric(name, def)`
       - ***Where***
         - `name` is the name of the generic
@@ -219,7 +211,8 @@ slot(maths_generalised_linear_model, "x") <- list("ks1_maths", "school_teaching_
 ```{r}
 # The goal is to create a generic "model_description" that would take in one or two models and summaries them in a meaningful way. The way the model(s) is/are summarised depends on the type of model (a General Linear Model vs Generalised Linear Model) and the number of models fed into this generic. 
 
-# Create a generic "model_description" with the output define to be a character string
+# Create a generic "model_description" with the output defined to be a character string
+# The goal of this generic is to take in one or two models and to summarise/compare them
 setGeneric(
   name = "model_description",
   def = function(model_1 = NULL, model_2 = NULL){
@@ -228,24 +221,20 @@ setGeneric(
   valueClass = "character"
 )
 
-
-# Create a generic for fitting any types of models 
+# Create a generic "fit" for fitting any types of models 
+# The goal of this generic is to fit the specified model to data
 setGeneric(
   name = "fit",
   def = function(model = NULL, data){
     standardGeneric(f = "fit")
   }
 )
-rm(summary)
+
 # Coerce the summary function (an existing function) as an S4 generic
-setGeneric(
-  name = "summary"
-)
-
-
+# The goal of this is to use this generic summary to summarise the models fitted by the fit generic by adding specific S4 methods to it 
+setGeneric(name = "summary")
 ```
 
-**Methods**
 - **Creating a method**       
   - The `setMethod` function creates a method for a generic
   - The `setMethod` function has the general form
@@ -339,6 +328,7 @@ setMethod(
     return(general_linear_model_fit(call = general_linear_model_fit_call, coefficients = general_linear_model_fit_object$coefficients))
   }
 )
+
 generalised_linear_model_fit <- setClass("generalised_linear_model_fit", contains = "general_linear_model_fit")
 setMethod(
   f = "fit",
@@ -382,9 +372,6 @@ setMethod(
     object@coefficients}
     
   }
-)
-setGeneric(
-  name = "summary"
 )
 
 rm(summary)

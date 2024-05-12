@@ -19,13 +19,15 @@
 ## S3
 - **Introduction**
   - An OOP system developed by John Chambers, Rick Becker and colleagues at Bell Labs in the early 1990s for the S programming language and implemented for the R programming language 
-      
+  - It is named "S3" it was developed for version 3 of the S programming language
+  - The simplest OOP system that an OOP could possibly be 
 ## S4
 
 **Introduction**
 
   - An OOP system developed by John Chambers and members of the R Core Team in the mid-1990s for the S programming language and is implemented in the R programming language
   - It was developed and introduced as a more formal, rigorous, and complex OOP system than S3
+  - It is named "S4" because it was developed for version 4 of the S programming language
   - **Features of S4:**
     - Methods belong to functions
     - Follows a more functional programming style
@@ -125,6 +127,7 @@ extends(class1 = "generalised_linear_model", class2 = "general_linear_model")
 
 - **Introduction**    
   - Instances are objects (instance object) representing cases of a class that take on specific slot values
+  - Instances of a subclass are also instances of its superclasses, however, instances of a superclass are not instances of their subclasses. This affects methods dispatch.
 
 - **instance creation**
   - S4 instances are created by the `new` function with its class and values of slots specified through its arguments 
@@ -198,7 +201,11 @@ slot(maths_generalised_linear_model, "x") <- c("ks1_maths", "school_teaching_qua
 
 **Generic functions (Generics) and Methods**
 - **Introduction**
-  - A generic is a function that is able to take different input (in terms of classes of the inputs to the arguments and/or the set of arguments) and operate differently according to the input by dispatching (matching and passing the inputs to the arguments in the generic) to a specific method, a function for the specific case, yet return a conceptually similar output
+  - **Generics and methods**
+    - A generic is a function that can take different input (in terms of the class of the inputs to the arguments and/or the set of arguments) and operate and/or behave in different specific ways according to the input upon being called 
+    - This is done by the generic having a set of associated methods, which are functions that implement for specific cases in terms of the inputs to the arguments to the generic, and having the generic dispatch to one of its methods upon being called, which involves the matching and identifying the most appropriate method and passing the inputs to the arguments to the generic to that method 
+  - **Inheritance**
+    - Since instances of a subclass are also instances of its superclasses, methods defined for instances of a superclass are also applicable to instances of its subclasses. However, since instances of a superclass are not instances of their subclasses, methods defined for instances of a subclass are not applicable to instances of its superclasses 
 - **Creating a generic**
   - The `setGeneric` function creates or coerces an existing function as an S4 generic 
   - The `setGeneric` function has the general form:
@@ -206,7 +213,17 @@ slot(maths_generalised_linear_model, "x") <- c("ks1_maths", "school_teaching_qua
       - ***Where***
         - `name` is the name of the generic
         - `def` is the "skeleton" of the generic or the non-generic (default) method of the generic as a function. This function should also include the `standardGeneric` function (specifically `standardGeneric(f = "generic_name")`) for initiating the S4 methods dispatch mechanism. (All of these are needed only when creating a generic)
-
+- **Creating a method**       
+  - The `setMethod` function creates a method for a generic
+  - The `setMethod` function has the general form
+    - `setMethod(f, definition)`
+      - ***Where***
+        - `f` is the name of the generic
+        - `signature` is the case of the classes of the inputs to the arguments to the generic for the method specified through the `signature` function
+        - `definition` is the method for the generic as a function
+- **Tips**
+  - All signatures of a generic can be assessed by the `showMethod` function (`showMethod(f = generic)`)
+  - All generics and their signatures of a class can be assessed by the `showMethods` function (`showMethods(classes = "classname")`
 - **Example**
 ```{r}
 # Create a generic "model_description" that takes one or two models and summarises/compares them
@@ -229,21 +246,9 @@ setGeneric(
 # Coerce the summary function (an existing function) as an S4 generic
 # The goal of this is to use this generic summary to summarise the models fitted by the fit generic by adding specific S4 methods to it later 
 setGeneric(name = "summary")
-```
 
-- **Creating a method**       
-  - The `setMethod` function creates a method for a generic
-  - The `setMethod` function has the general form
-    - `setMethod(f, definition)`
-      - ***Where***
-        - `f` is the name of the generic
-        - `signature` is the case of the classes of the inputs to the arguments to the generic for the method specified through the `signature` function
-        - `definition` is the method for the generic as a function
-- **Tips**
-  - All signatures of a generic can be assessed by the `showMethod` function (`showMethod(f = generic)`)
-  - All generics and their signatures of a class can be assessed by the `showMethods` function (`showMethods(classes = "classname")`
-- **Example**
-```{r}
+
+
 # Create a method for the generic "model_description" for the case when the input to both arguments are of the class "general_linear_model"
 setMethod(
   f = "model_description",
@@ -427,6 +432,8 @@ summary(ses_generalised_linear_model_fit, show_beta = F)
 summary(science_neural_network_model_fit, plot_model = T)
 summary(science_neural_network_model_fit, plot_model = 1)
 
+
+
 ```
 
 - **Method and super and subclasses**
@@ -459,83 +466,9 @@ print(obj)
 
 ```
 
-```{r}
-science_neural_network_model_fit$weights
-```
 
 
 
-- **Coerce a non-S4 generic as an S4 generic**
-    
-```{r}
-# browseURL(here::here("_book/index.html"))
-?showMethods
-
-
-setGeneric("some_function",
-           function(object, ...) {
-             standardGeneric("some_function")
-           }
-           )
-
-setMethod("some_function",
-          signature(object = "character"),
-          function(object, character_argument) {
-            # Your customized summary method here
-            
-            print(paste0("This is my character: ",character_argument))
-          })
-setMethod("some_function",
-          signature(object = "numeric"),
-          function(object, number_argument) {
-            # Your customized summary method here
-            
-            print(paste0("This is my number: ", number_argument))
-          })
-
-# Now let's add an argument to the generic
-setMethod("some_function",
-          signature(object = "ANY", digits = "numeric"),
-          function(object, digits = 2, ...) {
-            # Your customized summary method here
-            print(paste("Customized summary method with digits =", digits))
-          })
-
-summary
-
-some_function(object = 1, number_argument = "this is my message")
-rm(summary)
-
-
-# Arguments depend on classes to other arguments (just like in DBI drv argument)
-summary
-
-model
-
-fit_summary generic
-If general then have  
-```
-```{r}
-# methods for superclass works for all subclass 
-setClass("SuperClass",
-         representation(a = "numeric"))
-
-# Define a method for the superclass
-setMethod("print",
-          signature(x = "SuperClass"),
-          function(x) {
-            cat("SuperClass object with a =", x@a, "\n")
-          })
-
-# Define a subclass
-setClass("SubClass",
-         contains = "SuperClass",
-         representation(b = "character"))
-
-# Create an object of the subclass
-obj <- new("SubClass", a = 10, b = "Hello")
-
-```
 
     
 # Things to add

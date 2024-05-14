@@ -1,0 +1,13 @@
+# Working with DBMS in R through ODBC
+
+
+
+**Introduction**
+
+- DBMSs can be worked with using R through ODBCs, though differently depending on the DBMS and operating system
+- 
+
+```{r}
+
+```
+

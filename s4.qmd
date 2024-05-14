@@ -223,10 +223,13 @@ slot(maths_generalised_linear_model, "x") <- c("ks1_maths", "school_teaching_qua
         - `f` is the name of the generic
         - `signature` is the case of the classes of the inputs to the arguments to the generic for the method specified through the `signature` function
         - `definition` is the method for the generic as a function
-- **Tips**
+- **Tools**
   - All signatures of a generic can be assessed by the `showMethod` function (`showMethod(f = generic)`)
   - All generics and their signatures of a class can be assessed by the `showMethods` function (`showMethods(classes = "classname")`
   - The `callNextMethod` function is used within the input (function) to the `definition` argument inside the `setMethod` function, this is used to call the next most appropriate method (as if the current method doesn't exist)
+  - The `removeMethod` function removes a method from a generic (`removeMethod(f = "generic_name", signature = signature(argument_1 = "class_a", argument_2 = "class_b",...))`)
+  - The `removeGeneric` function removes a generic (`removeGeneric(f = "generic_name")`)
+
 - **Methods Dispatch**
   - Methods dispatch is the process in which the most appropriate method of a generic is selected to be executed with the inputs to the generic upon being called based on R's selection criteria/algorithm 
   - <details> <summary> The process in detail </summary>
@@ -459,12 +462,7 @@ summary(science_neural_network_model_fit, plot_model = 1)
 
 
 ```
-```{r eval = F, include = F}
-?callNextMethod()
-removeGeneric()
-removeMethod()
 
-```
 
 
 

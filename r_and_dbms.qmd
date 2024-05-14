@@ -1,13 +1,48 @@
-# Working with DBMS in R through ODBC
+# Working with DBMS using R
 
 
 
 **Introduction**
 
-- DBMSs can be worked with using R through ODBCs, though differently depending on the DBMS and operating system
+- Various DBMSs can be worked with using R
+- The specific way that this is done differ between the DBMSs and operating system
+
+
+
+
+
+**Working with ODBC-compliant DBMS with R**
+- **Introduction**
+  - ODBC-compliant DBMSs are DBMSs that adheres to the ODBC standards to allow applications to access them through ODBC (a standardised way of doing so)
+  - ODBC-compliant DBMSs include Microsoft SQL Server, Microsoft Access, MySQL, PostgreSQL, Oracle Database, IBM Db2, SQLite, MariaDB, Amazon Redshift, Google BigQuery, etc.
+  - In general, working with an ODBC-compliant DBMS through an application (e.g. R and RStudio) necessarily involves two components, an ODBC interface and an ODBC driver for that DBMS, in addition to the application and the DBMS. A connection between the application and the ODBC interface and a connection between the ODBC interface and the DBMS need to be established. The former is usually handled by tools associated with the application (e.g. R packages) and the latter is usually handled by tools associated with the DBMS, specifically, a DBMS-specific ODBC driver. Through these connections, the application sends requests to the ODBC interface, the ODBC interface translates the requests into a standardised ODBC call through some ODBC functions and sends the ODBC call to the DBMS-specific ODBC driver, which translates the ODBC call to a DBMS-specific call (which may involve DBMS-specific SQL) and send the call to the DBMS server where the request is responded to. If the request involves extracting information from the DBMS, the information is sent from the DBMS to its ODBC driver, which translates it into standard ODBC information, finally, the application fetches the standard ODBC information from the ODBC interface (through some tools associated with the application)
+  
+
+
+
+**Windows**
+- **In general**
+  - 
+- ODBC Interface (API)
+- ODBC Drivers
+
 - 
+- ODBC Data Source Administrator
+- ODBC Manager 
+- ODBC driver 
+
+
+
+
+- 
+- Set up a connection between the ODBC interface and the database 
+- ODBC driver (install)
+- The ODBC Data Source Administrator (64-bit)
+
+- Set up a connection between R and the ODBC interface 
+- R
 
 ```{r}
-
+DBI::db
 ```
 

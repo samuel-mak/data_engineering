@@ -28,6 +28,8 @@
   - An OOP system developed by John Chambers and members of the R Core Team in the mid-1990s for the S programming language and is implemented in the R programming language
   - It was developed and introduced as a more formal, rigorous, and complex OOP system than S3
   - It is named "S4" because it was developed for version 4 of the S programming language
+  - Below gives a brief practical introduction to S4 (there are more to what's mentioned below)
+  - R packages using S4 include `EBImage` by Bioconductor and `Matrix` by Douglas Bates and Martin Maechler 
   - **Features of S4:**
     - Methods belong to functions
     - Follows a more functional programming style
@@ -195,15 +197,15 @@ slot(maths_generalised_linear_model, "x") <- c("ks1_maths", "school_teaching_qua
 
 ```
 
-**Generic functions (generics)**
 
 
 
-**Generic functions (Generics) and Methods**
+**Generic functions (Generics), Methods, and Methods Dispatch**
+
 - **Introduction**
   - **Generics and methods**
     - A generic is a function that can take different input (in terms of the class of the inputs to the arguments and/or the set of arguments) and operate and/or behave in different specific ways according to the input upon being called 
-    - This is done by the generic having a set of associated methods, which are functions that implement for specific cases in terms of the inputs to the arguments to the generic, and having the generic dispatch to one of its methods upon being called, which involves the matching and identifying the most appropriate method and passing the inputs to the arguments to the generic to that method 
+    - This is done by the generic having a set of associated methods, which are functions that implement for specific cases in terms of the inputs to the arguments to the generic, and having the generic dispatch to one of its methods upon being called through a process called methods dispatch, which involves matching and identifying the most appropriate method and passing the inputs to the arguments to the generic to that method 
   - **Inheritance**
     - Since instances of a subclass are also instances of its superclasses, methods defined for instances of a superclass are also applicable to instances of its subclasses. However, since instances of a superclass are not instances of their subclasses, methods defined for instances of a subclass are not applicable to instances of its superclasses 
 - **Creating a generic**
@@ -224,8 +226,31 @@ slot(maths_generalised_linear_model, "x") <- c("ks1_maths", "school_teaching_qua
 - **Tips**
   - All signatures of a generic can be assessed by the `showMethod` function (`showMethod(f = generic)`)
   - All generics and their signatures of a class can be assessed by the `showMethods` function (`showMethods(classes = "classname")`
+  - The `callNextMethod` function is used within the input (function) to the `definition` argument inside the `setMethod` function, this is used to call the next most appropriate method (as if the current method doesn't exist)
+- **Methods Dispatch**
+  - Methods dispatch is the process in which the most appropriate method of a generic is selected to be executed with the inputs to the generic upon being called based on R's selection criteria/algorithm 
+  - <details> <summary> The process in detail </summary>
+    - The generic is called with specified inputs to its arguments 
+    - The classes of the input to the arguments to the generic are identified
+    - Methods matching and selection 
+    - The inputs to the generic are compared with the defined inputs to each of the methods in their signatures
+    - The set of specified arguments in the generic being called is compared to the set of arguments to each of the methods
+    - If none of the methods has the same set of arguments in their signatures as the arguments that's being specified in the generic called, an error is returned to with a message informing that there are unused arguments 
+    - If there exists some methods with the same set of arguments in their signatures as the arguments that's being specified in the generic called, if there is only one method, the method is selected and executed, if there are multiple methods, then those methods are selected for further matching and selection
+    - The classes of the inputs to the arguments to the generic called are compared with the defined classes of the inputs to the arguments to each of the methods in their signatures
+    - If the class of the input to at least one argument to the generic called is different to and is not a subclass of the class defined for the corresponding argument to all the methods, then an error is returned with a message informing that no methods exist for inputs of that class
+    - If the class of the input to all the arguments to the generic called is exactly the same as or a subclass of the defined class of the inputs to corresponding arguments to some methods in their signatures, if there is only one method, then the method is selected and executed, if there are multiple methods, then those methods are selected for further matching and selection
+    - The classes of the inputs to the arguments to the generic called are compared to the defined classes of the inputs to the arguments to each of the methods in their signatures in terms of their closeness in class membership/the inheritance hierarchy. Due to previous selections, classes of the inputs to the arguments to the generic called are either exactly the same or subclasses of the classes of the inputs to the corresponding arguments to the methods, hence, closeness refers to whether the classes are exactly the same or, if not, how many generations the classes in the generic are from the classes in the methods. 
+    - A distance is calculated to represent the closeness between the set of classes in the generic called and the set of classes a method (generic-method pair)
+    - For each generic-method pair, for each arguments, if the class of the input to the method is the same as that to the generic, then a distance of 0 is given, if the class of the input to the method is a parent to the class of the input to the generic, a distance is 1 is given, if the class of the input to the method is a grandparent to the class of the input to the generic, a distance of 2 is given, and so on. This is calculated for all arguments. Then the distances are summed over the arguments for that generic-method pair to give the total distance for the generic-method pair. This is done to all generic-method pairs. All generic-method pairs are compared in terms of their distances. The method with the smallest distance is selected and executed, however, if there are multiple methods with the smallest distance (i.e. ties), then they are selected for further selection
+    - It is recommended not to design generics that go beyond this level of ambiguity, hence, further selections are not covered in detail, but basically, it selects based on the order of the arguments and then the order of the definition of the methods (methods defined earlier are given higher priority) </details>
+    
+
+        
+
+
 - **Example**
-```{r}
+```{r eval = F, include = T}
 # Create a generic "model_description" that takes one or two models and summarises/compares them
 setGeneric(
   name = "model_description",
@@ -309,8 +334,7 @@ setMethod(
   }
 )
 
-# Check if the generic works 
-model_description(maths_generalised_linear_model, reading_generalised_linear_model)
+
 
 # Access all signatures of the generic "model_description"
 showMethods(f = model_description)
@@ -435,36 +459,14 @@ summary(science_neural_network_model_fit, plot_model = 1)
 
 
 ```
-
-- **Method and super and subclasses**
-```{r}
-
-rm(summary)
-# Coerce the summary function (an existing function) as an S4 generic
-
-showMethods("summary")
-isS4(science_neural_network_model)
-
-removeGeneric("summary")
-removeMethod("summary", signature = signature(object = "generalised_linear_model_fit"))
-removeMethod("summary", signature = signature(object = "general_linear_model_fit"))
-showMethods("summary")
-
-summary(maths_general_linear_model_fit)
-summary(ses_generalised_linear_model_fit)
-
-# Chat gpt was right 
-# This works at one level only 
-
-summary(science_neural_network_model_fit)
-rm(summary)
-# Call the method designed for the superclass
-print(obj)
-
-
-
+```{r eval = F, include = F}
+?callNextMethod()
+removeGeneric()
+removeMethod()
 
 ```
+
+
 
 
 
@@ -485,29 +487,14 @@ installr::updater()
 
 This downloads the installer (.exe file) from CRAN (https://cran.r-project.org/bin/windows/base/) and run it. You will go through several installation setup wizards, including one for specifying whether you want to migrate all your packages from your old R to your new. All of these can be done manually, but the updater() function does all of them automatically. Might worth noting that updating R using the installr package only works for Windows, for MacOS, use the updateR package
 
-After all those installation wizards, make sure RStudio is using the latest R version, otherwise change that. To do that, go to the "Tools" tab (in the top-most bar), then go to "Global Options", this opens an Options dialog box. In the dialog box, go to "General" and then "Basic". Make sure the "R version" is set to the path to the new R, which may look something like C:\Users\username\AppData\Local\Programs\R\R-4.4.0. If not then change it by clicking "change", which opens another dialog box, and select the appropriate one under "Choose a specific version of R". Then restart RStudio.
+After all those installation wizards, make sure RStudio is using the latest R version, otherwise change that. To do that, go to the "Tools" tab (in the top-most bar), then go to "Global Options", this opens an Options dialog box. In the dialog box, go to "General" and then "Basic". Make sure the "R version" is set to the path to the new R, which may look something like "C:\Users\username\AppData\Local\Programs\R\R-4.4.0". If not then change it by clicking "change", which opens another dialog box, and select the appropriate one under "Choose a specific version of R". Then restart RStudio.
 
 # Updating R
 - Download the newest R file from R 
 - The R file includes an .exe installer 
 - Run the .exe file 
 - 
-```{r}
-rstudioapi::getThemes()
 
-124.8/12
-
-10000000
-
-86.3/12
-
-7,000,000
-
-8.99
-
-Sys.which("R")
-?Sys.which
-```
 
 22 Oct 2022 at 9:46
     

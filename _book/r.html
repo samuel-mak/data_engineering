@@ -195,7 +195,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">May 10, 2024</p>
+      <p class="date-modified">May 14, 2024</p>
     </div>
   </div>
     
@@ -232,16 +232,16 @@ div.csl-indent {
 <li><strong>Introduction</strong>
 <ul>
 <li>An OOP system developed by John Chambers, Rick Becker and colleagues at Bell Labs in the early 1990s for the S programming language and implemented for the R programming language</li>
+<li>It is named “S3” it was developed for version 3 of the S programming language</li>
+<li>The simplest OOP system that an OOP could possibly be ## S4</li>
 </ul></li>
 </ul>
-</section>
-<section id="s4" class="level2">
-<h2 class="anchored" data-anchor-id="s4">S4</h2>
 <p><strong>Introduction</strong></p>
 <ul>
 <li>An OOP system developed by John Chambers and members of the R Core Team in the mid-1990s for the S programming language and is implemented in the R programming language</li>
 <li>It was developed and introduced as a more formal, rigorous, and complex OOP system than S3</li>
-<li>Features of S4:
+<li>It is named “S4” because it was developed for version 4 of the S programming language</li>
+<li><strong>Features of S4:</strong>
 <ul>
 <li>Methods belong to functions</li>
 <li>Follows a more functional programming style</li>
@@ -249,6 +249,11 @@ div.csl-indent {
 <li>Classes have formal definitions for their fields and inheritance (thus more formal and rigorous than S3)</li>
 <li>Multiple dispatch (thus more complicated than S3)</li>
 <li>Multiple inheritance (thus more complicated than S3)</li>
+</ul></li>
+<li><strong>Example</strong>
+<ul>
+<li>An example case is used to demonstrate the fundamentals of the S4 OOP system. In this example, the analytical flow of three data-learning models, specifically, the specification, fitting, and accessing parameters of the General Linear Model, the Generalised Linear Model, and the Neural Network Model, are implemented using the S4 OOP system.</li>
+<li>Note that the relationship between the General Linear Model and the Generalised Linear Model can be viewed differently, depending on specific goals (e.g.&nbsp;pedagogy, implementation). It can be viewed that the Generalised Linear Model is a general class of models that includes the General Linear Model as a special case where the identity function is the link, this tends to be viewed in the field of statistics. It can also be viewed that the General Linear Model is a general class which includes the Generalised Linear Model as an extension by adding the link function, this view is more in line with the concept of classes in object-oriented programming. While both views are valid, the latter view is adapted to demonstrate the inheritance of classes in the S4 OOP system.</li>
 </ul></li>
 </ul>
 <p><strong>Classes</strong></p>
@@ -281,138 +286,462 @@ div.csl-indent {
 <li><strong>Example</strong></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a class "general_linear_model" that's defined by two slots of "y", an outcome as a character string with no default values, and "x", the predictors as a list of character strings with an empty list as the default value.</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">setClass</span>(</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Class =</span> <span class="st">"general_linear_model"</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">representation =</span> <span class="fu">representation</span>(</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"character"</span>, <span class="co"># The outcome (univariate only)</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"list"</span> <span class="co"># The predictor(s)</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">prototype =</span> <span class="fu">prototype</span>(</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">list</span>() <span class="co"># Setting the default value for the "x" parameter as an empty list</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a class "generalised_linear_model" defined by the subclass "general_linear_model" and an additional slot "family", a function for specifying the link function and the exponential sampling distribution of the outcome. Assign the returning generator function to an object called "generalised_linear_model".</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>generalised_linear_model <span class="ot">&lt;-</span> <span class="fu">setClass</span>(</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">Class =</span> <span class="st">"generalised_linear_model"</span>,</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create some data</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>attainment_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">ks1_maths =</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">15</span>),</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ks2_maths =</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">15</span>),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ks2_science =</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">15</span>),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ks2_english =</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">15</span>),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ks2_art =</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">15</span>),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">school_teaching_quality =</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">15</span>),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">idaci =</span> <span class="fu">abs</span>(<span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">15</span>)),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">ses =</span> <span class="fu">rpois</span>(<span class="at">n =</span> <span class="dv">100</span>, <span class="at">lambda =</span> <span class="dv">5</span>),</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">home_to_school_travel_time =</span> <span class="fu">rpois</span>(<span class="at">n =</span> <span class="dv">100</span>, <span class="at">lambda =</span> <span class="dv">50</span>),</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">diet_quality =</span> <span class="fu">rpois</span>(<span class="at">n =</span> <span class="dv">100</span>, <span class="at">lambda =</span> <span class="dv">10</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a class "general_linear_model" that's defined by two slots of "y", an outcome as a character string/vector with no default values, and "x", the predictors as a character string/vector with an NA character as the default value </span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">setClass</span>(</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">Class =</span> <span class="st">"general_linear_model"</span>,</span>
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">representation =</span> <span class="fu">representation</span>(</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> <span class="st">"function"</span> <span class="co"># The exponential sampling distribution of the outcome and the link function</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">prototype =</span> <span class="fu">prototype</span>(</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> identity  <span class="co"># Setting the identity function as the default link function </span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">contains =</span> <span class="st">"general_linear_model"</span> <span class="co"># Specifying that this class, "generalised_linear_model", is an extension/superclass of the class "general_linear" mode, in other words, the class "general_linear_model" is a special case/subclass of this class, "generalised_linear_model". This effectively inherits all class definitions of the class "general_linear_model" (i.e. "x" and "y"). Hence, this class has a total of three slots.</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"character"</span>, <span class="co"># The outcome</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"character"</span> <span class="co"># The predictor(s)</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">prototype =</span> <span class="fu">prototype</span>(</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NA_character_</span> <span class="co"># Setting an NA character as the default for "x"</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Look at the properties of the class "generalised_linear_model"</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="fu">showClass</span>(<span class="st">"generalised_linear_model"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a class "generalised_linear_model" defined by (slots in) its superclass "general_linear_model" while extending it by adding a slot "family" for the link function. Assign the output (the returning generator function) to an object "generalised_linear_model", so that this object can be used as its generator function.</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>generalised_linear_model <span class="ot">&lt;-</span> <span class="fu">setClass</span>(</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">Class =</span> <span class="st">"generalised_linear_model"</span>,</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">representation =</span> <span class="fu">representation</span>(</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> <span class="st">"function"</span> <span class="co"># The link function</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">prototype =</span> <span class="fu">prototype</span>(</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> identity  <span class="co"># Setting the identity function as the default link function </span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">contains =</span> <span class="st">"general_linear_model"</span> <span class="co"># Specifying that the "generalised_linear_model" class is a subclass/childclass/extension/special case of the superclass/parentclass "general_linear_model" (it contains all the slots of the "general_linear_model" class). This effectively inherits all class definitions of the class "general_linear_model" (i.e. "x" and "y"). Hence, this class has a total of three slots.</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a class "neural_network_model" defined by slots of "x", the predictors, and "y", the outcomes</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>neural_network_model <span class="ot">&lt;-</span> <span class="fu">setClass</span>(</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>  <span class="at">Class =</span> <span class="st">"neural_network_model"</span>,</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>  <span class="at">representation =</span> <span class="fu">representation</span>(</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"character"</span>,</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"character"</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="co"># Access basic properties of the class "generalised_linear_model"</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="fu">showClass</span>(<span class="st">"generalised_linear_model"</span>)</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Access whether "generalised_linear_model" is an extension of "general_linear_model"</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="fu">extends</span>(<span class="at">class1 =</span> <span class="st">"generalised_linear_model"</span>, <span class="at">class2 =</span> <span class="st">"general_linear_model"</span>)</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="co"># Removing the class "general_linear_model"</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="co"># removeClass("general_linear_model")</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Removing a parent class does not remove its children, though, the inheritance structure would be lost and the children wouldn't be children </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><strong>Objects</strong></p>
+<p><strong>Instances</strong></p>
 <ul>
-<li><strong>Object creation</strong>
+<li><strong>Introduction</strong>
 <ul>
-<li>S4 objects are created by the <code>new</code> function with its class and values of slots specified through its arguments</li>
+<li>Instances are objects (instance object) representing cases of a class that take on specific slot values</li>
+<li>Instances of a subclass are also instances of its superclasses, however, instances of a superclass are not instances of their subclasses. This affects methods dispatch.</li>
+</ul></li>
+<li><strong>instance creation</strong>
+<ul>
+<li>S4 instances are created by the <code>new</code> function with its class and values of slots specified through its arguments</li>
 <li>The <code>new</code> function has the general form
 <ul>
 <li><code>new(Class, ...)</code>
 <ul>
 <li><strong><em>Where</em></strong>
 <ul>
-<li>The <code>Class</code> argument specifies the name of the class the object is of</li>
-<li><code>...</code> is the set of slots of the specified class as arguments that specify values of the slots for the object</li>
+<li>The <code>Class</code> argument specifies the name of the class the instance is of</li>
+<li><code>...</code> is the set of slots of the specified class as arguments that specify values of the slots for the instance</li>
 </ul></li>
 </ul></li>
 </ul></li>
-<li>S4 objects of a class can also be created indirectly by the generator function with its values of slots specified through its arguments (applicable only if the generator function was assigned to an object to be used), the generator function would in turn call the <code>new</code> function to create the object</li>
-<li>The generator function has similar form as the <code>new</code> function (only difference is that it doesn’t have the <code>Class</code> argument)
+<li>S4 instances of a class can also be created indirectly by its generator function with its values of slots specified through its arguments (applicable only if the generator function exists as a function object), calling the generator function would in turn call the <code>new</code> function to create the instance</li>
+<li>The generator function has similar form as the <code>new</code> function (only difference is that it doesn’t have the <code>Class</code> argument because it has been specified)
 <ul>
 <li><code>generator_function(...)</code>
 <ul>
 <li><strong><em>Where</em></strong>
 <ul>
-<li><code>...</code> is the set of slots of the specified class as arguments that specify values of the slots for the object</li>
+<li><code>generator_function</code> is the name of the generator function</li>
+<li><code>...</code> is the set of slots of the specified class as arguments that specify values of the slots for the instance</li>
 </ul></li>
 </ul></li>
 </ul></li>
 </ul></li>
-<li><strong>Access and modify values of slots of objects</strong>
+<li><strong>Access and modify values of slots of instances</strong>
 <ul>
-<li>Values of slots of objects can be assessed using two methods, either through the <code>@</code> symbol or the <code>slot</code> function</li>
-<li>Assessed values can then be modified using the assignment operator <code>&lt;-</code></li>
-<li><strong>Using the <code>@</code> symbol</strong>
-<ul>
-<li><strong>Access values of slots of objects</strong>
-<ul>
-<li><code>object@slot_name</code></li>
-</ul></li>
-<li><strong>Modify the assessed values of slots of objects</strong>
-<ul>
-<li><code>object@slot_name &lt;- value</code></li>
-</ul></li>
-</ul></li>
-<li><strong>Using the <code>slot</code> function</strong>
-<ul>
-<li><strong>Access values of slots of objects</strong>
-<ul>
-<li><code>slot(object, "slot_name")</code></li>
-</ul></li>
-<li><strong>Modify the assessed values of slots of objects</strong></li>
-<li><code>slot(object, "slot_name") &lt;- value</code></li>
-</ul></li>
+<li>Values of slots of instances can be assessed using two methods, either through the <code>@</code> symbol (<code>instance@slot_name</code>) or the <code>slot</code> function (<code>slot(object  = instance, name = "slot_name")</code>)</li>
+<li>Assessed values can then be modified using the assignment operator <code>&lt;-</code> (i.e.&nbsp;<code>instance@slot_name &lt;- value</code> or <code>slot(instance, "slot_name") &lt;- value</code>)</li>
 </ul></li>
 <li><strong>Example</strong></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an object of class "general_linear_model" using the new function</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Specifically, a model with the outcome of "ks2_maths" and predictors of "ks1_maths" (prior attainment) and "school_teaching_quality"</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>maths_general_linear_model <span class="ot">&lt;-</span> <span class="fu">new</span>(</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Class =</span> <span class="st">"general_linear_model"</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="st">"ks2_maths"</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">list</span>(<span class="st">"ks1_maths"</span>, <span class="st">"school_teaching_quality"</span>)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a> </span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an instance of class "general_linear_model" using the new function with the value of "y" being "ks2" and values of "x" being "ks1_maths" and "school_teaching_quality"</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>maths_general_linear_model <span class="ot">&lt;-</span> <span class="fu">new</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Class =</span> <span class="st">"general_linear_model"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="st">"ks2_maths"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">c</span>(<span class="st">"ks1_maths"</span>, <span class="st">"school_teaching_quality"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Access properties of the instance "maths_general_linear_model"</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(maths_general_linear_model)</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Look at the properties of the object "maths_general_linear_model"</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(maths_general_linear_model)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Access whether the object "maths_general_linear_model" is an object of an S4 class</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">isS4</span>(maths_general_linear_model)</span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Look at whether the object "maths_general_linear_model" is an S4 object</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">isS4</span>(maths_general_linear_model)</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an object of class "generalised_linear_model" using its generator function (as the generator function was assigned to an object)</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>maths_generalised_linear_model <span class="ot">&lt;-</span> <span class="fu">generalised_linear_model</span>(</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="st">"ks2_maths"</span>,</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">list</span>(<span class="st">"ks1_maths"</span>, <span class="st">"school_teaching_quality"</span>)</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Access the value of specific slots of an object </span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an instance of class "generalised_linear_model" using its generator function (as the generator function exists in the form of an object in the environment)</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>maths_generalised_linear_model <span class="ot">&lt;-</span> <span class="fu">generalised_linear_model</span>(</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="st">"ks2_maths"</span>,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">c</span>(<span class="st">"ks1_maths"</span>, <span class="st">"school_teaching_quality"</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a second instance of class "generalised_linear_model" using its generator function</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>ses_generalised_linear_model <span class="ot">&lt;-</span> <span class="fu">generalised_linear_model</span>(</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="st">"ses"</span>,</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="st">"home_to_school_travel_time"</span>,</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="cf">function</span>()identity</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Method 1: Using the @ symbol (similar to the $ symbol in S3 objects)</span></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>maths_generalised_linear_model<span class="sc">@</span>y</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Method 2: Using the slot function</span></span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="fu">slot</span>(maths_generalised_linear_model, <span class="st">"y"</span>)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an instance of class "neural_network_nodel" using its generator function</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>science_neural_network_model <span class="ot">&lt;-</span> <span class="fu">neural_network_model</span>(</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="st">"ks2_science"</span>,</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">c</span>(<span class="st">"ses"</span>, <span class="st">"idaci"</span>, <span class="st">"home_to_school_travel_time"</span>, <span class="st">"diet_quality"</span>)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify or re-specify values of slots of an object after object creation</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Access the value of slot "y" in the instance "maths_generalised_linear_model" using the "@" operator</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>maths_generalised_linear_model<span class="sc">@</span>y</span>
 <span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Method 1: Using the @ symbol (like $ in S3)</span></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>maths_generalised_linear_model<span class="sc">@</span>family <span class="ot">&lt;-</span> <span class="cf">function</span>(){<span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>)}</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Access the value of a specific slot "x" in the instance "maths_generalised_linear_model" using the `slot` function</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="fu">slot</span>(maths_generalised_linear_model, <span class="st">"x"</span>)</span>
 <span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Method 2: Using the slot function</span></span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="fu">slot</span>(maths_generalised_linear_model, <span class="st">"x"</span>) <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="st">"ks1_maths"</span>, <span class="st">"school_teaching_quality"</span>, <span class="st">"idaci"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Modify the value of the slot "family" in the instance "ses_generalised_linear_model" using the "@" operator</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>ses_generalised_linear_model<span class="sc">@</span>family <span class="ot">&lt;-</span> <span class="cf">function</span>()<span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>)</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Modify the value of the slot "x" in the instance "maths_generalised_linear_model" using the `slot` function</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="fu">slot</span>(maths_generalised_linear_model, <span class="st">"x"</span>) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"ks1_maths"</span>, <span class="st">"school_teaching_quality"</span>, <span class="st">"idaci"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># browseURL(here::here("_book/index.html"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<p><strong>Generic functions (Generics), Methods, and Methods Dispatch</strong></p>
 <ul>
-<li>Multiple dispatch - Methods dispatch can be based on multiple arguments to a generic</li>
-<li>Multiple inheritance - A class can inherit properties from multiple parent classes</li>
+<li><strong>Introduction</strong>
+<ul>
+<li><strong>Generics and methods</strong>
+<ul>
+<li>A generic is a function that can take different input (in terms of the class of the inputs to the arguments and/or the set of arguments) and operate and/or behave in different specific ways according to the input upon being called</li>
+<li>This is done by the generic having a set of associated methods, which are functions that implement for specific cases in terms of the inputs to the arguments to the generic, and having the generic dispatch to one of its methods upon being called through a process called methods dispatch, which involves matching and identifying the most appropriate method and passing the inputs to the arguments to the generic to that method</li>
+</ul></li>
+<li><strong>Inheritance</strong>
+<ul>
+<li>Since instances of a subclass are also instances of its superclasses, methods defined for instances of a superclass are also applicable to instances of its subclasses. However, since instances of a superclass are not instances of their subclasses, methods defined for instances of a subclass are not applicable to instances of its superclasses</li>
+</ul></li>
+</ul></li>
+<li><strong>Creating a generic</strong>
+<ul>
+<li>The <code>setGeneric</code> function creates or coerces an existing function as an S4 generic</li>
+<li>The <code>setGeneric</code> function has the general form:
+<ul>
+<li><code>setGeneric(name, def)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>name</code> is the name of the generic</li>
+<li><code>def</code> is the “skeleton” of the generic or the non-generic (default) method of the generic as a function. This function should also include the <code>standardGeneric</code> function (specifically <code>standardGeneric(f = "generic_name")</code>) for initiating the S4 methods dispatch mechanism. (All of these are needed only when creating a generic)</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><strong>Creating a method</strong>
+<ul>
+<li>The <code>setMethod</code> function creates a method for a generic</li>
+<li>The <code>setMethod</code> function has the general form
+<ul>
+<li><code>setMethod(f, definition)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>f</code> is the name of the generic</li>
+<li><code>signature</code> is the case of the classes of the inputs to the arguments to the generic for the method specified through the <code>signature</code> function</li>
+<li><code>definition</code> is the method for the generic as a function</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><strong>Tips</strong>
+<ul>
+<li>All signatures of a generic can be assessed by the <code>showMethod</code> function (<code>showMethod(f = generic)</code>)</li>
+<li>All generics and their signatures of a class can be assessed by the <code>showMethods</code> function (<code>showMethods(classes = "classname")</code></li>
+</ul></li>
+<li><strong>Methods Dispatch</strong>
+<ul>
+<li>Methods dispatch is the process in which the most appropriate method of a generic is selected to be executed with the inputs to the generic upon being called based on R’s selection criteria/algorithm</li>
+<li><details>
+<summary>
+The process in detail
+</summary>
+<ul>
+<li>The generic is called with specified inputs to its arguments</li>
+<li>The classes of the input to the arguments to the generic are identified</li>
+<li>Methods matching and selection</li>
+<li>The inputs to the generic are compared with the defined inputs to each of the methods in their signatures</li>
+<li>The set of specified arguments in the generic being called is compared to the set of arguments to each of the methods</li>
+<li>If none of the methods has the same set of arguments in their signatures as the arguments that’s being specified in the generic called, an error is returned to with a message informing that there are unused arguments</li>
+<li>If there exists some methods with the same set of arguments in their signatures as the arguments that’s being specified in the generic called, if there is only one method, the method is selected and executed, if there are multiple methods, then those methods are selected for further matching and selection</li>
+<li>The classes of the inputs to the arguments to the generic called are compared with the defined classes of the inputs to the arguments to each of the methods in their signatures</li>
+<li>If the class of the input to at least one argument to the generic called is different to and is not a subclass of the class defined for the corresponding argument to all the methods, then an error is returned with a message informing that no methods exist for inputs of that class</li>
+<li>If the class of the input to all the arguments to the generic called is exactly the same as or a subclass of the defined class of the inputs to corresponding arguments to some methods in their signatures, if there is only one method, then the method is selected and executed, if there are multiple methods, then those methods are selected for further matching and selection</li>
+<li>The classes of the inputs to the arguments to the generic called are compared to the defined classes of the inputs to the arguments to each of the methods in their signatures in terms of their closeness in class membership/the inheritance hierarchy. Due to previous selections, classes of the inputs to the arguments to the generic called are either exactly the same or subclasses of the classes of the inputs to the corresponding arguments to the methods, hence, closeness refers to whether the classes are exactly the same or, if not, how many generations the classes in the generic are from the classes in the methods.</li>
+<li>A distance is calculated to represent the closeness between the set of classes in the generic called and the set of classes a method (generic-method pair)</li>
+<li>For each generic-method pair, for each arguments, if the class of the input to the method is the same as that to the generic, then a distance of 0 is given, if the class of the input to the method is a parent to the class of the input to the generic, a distance is 1 is given, if the class of the input to the method is a grandparent to the class of the input to the generic, a distance of 2 is given, and so on. This is calculated for all arguments. Then the distances are summed over the arguments for that generic-method pair to give the total distance for the generic-method pair. This is done to all generic-method pairs. All generic-method pairs are compared in terms of their distances. The method with the smallest distance is selected and executed, however, if there are multiple methods with the smallest distance (i.e.&nbsp;ties), then they are selected for further selection</li>
+<li>It is recommended not to design generics that go beyond this level of ambiguity, hence, further selections are not covered in detail, but basically, it selects based on the order of the arguments and then the order of the definition of the methods (methods defined earlier are given higher priority)
+</li></ul></details></li>
+</ul></li>
+</ul>
+<li><strong>Example</strong></li>
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a generic "model_description" that takes one or two models and summarises/compares them</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">setGeneric</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">"model_description"</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">def =</span> <span class="cf">function</span>(<span class="at">model_1 =</span> <span class="cn">NULL</span>, <span class="at">model_2 =</span> <span class="cn">NULL</span>){ <span class="co"># The generic is defined to have two generic arguments "model_1" and "model_2" for specifying the models to be described/compared</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">standardGeneric</span>(<span class="at">f =</span> <span class="st">"model_description"</span>) <span class="co"># This is for initiating the S4 methods dispatch mechanism </span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">valueClass =</span> <span class="st">"character"</span> <span class="co"># Defines the output to be of class character</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a generic "fit" that would take a model specification and data and fit the specified model to the data </span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">setGeneric</span>(</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">"fit"</span>,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">def =</span> <span class="cf">function</span>(<span class="at">model =</span> <span class="cn">NULL</span>, data){</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">standardGeneric</span>(<span class="at">f =</span> <span class="st">"fit"</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Coerce the summary function (an existing function) as an S4 generic</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># The goal of this is to use this generic summary to summarise the models fitted by the fit generic by adding specific S4 methods to it later </span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="fu">setGeneric</span>(<span class="at">name =</span> <span class="st">"summary"</span>)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a method for the generic "model_description" for the case when the input to both arguments are of the class "general_linear_model"</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="fu">setMethod</span>(</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">f =</span> <span class="st">"model_description"</span>,</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">signature =</span> <span class="fu">signature</span>(<span class="at">model_1 =</span> <span class="st">"general_linear_model"</span>, <span class="at">model_2 =</span> <span class="st">"general_linear_model"</span>),</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">definition =</span> <span class="cf">function</span>(model_1, model_2){</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(model_1<span class="sc">@</span>y <span class="sc">==</span> model_2<span class="sc">@</span>y){</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">identical</span>(<span class="fu">unlist</span>(model_1<span class="sc">@</span>x), <span class="fu">unlist</span>(model_2<span class="sc">@</span>x))){</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>        <span class="fu">paste0</span>(<span class="st">"Both models are General Linear Models and have the same outcome and predictors"</span>)</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>      }<span class="cf">else</span>{</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>          <span class="fu">paste0</span>(<span class="st">"Both models are General Linear Models and have the same outcome and but different predictors"</span>)</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    }<span class="cf">else</span>{</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">identical</span>(<span class="fu">unlist</span>(model_1<span class="sc">@</span>x), <span class="fu">unlist</span>(model_2<span class="sc">@</span>x))){</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>        <span class="fu">paste0</span>(<span class="st">"Both models are General Linear Models and but have a different outcome and same predictors"</span>)</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>      }<span class="cf">else</span>{</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>          <span class="fu">paste0</span>(<span class="st">"Both models are General Linear Models and have different outcome and predictors "</span>)</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a second method for the generic "model_description" for the case when the input to both arguments are of the class "generalised_linear_model"</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="fu">setMethod</span>(</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>  <span class="at">f =</span> <span class="st">"model_description"</span>,</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>  <span class="at">signature =</span> <span class="fu">signature</span>(<span class="at">model_1 =</span> <span class="st">"generalised_linear_model"</span>, <span class="at">model_2 =</span> <span class="st">"generalised_linear_model"</span>),</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">definition =</span> <span class="cf">function</span>(model_1, model_2){</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(model_1<span class="sc">@</span>y <span class="sc">==</span> model_2<span class="sc">@</span>y){</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">identical</span>(<span class="fu">unlist</span>(model_1<span class="sc">@</span>x), <span class="fu">unlist</span>(model_2<span class="sc">@</span>x))){</span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span>(model_1<span class="sc">@</span><span class="fu">family</span>()<span class="sc">$</span>family <span class="sc">==</span> model_2<span class="sc">@</span><span class="fu">family</span>()<span class="sc">$</span>family){</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>          <span class="fu">paste0</span>(<span class="st">"Both models are Generalised Linear Models and have the same outcome, predictors, and family"</span>)</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>        }<span class="cf">else</span>{</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>          <span class="fu">paste0</span>(<span class="st">"Both models are Generalised Linear Models and have the same outcome and predictors but different families"</span>)</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>      }<span class="cf">else</span>{</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span>(model_1<span class="sc">@</span><span class="fu">family</span>()<span class="sc">$</span>family <span class="sc">==</span> model_2<span class="sc">@</span><span class="fu">family</span>()<span class="sc">$</span>family){</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>          <span class="fu">paste0</span>(<span class="st">"Both models are Generalised Linear Models and have the same outcome and family but different predictors"</span>)</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>        }<span class="cf">else</span>{</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>          <span class="fu">paste0</span>(<span class="st">"Both models are Generalised Linear Models and have the same outcome but different predictors and families"</span>)</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>    }<span class="cf">else</span>{</span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">identical</span>(<span class="fu">unlist</span>(model_1<span class="sc">@</span>x), <span class="fu">unlist</span>(model_2<span class="sc">@</span>x))){</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span>(model_1<span class="sc">@</span><span class="fu">family</span>()<span class="sc">$</span>family <span class="sc">==</span> model_2<span class="sc">@</span><span class="fu">family</span>()<span class="sc">$</span>family){</span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>          <span class="fu">paste0</span>(<span class="st">"Both models are Generalised Linear Models and have same predictors and family but a different outcome"</span>)</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>        }<span class="cf">else</span>{</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>          <span class="fu">paste0</span>(<span class="st">"Both models are Generalised Linear Models and have same predictors but a different outcome and families"</span>)</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>        <span class="fu">paste0</span>(<span class="st">"Both models are Generalised Linear Models and have same predictors but a different outcome "</span>)</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>      }<span class="cf">else</span>{</span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span>(model_1<span class="sc">@</span><span class="fu">family</span>()<span class="sc">$</span>family <span class="sc">==</span> model_2<span class="sc">@</span><span class="fu">family</span>()<span class="sc">$</span>family){</span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>          <span class="fu">paste0</span>(<span class="st">"Both models are Generalised Linear Models and the same family but different outcome and predictors"</span>)</span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>        }<span class="cf">else</span>{</span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>          <span class="fu">paste0</span>(<span class="st">"Both models are Generalised Linear Models but have different outcome, predictors and families"</span>)</span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a><span class="co"># Access all signatures of the generic "model_description"</span></span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="fu">showMethods</span>(<span class="at">f =</span> model_description)</span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a><span class="co"># Access all generics and their signatures of objects of the class "general_linear_model"</span></span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a><span class="fu">showMethods</span>(<span class="at">class =</span> <span class="st">"general_linear_model"</span>)</span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a method for the fit generic for the case when the input to the model argument is of the class "general_linear_model"</span></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the output of this method to be of an S4 class "general_linear_model_fit". To do that, the class "general_linear_model_fit" and its generator function need to be created first before defining the method as the generator function would be used within the method to define the class of the output of the method </span></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>general_linear_model_fit <span class="ot">&lt;-</span> <span class="fu">setClass</span>(<span class="st">"general_linear_model_fit"</span>, <span class="at">representation =</span> <span class="fu">representation</span>(<span class="at">call =</span> <span class="st">"character"</span>, <span class="at">coefficients =</span> <span class="st">"ANY"</span>))</span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a><span class="fu">setMethod</span>(</span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>  <span class="at">f =</span> <span class="st">"fit"</span>,</span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>  <span class="at">signature =</span> <span class="fu">signature</span>(<span class="at">model =</span> <span class="st">"general_linear_model"</span>),</span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a>  <span class="at">definition =</span> <span class="cf">function</span>(model, data){</span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a>    formula <span class="ot">&lt;-</span> <span class="fu">paste0</span>(model<span class="sc">@</span>y, <span class="st">" ~ "</span> ,<span class="fu">paste0</span>(<span class="fu">unlist</span>(model<span class="sc">@</span>x), <span class="at">collapse =</span> <span class="st">" + "</span>))</span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a>    general_linear_model_fit_object <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> formula, <span class="at">data =</span> data)</span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a>    general_linear_model_fit_call <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="fu">as.character</span>(general_linear_model_fit_object<span class="sc">$</span>call[<span class="dv">1</span>]), <span class="st">"("</span>, <span class="fu">as.character</span>(general_linear_model_fit_object<span class="sc">$</span>call[<span class="dv">2</span>]), <span class="st">", "</span>,<span class="fu">as.character</span>(general_linear_model_fit_object<span class="sc">$</span>call[<span class="dv">3</span>]), <span class="st">")"</span>)</span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">general_linear_model_fit</span>(<span class="at">call =</span> general_linear_model_fit_call, <span class="at">coefficients =</span> general_linear_model_fit_object<span class="sc">$</span>coefficients))</span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a second method for the fit generic for the case when the input to the model argument is of the class "generalised_linear_model"</span></span>
+<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the output of this method to be of an S4 class "generalised_linear_model_fit". Similarly, this class and its generator function are created first before defining the method. In addition, "generalised_linear_model_fit" is defined to be a children of "general_linear_model_fit", this is used to demonstrate that methods defined for instance objects of a class would also be applicable to instance objects of its subclass (but not the other way round).</span></span>
+<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a>generalised_linear_model_fit <span class="ot">&lt;-</span> <span class="fu">setClass</span>(<span class="st">"generalised_linear_model_fit"</span>, <span class="at">contains =</span> <span class="st">"general_linear_model_fit"</span>)</span>
+<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a><span class="fu">setMethod</span>(</span>
+<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a>  <span class="at">f =</span> <span class="st">"fit"</span>,</span>
+<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a>  <span class="at">signature =</span> <span class="fu">signature</span>(<span class="at">model =</span> <span class="st">"generalised_linear_model"</span>),</span>
+<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a>  <span class="at">definition =</span> <span class="cf">function</span>(model, data){</span>
+<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a>    formula <span class="ot">&lt;-</span> <span class="fu">paste0</span>(model<span class="sc">@</span>y, <span class="st">" ~ "</span> ,<span class="fu">paste0</span>(<span class="fu">unlist</span>(model<span class="sc">@</span>x), <span class="at">collapse =</span> <span class="st">" + "</span>))</span>
+<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a>    generalised_linear_model_fit_object <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">formula =</span> formula, <span class="at">data =</span> data, <span class="at">family =</span> model<span class="sc">@</span><span class="fu">family</span>()<span class="sc">$</span>family)</span>
+<span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a>    generalised_linear_model_fit_call <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="fu">as.character</span>(generalised_linear_model_fit_object<span class="sc">$</span>call[<span class="dv">1</span>]), <span class="st">"("</span>, <span class="fu">as.character</span>(generalised_linear_model_fit_object<span class="sc">$</span>call[<span class="dv">2</span>]), <span class="st">", "</span>,<span class="fu">as.character</span>(generalised_linear_model_fit_object<span class="sc">$</span>call[<span class="dv">3</span>]), <span class="st">", "</span>,<span class="fu">as.character</span>(generalised_linear_model_fit_object<span class="sc">$</span>call[<span class="dv">4</span>]), <span class="st">")"</span>)</span>
+<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">generalised_linear_model_fit</span>(<span class="at">call =</span> generalised_linear_model_fit_call, <span class="at">coefficients =</span> generalised_linear_model_fit_object<span class="sc">$</span>coefficients))</span>
+<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-121"><a href="#cb3-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a third method for the fit generic for the case when the input to the model argument is of the class "neural_network_model"</span></span>
+<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a><span class="co"># The class of the output of this method is defined to be "nn" by the neuralnet::neuralnet function</span></span>
+<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a><span class="fu">setMethod</span>(</span>
+<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a>  <span class="at">f =</span> <span class="st">"fit"</span>,</span>
+<span id="cb3-127"><a href="#cb3-127" aria-hidden="true" tabindex="-1"></a>  <span class="at">signature =</span> <span class="fu">signature</span>(<span class="at">model =</span> <span class="st">"neural_network_model"</span>),</span>
+<span id="cb3-128"><a href="#cb3-128" aria-hidden="true" tabindex="-1"></a>  <span class="at">definition =</span> <span class="cf">function</span>(model, data){</span>
+<span id="cb3-129"><a href="#cb3-129" aria-hidden="true" tabindex="-1"></a>    formula <span class="ot">&lt;-</span> <span class="fu">paste0</span>(model<span class="sc">@</span>y, <span class="st">" ~ "</span> ,<span class="fu">paste0</span>(<span class="fu">unlist</span>(model<span class="sc">@</span>x), <span class="at">collapse =</span> <span class="st">" + "</span>))</span>
+<span id="cb3-130"><a href="#cb3-130" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb3-131"><a href="#cb3-131" aria-hidden="true" tabindex="-1"></a>    neural_network_model_fit_object <span class="ot">&lt;-</span> neuralnet<span class="sc">::</span><span class="fu">neuralnet</span>(<span class="at">formula =</span> formula, <span class="at">data =</span> data, <span class="at">linear.output =</span> F)</span>
+<span id="cb3-132"><a href="#cb3-132" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(neural_network_model_fit_object)</span>
+<span id="cb3-133"><a href="#cb3-133" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-134"><a href="#cb3-134" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-135"><a href="#cb3-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-136"><a href="#cb3-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-137"><a href="#cb3-137" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a same method for the summary generic for the case when the input to the object argument is either an instance of the class "general_linear_model_fit" or "generalised_linear_model_fit"</span></span>
+<span id="cb3-138"><a href="#cb3-138" aria-hidden="true" tabindex="-1"></a><span class="co"># Since the class "general_linear_model_fit" is a superclass of its subclass "generalised_linear_model_fit", as defined in the inheritance structure when creating the class "generalised_linear_model_fit", any methods defined for instances of the class "general_linear_model_fit" would also be applicable to instances of the class "generalised_linear_model_fit".</span></span>
+<span id="cb3-139"><a href="#cb3-139" aria-hidden="true" tabindex="-1"></a><span class="co"># This means that to create a method for objects of both the parent and child classes "general_linear_model_fit" or "generalised_linear_model_fit", the method only needs to be defined for the parent class "general_linear_model_fit"</span></span>
+<span id="cb3-140"><a href="#cb3-140" aria-hidden="true" tabindex="-1"></a><span class="fu">setMethod</span>(</span>
+<span id="cb3-141"><a href="#cb3-141" aria-hidden="true" tabindex="-1"></a>  <span class="at">f =</span> <span class="st">"summary"</span>,</span>
+<span id="cb3-142"><a href="#cb3-142" aria-hidden="true" tabindex="-1"></a>  <span class="at">signature =</span> <span class="fu">signature</span>(<span class="at">object =</span> <span class="st">"general_linear_model_fit"</span>),</span>
+<span id="cb3-143"><a href="#cb3-143" aria-hidden="true" tabindex="-1"></a>  <span class="at">definition =</span> <span class="cf">function</span>(object, <span class="at">show_beta =</span> F){</span>
+<span id="cb3-144"><a href="#cb3-144" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(object<span class="sc">@</span>call)</span>
+<span id="cb3-145"><a href="#cb3-145" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(show_beta){</span>
+<span id="cb3-146"><a href="#cb3-146" aria-hidden="true" tabindex="-1"></a>    object<span class="sc">@</span>coefficients}</span>
+<span id="cb3-147"><a href="#cb3-147" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-148"><a href="#cb3-148" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-149"><a href="#cb3-149" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-150"><a href="#cb3-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-151"><a href="#cb3-151" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a second method for the summary generic for the case when the input to the object argument is an instance of the class "neural_network_model_fit" in a way that the arguments to the summary generic would change accordingly, specifically, the "show_beta" argument would be removed and a new argument would be added, further, the "plot_model" argument can take inputs of different classes causing the summary function to operate differently by nesting another generic, specifically called "summary_2" in the method. Accordingly, the "summary" and "summary_2" generics may be referred to as the main/external and internal generics. This is to show how a generic can have different sets of arguments depending on the class of the inputs to one or more generic arguments and those new arguments can take inputs of different classes and operate differently according to them. This complex scenario is rare though.</span></span>
+<span id="cb3-152"><a href="#cb3-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-153"><a href="#cb3-153" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the internal generic "summary_2" that would be nested within the methods of the main generic "summary" later </span></span>
+<span id="cb3-154"><a href="#cb3-154" aria-hidden="true" tabindex="-1"></a><span class="fu">setGeneric</span>(</span>
+<span id="cb3-155"><a href="#cb3-155" aria-hidden="true" tabindex="-1"></a>  <span class="st">"summary_2"</span>, </span>
+<span id="cb3-156"><a href="#cb3-156" aria-hidden="true" tabindex="-1"></a>  <span class="at">def =</span> <span class="cf">function</span>(object, plot_model){</span>
+<span id="cb3-157"><a href="#cb3-157" aria-hidden="true" tabindex="-1"></a>    <span class="fu">standardGeneric</span>(<span class="at">f =</span> <span class="st">"summary_2"</span>)</span>
+<span id="cb3-158"><a href="#cb3-158" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb3-159"><a href="#cb3-159" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-160"><a href="#cb3-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a method for the internal generic "summary_2" for the case when the input to the argument "plot_model" is of the class "logical" </span></span>
+<span id="cb3-162"><a href="#cb3-162" aria-hidden="true" tabindex="-1"></a><span class="fu">setMethod</span>(</span>
+<span id="cb3-163"><a href="#cb3-163" aria-hidden="true" tabindex="-1"></a>  <span class="at">f =</span> <span class="st">"summary_2"</span>, </span>
+<span id="cb3-164"><a href="#cb3-164" aria-hidden="true" tabindex="-1"></a>  <span class="at">signature =</span> <span class="fu">signature</span>(<span class="at">plot_model =</span> <span class="st">"logical"</span>),</span>
+<span id="cb3-165"><a href="#cb3-165" aria-hidden="true" tabindex="-1"></a>  <span class="at">definition =</span> <span class="cf">function</span>(object, plot_model){</span>
+<span id="cb3-166"><a href="#cb3-166" aria-hidden="true" tabindex="-1"></a>            <span class="fu">print</span>(<span class="st">"Input of the plot_model argument is logical"</span>)</span>
+<span id="cb3-167"><a href="#cb3-167" aria-hidden="true" tabindex="-1"></a>            <span class="co">#print(object$call)</span></span>
+<span id="cb3-168"><a href="#cb3-168" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span>(plot_model){<span class="fu">plot</span>(object)}</span>
+<span id="cb3-169"><a href="#cb3-169" aria-hidden="true" tabindex="-1"></a>          })</span>
+<span id="cb3-170"><a href="#cb3-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-171"><a href="#cb3-171" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a second method for the internal generic "summary_2" for the case when the input to the argument "plot_model" is of the class "numeric"</span></span>
+<span id="cb3-172"><a href="#cb3-172" aria-hidden="true" tabindex="-1"></a><span class="fu">setMethod</span>(</span>
+<span id="cb3-173"><a href="#cb3-173" aria-hidden="true" tabindex="-1"></a>  <span class="at">f =</span> <span class="st">"summary_2"</span>, </span>
+<span id="cb3-174"><a href="#cb3-174" aria-hidden="true" tabindex="-1"></a>  <span class="at">signature =</span> <span class="fu">signature</span>(<span class="at">plot_model =</span> <span class="st">"numeric"</span>),</span>
+<span id="cb3-175"><a href="#cb3-175" aria-hidden="true" tabindex="-1"></a>  <span class="at">definition =</span> <span class="cf">function</span>(object, plot_model){</span>
+<span id="cb3-176"><a href="#cb3-176" aria-hidden="true" tabindex="-1"></a>            <span class="fu">print</span>(<span class="st">"Input of the plot_model argument is an numeric"</span>)</span>
+<span id="cb3-177"><a href="#cb3-177" aria-hidden="true" tabindex="-1"></a>            <span class="fu">print</span>(object<span class="sc">$</span>call)</span>
+<span id="cb3-178"><a href="#cb3-178" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span>(plot_model <span class="sc">==</span> <span class="dv">1</span>){<span class="fu">plot</span>(object)}</span>
+<span id="cb3-179"><a href="#cb3-179" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb3-180"><a href="#cb3-180" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-181"><a href="#cb3-181" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a method for the main generic "summary" for the case when input to the "object" argument is of the class "nn" (the neural network model fit)</span></span>
+<span id="cb3-182"><a href="#cb3-182" aria-hidden="true" tabindex="-1"></a><span class="fu">setMethod</span>(</span>
+<span id="cb3-183"><a href="#cb3-183" aria-hidden="true" tabindex="-1"></a>  <span class="at">f =</span> <span class="st">"summary"</span>,</span>
+<span id="cb3-184"><a href="#cb3-184" aria-hidden="true" tabindex="-1"></a>  <span class="at">signature =</span> <span class="fu">signature</span>(<span class="at">object =</span> <span class="st">"nn"</span>),</span>
+<span id="cb3-185"><a href="#cb3-185" aria-hidden="true" tabindex="-1"></a>  <span class="at">definition =</span> <span class="cf">function</span>(object, plot_model){<span class="fu">summary_2</span>(<span class="at">object =</span> object, <span class="at">plot_model =</span> plot_model)}</span>
+<span id="cb3-186"><a href="#cb3-186" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-187"><a href="#cb3-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-188"><a href="#cb3-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-189"><a href="#cb3-189" aria-hidden="true" tabindex="-1"></a><span class="co"># Show how it all works in practice</span></span>
+<span id="cb3-190"><a href="#cb3-190" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the models to the data using the fit generic</span></span>
+<span id="cb3-191"><a href="#cb3-191" aria-hidden="true" tabindex="-1"></a><span class="co"># The fit generic can take various model specifications of various types of model and fit to the same data accordingly </span></span>
+<span id="cb3-192"><a href="#cb3-192" aria-hidden="true" tabindex="-1"></a><span class="co"># Fitting a General Linear Model</span></span>
+<span id="cb3-193"><a href="#cb3-193" aria-hidden="true" tabindex="-1"></a>maths_general_linear_model_fit <span class="ot">&lt;-</span> <span class="fu">fit</span>(<span class="at">model =</span> maths_general_linear_model, <span class="at">data =</span> attainment_data)</span>
+<span id="cb3-194"><a href="#cb3-194" aria-hidden="true" tabindex="-1"></a><span class="co"># Fitting a Generalised Linear Model </span></span>
+<span id="cb3-195"><a href="#cb3-195" aria-hidden="true" tabindex="-1"></a>ses_generalised_linear_model_fit <span class="ot">&lt;-</span> <span class="fu">fit</span>(<span class="at">model =</span> ses_generalised_linear_model, <span class="at">data =</span> attainment_data)</span>
+<span id="cb3-196"><a href="#cb3-196" aria-hidden="true" tabindex="-1"></a><span class="co"># Fitting a Neural Network Model</span></span>
+<span id="cb3-197"><a href="#cb3-197" aria-hidden="true" tabindex="-1"></a>science_neural_network_model_fit <span class="ot">&lt;-</span> <span class="fu">fit</span>(<span class="at">model =</span> science_neural_network_model, <span class="at">data =</span> attainment_data)</span>
+<span id="cb3-198"><a href="#cb3-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-199"><a href="#cb3-199" aria-hidden="true" tabindex="-1"></a><span class="co"># Access the model properties using the summary generic </span></span>
+<span id="cb3-200"><a href="#cb3-200" aria-hidden="true" tabindex="-1"></a><span class="co"># The summary generic can take inputs of different classes and change its arguments and operations/output</span></span>
+<span id="cb3-201"><a href="#cb3-201" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(maths_general_linear_model_fit, <span class="at">show_beta =</span> T)</span>
+<span id="cb3-202"><a href="#cb3-202" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ses_generalised_linear_model_fit, <span class="at">show_beta =</span> F)</span>
+<span id="cb3-203"><a href="#cb3-203" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(science_neural_network_model_fit, <span class="at">plot_model =</span> T)</span>
+<span id="cb3-204"><a href="#cb3-204" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(science_neural_network_model_fit, <span class="at">plot_model =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="things-to-add" class="level1">
+<h1>Things to add</h1>
+<ul>
+<li>History of R</li>
+<li>How R works</li>
+<li>How you work in R</li>
+<li>Updating R</li>
+<li>Connecting to databases</li>
+</ul>
+<p>install.packages(“installr”) installr::updater()</p>
+<p>This downloads the installer (.exe file) from CRAN (https://cran.r-project.org/bin/windows/base/) and run it. You will go through several installation setup wizards, including one for specifying whether you want to migrate all your packages from your old R to your new. All of these can be done manually, but the updater() function does all of them automatically. Might worth noting that updating R using the installr package only works for Windows, for MacOS, use the updateR package</p>
+<p>After all those installation wizards, make sure RStudio is using the latest R version, otherwise change that. To do that, go to the “Tools” tab (in the top-most bar), then go to “Global Options”, this opens an Options dialog box. In the dialog box, go to “General” and then “Basic”. Make sure the “R version” is set to the path to the new R, which may look something like “C:.0”. If not then change it by clicking “change”, which opens another dialog box, and select the appropriate one under “Choose a specific version of R”. Then restart RStudio.</p>
+</section>
+<section id="updating-r" class="level1">
+<h1>Updating R</h1>
+<ul>
+<li>Download the newest R file from R</li>
+<li>The R file includes an .exe installer</li>
+<li>Run the .exe file</li>
+<li></li>
+</ul>
+<p>22 Oct 2022 at 9:46</p>
+<ul>
+<li><p>Multiple dispatch - Methods dispatch can be based on multiple arguments to a generic</p></li>
+<li><p>Multiple inheritance - A class can inherit properties from multiple parent classes</p></li>
+<li><p>What is R</p></li>
+<li><p>R is a programming language and the interpreter of R Rscript is a command line utility (like git) which is used to run R codes in the command line (terminal)</p></li>
 </ul>
 
 

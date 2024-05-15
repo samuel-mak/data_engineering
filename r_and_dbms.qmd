@@ -11,7 +11,32 @@
 
 
 
-**Working with ODBC-compliant DBMS with R**
+**Working with ODBC-compliant DBMS from ODBC-compliant applications**
+- **The Process**
+  - In general, working with an ODBC-compliant DBMS from an application (e.g. R and RStudio) necessarily involves, in addition to the application and the DBMS, an ODBC interface, an ODBC manager, and a DBMS-specific ODBC driver, all for mediating the connection between the application and the DBMS. Upon a request being called by the application, the application sends the application-specific call to the ODBC interface, the ODBC interface translates the application-specific calls from the application to an ODBC call, which is a call adhering to the ODBC standards, through its ODBC functions, it then establishes a connection with and sends the ODBC call to the DBMS-specific ODBC driver either directly or indirectly through the ODBC manager, which manages one or more DBMS-specific ODBC drivers. The DBMS-specific ODBC driver translates the ODBC call to a DBMS-specific call (which may involve DBMS-specific SQL), it then establishes a connection to and sends the DBMS-specific call to the DBMS (e.g. its server/engine) where the call is executed. If the call involves extracting information from the DBMS, the DBMS sends the information to its DBMS-specific ODBC driver, the DBMS-specific ODBC driver fetches the information from the DBMS, translates it to an ODBC information, and sends it to the ODBC interface, the ODBC interface fetches the ODBC information from the DBMS-specific driver and may further process it (e.g. translation) if there is an upper layer (e.g. application). 
+- **Working with ODBC-compliant DBMS with R**
+  - **ODBC manager**
+    - Ensure that an ODBC manager is in the system. ODBC managers are usually a separate software/programme associated with an operating system. 
+    - **Windows**
+      - Windows comes with an ODBC manager in the form of a system application called "ODBC Data Source Administrator". 
+    - **MacOS**
+      - MacOs used to come with an ODBC manager in form of system utility application called "ODBC Administrator" until Mac OS "Snow Leopard" from which ODBC managers for MacOS are downloaded from external developers and installed as external applications. There are several ODBC managers for MacOS
+        - ODBC Manager - A free proprietary ODBC manager developed by Actual Technologies 
+        - iODBC - An open-source ODBC manager (in GitHub) initiated and mainly managed by OpenLink Software (this initiative encourages the open-source development of ODBC managers for various OSs - e.g. Linux or Unix-based OSs)
+  - **DBMS-specific ODBC driver**
+    - Ensure that an ODBC-specific ODBC driver is in the system for use. ODBC-specific ODBC drivers are usually an individual software/programme associated with the DBMS, they are downloaded from developers of the DBMS or external parties. The ODBC drivers for the following DBMSs are:
+      - Microsoft SQL Server - There are two main ODBC drivers, the old SQL Server (come with Windows) and the new ODBC Driver for SQL Server (needs to be downloaded from Microsoft). The ODBC Driver for SQL Server is more advanced than the SQL Server, however, SQL Server is sufficient for most cases. 
+      - MySQL - There is an ODBC driver for MySQL called Connector/ODBC from MySQL and it can be downloaded from MySQL 
+  - **ODBC interface**
+    - Ensure that an ODBC interface is in the system for use. The ODBC interface is usually associated with the application, hence, check this with regards to the application.
+    - **R**
+      - There are two main ODBC interfaces for R and they are in the form of R packages from CRAN. 
+      - **RODBC**
+      - **DBI**
+    
+    
+    For Windows, Windows comes with an ODBC manager, 
+  The ODBC interface is usually associated with the application, specifically, it is either a functionality of the application or an extension to the application (e.g. packages/modules/plug-ins).  The ODBC-specific ODBC driver is usually a separate software associated with the DBMS The DBMS-specific ODBC driver is usually associated with the DBMS, 
 - **Some terms**
   - **DBMS**
     - A system for managing data 
@@ -21,10 +46,6 @@
   - **ODBC-compliant DBMS**
     - ODBC-compliant DBMSs are DBMSs that adheres to the ODBC standards to allow applications to access them through ODBC (a standardised way of doing so)
     - ODBC-compliant DBMSs include Microsoft SQL Server, Microsoft Access, MySQL, PostgreSQL, Oracle Database, IBM Db2, SQLite, MariaDB, Amazon Redshift, Google BigQuery, etc.
-- **The Process**
-  - In general, working with an ODBC-compliant DBMS from an application (e.g. R and RStudio) necessarily involves, in addition to the application and the DBMS, an ODBC interface, an ODBC manager, and a DBMS-specific ODBC driver for mediating the connection between the application and the DBMS. The ODBC interface is usually associated with the application, specifically, it is either a functionality of the application or an extension to the application (e.g. packages/modules/plug-ins). The ODBC interface translates application-specific request calls from the application to an ODBC call, which is a call adhering to the ODBC standards, through its ODBC functions, it then establishes a connection with and sends the ODBC call to the DBMS-specific ODBC driver either directly or indirectly through the ODBC manager, which manages one or more DBMS-specific ODBC drivers. The DBMS-specific ODBC driver translates the ODBC call to a DBMS-specific call (which may involve DBMS-specific SQL), it then establishes a connection to and sends the DBMS-specific call to the DBMS (e.g. its server/engine) where the call is executed. If the call involves extracting information from the DBMS, the information is sent from the DBMS to its DBMS-specific ODBC driver, the DBMS-specific ODBC driver translates it to an ODBC information, finally, the ODBC interface fetches the ODBC information from the DBMS-specific driver and may further process it (e.g. translation) if there is an upper layer (e.g. application). 
-
-  
   
 ```{r}
 ?DBI::dbFetch()

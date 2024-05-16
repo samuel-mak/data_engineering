@@ -17,11 +17,14 @@
 
 **Working with ODBC-compliant DBMS from ODBC-compliant applications**
 
-- **The Process**
-  - In general, working with an ODBC-compliant DBMS from an application (e.g. R and RStudio) necessarily involves, in addition to the application and the DBMS, an ODBC interface, an ODBC manager, and a DBMS-specific ODBC driver, all for mediating the connection between the application and the DBMS. Upon a request being called by the application, the application sends the application-specific call to the ODBC interface, the ODBC interface translates the application-specific calls from the application to an ODBC call, which is a call adhering to the ODBC standards, through its ODBC functions, it then establishes a connection with and sends the ODBC call to the DBMS-specific ODBC driver either directly or indirectly through the ODBC manager, which manages one or more DBMS-specific ODBC drivers. The DBMS-specific ODBC driver translates the ODBC call to a DBMS-specific call (which may involve DBMS-specific SQL), it then establishes a connection to and sends the DBMS-specific call to the DBMS (e.g. its server/engine) where the call is executed. If the call involves extracting information from the DBMS, the DBMS sends the information to its DBMS-specific ODBC driver, the DBMS-specific ODBC driver fetches the information from the DBMS, translates it to an ODBC information, and sends it to the ODBC interface, the ODBC interface fetches the ODBC information from the DBMS-specific driver and may further process it (e.g. translation) if there is an upper layer (e.g. application). 
+- **The General Process**
+  - Working with an ODBC-compliant DBMS from an application (e.g. R and RStudio) necessarily involves, in addition to the application and the DBMS, an ODBC interface, an ODBC manager, and a DBMS-specific ODBC driver, all for mediating the connection between the application and the DBMS. 
+  - Upon a request being called by the application, the application sends the application-specific call to the ODBC interface, the ODBC interface translates the application-specific calls from the application to an ODBC call, which is a call adhering to the ODBC standards, through its ODBC functions, it then establishes a connection with and sends the ODBC call to the DBMS-specific ODBC driver either directly or indirectly through the ODBC manager, which manages one or more DBMS-specific ODBC drivers. 
+  - The DBMS-specific ODBC driver translates the ODBC call to a DBMS-specific call (which may involve DBMS-specific SQL), it then establishes a connection to and sends the DBMS-specific call to the DBMS (e.g. its server/engine) where the call is executed. 
+  - If the call involves extracting information from the DBMS, the DBMS sends the information to its DBMS-specific ODBC driver, the DBMS-specific ODBC driver fetches the information from the DBMS, translates it to an ODBC information, and sends it to the ODBC interface, the ODBC interface fetches the ODBC information from the DBMS-specific driver and may further process it (e.g. translation) if there is an upper layer (e.g. application). 
 - **Working with ODBC-compliant DBMS with R**
   - **ODBC manager**
-    - Ensure that an ODBC manager is in the system for use. ODBC managers are usually an individual software/programme that are specific to an operating system, hence, they should be considered with regards to specific operating systems:
+    - Ensure that an appropriate ODBC manager is ready for use. ODBC managers are usually an individual software/programme that are specific to an operating system, hence, they should be considered with regards to specific operating systems:
       - **Windows OS**
         - Windows OS comes with an ODBC manager in the form of a system application called "ODBC Data Source Administrator". 
       - **MacOS**
@@ -34,7 +37,7 @@
             - Go to <a href = "https://www.iodbc.org/dataspace/doc/iodbc/wiki/iodbcWiki/WelcomeVisitors" target = "_blank"> iODBC </a> to learn more about iODBC and to download
 
   - **DBMS-specific ODBC driver**
-    - Ensure that an ODBC driver for the DBMS is in the system for use. ODBC-specific ODBC drivers are usually an individual software/programme that is specific to a DBMS, hence, they should be considered with regards to the DBMS:
+    - Ensure that an appropriate ODBC driver for the DBMS is ready for use. ODBC-specific ODBC drivers are usually an individual software/programme that is specific to a DBMS, hence, they should be considered with regards to the DBMS:
     they are downloaded from developers of the DBMS or external parties. The ODBC drivers for the following DBMSs are:
       - **Microsoft SQL Server** 
         - **ODBC Driver for SQL Server**
@@ -43,23 +46,66 @@
       - **MySQL**
         - **Connector/ODBC**
           - Developed and distributed by MySQL 
-          - Go to <a href = "https://dev.mysql.com/downloads/connector/odbc/" target = "_blank"> to download 
+          - Go to <a href = "https://dev.mysql.com/downloads/connector/odbc/" target = "_blank"> MySQL </a> to download 
           
   - **ODBC interface**
-    - Ensure that an ODBC interface is in the system for use. ODBC interfaces are usually specific to the application and exist as either an in-built functionality of the application or an extension (e.g. packages/modules/plug-ins), hence, they should be considered with regards to the application:
+    - Ensure that an appropriate ODBC interface is ready for use. ODBC interfaces are usually specific to the application and exist as either an in-built functionality of the application or an extension (e.g. packages/modules/plug-ins), hence, they should be considered with regards to the application:
       - **R**
         - **DBI**
           - An R package in CRAN developed by R Special Interest Group on Databases (R-SIG-DB) and Hadley Wickham and maintained by Kirill Müller
-          - Install the package from CRAN by running the R command `install.packages("DBI")`
-          - Load the package for use by running the R command `library(DBI)`
+          - Install/update the DBI package from CRAN by running the R command `install.packages("DBI")` if it hasn't been installed/needs to be updated (you can check whether it is installed in R by running the R command `"RODBC" %in% installed.packages()`)
+          - Load the DBI package for use by running the R command `library(DBI)`
           - See package documentation by running `RShowDoc(what = "DBI", package = "DBI")`
         - **RODBC**
           - An R package developed by Brian Ripley and Michael Lapsley and maintained by Brian Ripley
-          - Install the package from CRAN by running the R command `install.packages("RODBC")`
+          - Install/update the RODBC package from CRAN by running the R command `install.packages("RODBC")` if it hasn't been installed/needs to be updated (you can check whether it is installed in R by running the R command `"RODBC" %in% installed.packages()`)
+          - <details> <summary> Click here for an alternative installation method for MacOS if the `install.packages` method didn't work </summary> 
+            - It has been reported that Mac users are unable to install through the `install.packages` method
+            - Try this 
+              - Install Homebrew if it hasn't been installed by running the following Bash commands in the terminal
+                - `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
+              - Install wget if if it hasn't been installed by running the following Bash commands in the terminal
+                - `brew install wget`
+              - Install RODBC by running the following Bash commands in the terminal
+                - `brew install unixODBC`
+                - `wget "http://cran.r-project.org/src/contrib/tar_filename.tar.gz"`
+                  - ***Where***
+                    - `tar_filename` is the name of the tar file on CRAN, which can change with the version of RODBC. The name of the tar file for the latest version of RODBC on CRAN can be found on CRAN <a href = "http://cran.r-project.org/src/contrib/" target = "_blank">here</a> 
+                - `R CMD INSTALL tar_filename.tar.gz`
+                  - ***Where***
+                    - `tar_filename` is the name of the tar file 
+          </details>
           - Load the package for use by running the R command `library(RODBC)`
           - See package documentation by running `RShowDoc(what = "RODBC", package = "RODBC")`
         - **Comparison**
-          - Both `DBI` and `RODBC` are great, simple to use, and developed by great developers, however, `DBI` has more functionalities (e.g. error handling), covers more data sources (i.e. DBMSs), and, in some cases/reportedly seems to be faster than `RODBC` 
+          - Both `DBI` and `RODBC` are reliable, simple to use, and developed by great developers. However, `DBI` has more functionalities (e.g. error handling, integrative functionalities with RStudio, specifically, it usefully shows the structure of the connected DBMS engine/server with databases, tables and table columns and their data types in the "Connection" pane), covers more data sources (i.e. DBMSs), and, in some cases/reportedly seems to be faster than `RODBC` 
+  
+  
+```{r}
+"RODBC" %in% installed.packages()
+
+installed.packages()[installed.packages()[,1] == "RODBC"]
+
+installed.packages()[]
+```
+  
+  
+  brew update && brew install unixODBC && \
+  wget "https://cran.r-project.org/src/contrib/RODBC_1.3-23.tar.gz" && \
+  R CMD INSTALL RODBC_1.3-23.tar.gz
+  
+```{r}
+
+system(paste("open -a 'Google Chrome' ","_book/index.html"))
+
+
+```
+
+  
+  
+  
+  
+  
   
     
     For Windows, Windows comes with an ODBC manager, 

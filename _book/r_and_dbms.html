@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Data Engineering - Working with DBMS using R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./odbc.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="quarto_books_style_1.css">
+</head>
+
+<body class="nav-sidebar floating fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./r_and_dbms.html"><span class="chapter-title">Working with DBMS using R</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Data Engineering</a> 
+    </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">The basic data engineering shits to know as analysts in an organisation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./s4.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./odbc.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Working with DBMS</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r_and_dbms.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Working with DBMS using R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">Working with DBMS using R</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">May 16, 2024</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<p><strong>Introduction</strong></p>
+<ul>
+<li>Various DBMSs can be worked with using R</li>
+<li>The specific way that this is done differ between the DBMSs and operating system</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#file.show(here::here("./_book/index.html"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Working with ODBC-compliant DBMS from ODBC-compliant applications</strong></p>
+<ul>
+<li><strong>The Process</strong>
+<ul>
+<li>In general, working with an ODBC-compliant DBMS from an application (e.g.&nbsp;R and RStudio) necessarily involves, in addition to the application and the DBMS, an ODBC interface, an ODBC manager, and a DBMS-specific ODBC driver, all for mediating the connection between the application and the DBMS. Upon a request being called by the application, the application sends the application-specific call to the ODBC interface, the ODBC interface translates the application-specific calls from the application to an ODBC call, which is a call adhering to the ODBC standards, through its ODBC functions, it then establishes a connection with and sends the ODBC call to the DBMS-specific ODBC driver either directly or indirectly through the ODBC manager, which manages one or more DBMS-specific ODBC drivers. The DBMS-specific ODBC driver translates the ODBC call to a DBMS-specific call (which may involve DBMS-specific SQL), it then establishes a connection to and sends the DBMS-specific call to the DBMS (e.g.&nbsp;its server/engine) where the call is executed. If the call involves extracting information from the DBMS, the DBMS sends the information to its DBMS-specific ODBC driver, the DBMS-specific ODBC driver fetches the information from the DBMS, translates it to an ODBC information, and sends it to the ODBC interface, the ODBC interface fetches the ODBC information from the DBMS-specific driver and may further process it (e.g.&nbsp;translation) if there is an upper layer (e.g.&nbsp;application).</li>
+</ul></li>
+<li><strong>Working with ODBC-compliant DBMS with R</strong>
+<ul>
+<li><strong>ODBC manager</strong>
+<ul>
+<li>Ensure that an ODBC manager is in the system for use. ODBC managers are usually an individual software/programme that are specific to an operating system, hence, they should be considered with regards to specific operating systems:
+<ul>
+<li><strong>Windows OS</strong>
+<ul>
+<li>Windows OS comes with an ODBC manager in the form of a system application called “ODBC Data Source Administrator”.</li>
+</ul></li>
+<li><strong>MacOS</strong>
+<ul>
+<li>MacOs used to come with an ODBC manager in form of system application called “ODBC Administrator” until Mac OS “Snow Leopard” from which ODBC managers for MacOS are downloaded from external developers. ODBC managers for MacOS include:
+<ul>
+<li><strong>ODBC Manager</strong>
+<ul>
+<li>ODBC Manager is free proprietary ODBC manager developed by Actual Technologies</li>
+<li>Go to <a href="https://odbcmanager.net/" target="_blank"> ODBC Manger </a> to learn more or download</li>
+</ul></li>
+<li><strong>Independent ODBC (iODBC) for MacOS</strong>
+<ul>
+<li>iODBC is both an open-source initiative initiated and managed by OpenLink Software that encourages the open-source development of ODBC managers for various Linux or Unix-based OS (incl.&nbsp;MacOS) and the ODBC managers under this initiative</li>
+<li>Go to <a href="https://www.iodbc.org/dataspace/doc/iodbc/wiki/iodbcWiki/WelcomeVisitors" target="_blank"> iODBC </a> to learn more about iODBC and to download</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><strong>DBMS-specific ODBC driver</strong>
+<ul>
+<li>Ensure that an ODBC driver for the DBMS is in the system for use. ODBC-specific ODBC drivers are usually an individual software/programme that is specific to a DBMS, hence, they should be considered with regards to specific DBMSs: they are downloaded from developers of the DBMS or external parties. The ODBC drivers for the following DBMSs are:
+<ul>
+<li><strong>Microsoft SQL Server</strong>
+<ul>
+<li><strong>ODBC Driver for SQL Server</strong>
+<ul>
+<li>Developed and distributed by Microsoft</li>
+<li>Go to <a href="https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server?view=sql-server-ver16" target="_blank"> ODBC Driver for SQL Server </a> to learn more or download</li>
+</ul></li>
+</ul></li>
+<li><strong>MySQL</strong>
+<ul>
+<li><strong>Connector/ODBC</strong>
+<ul>
+<li>Developed and distributed by MySQL</li>
+<li>Go to <a href="https://dev.mysql.com/downloads/connector/odbc/" target="_blank"> to download</a></li><a href="https://dev.mysql.com/downloads/connector/odbc/" target="_blank">
+</a></ul></li><a href="https://dev.mysql.com/downloads/connector/odbc/" target="_blank">
+</a></ul></li><a href="https://dev.mysql.com/downloads/connector/odbc/" target="_blank">
+</a></ul></li><a href="https://dev.mysql.com/downloads/connector/odbc/" target="_blank">
+</a></ul></li><a href="https://dev.mysql.com/downloads/connector/odbc/" target="_blank">
+<li><strong>ODBC interface</strong>
+<ul>
+<li>Ensure that an ODBC interface is in the system for use. The ODBC interface is usually associated with the application, hence, check this with regards to the application.</li>
+<li><strong>R</strong>
+<ul>
+<li>There are two main ODBC interfaces for R and they are in the form of R packages from CRAN.</li>
+<li><strong>RODBC</strong></li>
+<li><strong>DBI</strong></li>
+</ul></li>
+</ul>
+For Windows, Windows comes with an ODBC manager, The ODBC interface is usually associated with the application, specifically, it is either a functionality of the application or an extension to the application (e.g.&nbsp;packages/modules/plug-ins). The ODBC-specific ODBC driver is usually a separate software associated with the DBMS The DBMS-specific ODBC driver is usually associated with the DBMS,</li>
+</a></ul></li><a href="https://dev.mysql.com/downloads/connector/odbc/" target="_blank">
+<li><strong>Some terms</strong>
+<ul>
+<li><strong>DBMS</strong>
+<ul>
+<li>A system for managing data</li>
+<li>Examples include Microsoft SQL Server, Microsoft Access, Oracle, MySQL, PostgreSQL, MariaDB, SQLite</li>
+</ul></li>
+<li><strong>Open Database Connectivity (ODBC)</strong>
+<ul>
+<li>An ODBC is a connection between a software/application (e.g.&nbsp;R, Python, SPSS, Excel) and a DBMS through an ODBC interface/system (a standardised connection)</li>
+</ul></li>
+<li><strong>ODBC-compliant DBMS</strong>
+<ul>
+<li>ODBC-compliant DBMSs are DBMSs that adheres to the ODBC standards to allow applications to access them through ODBC (a standardised way of doing so)</li>
+<li>ODBC-compliant DBMSs include Microsoft SQL Server, Microsoft Access, MySQL, PostgreSQL, Oracle Database, IBM Db2, SQLite, MariaDB, Amazon Redshift, Google BigQuery, etc.</li>
+</ul></li>
+</ul></li>
+</a></ul><a href="https://dev.mysql.com/downloads/connector/odbc/" target="_blank">
+<p><strong>Open Database Connectivity (ODBC)</strong></p>
+<ul>
+<li><strong>Concept</strong>
+<ul>
+<li>An ODBC is a connection between an software/application (e.g.&nbsp;R, Python, SPSS, Excel) and a DBMS</li>
+</ul></li>
+</ul>
+<p><strong>ODBC interface</strong></p>
+<ul>
+<li><strong>Concept</strong>
+<ul>
+<li>An API that manages one or more ODBCs</li>
+<li>Provides a standard and general set of calls/commands (via ODBC functions) for softwares/applications to ODBC compliant DBMS (e.g.&nbsp;executing an SQL script), this standarisation and generalisation enables an ODBC to be independent of applications</li>
+<li>Developed by Microsoft in early 1990s</li>
+</ul></li>
+</ul>
+<p><strong>ODBC driver</strong></p>
+<ul>
+<li><strong>Concept</strong>
+<ul>
+<li>An ODBC driver provides a connection between an ODBC interface and a DBMS</li>
+<li>An ODBC interface connects to different ODBC drivers as different DBMSs operate differently thus have their own specific DBMS function calls</li>
+<li>An ODBC driver translates ODBC function calls into DBMS-specific function calls and passes them to the specific DBMS</li>
+<li>This enables an ODBC interface to be independent of DBMSs</li>
+<li>E.g. The old SQL Server and the new ODBC for SQL Server (these are drivers, despite having the word “servers” in their names)</li>
+</ul></li>
+</ul>
+<p><strong>DSN</strong> - A parametric data structure/format that contains information for an ODBC driver to connect to a specific part of a DBMS (e.g.&nbsp;server/engine/database/table) - DSNs are ODBC driver-specific, but they tend to be simple and short with common parameters - Parameters of the DSN for an ODBC driver includes the name of the engine, name of the server, name of the database, name of the table, username and password for access</p>
+<p><strong>Windows</strong> - <strong>In general</strong> - - ODBC Interface (API) - ODBC Drivers</p>
+<ul>
+<li></li>
+<li><p>ODBC Data Source Administrator</p></li>
+<li><p>ODBC Manager</p></li>
+<li><p>ODBC driver</p></li>
+<li></li>
+<li><p>Set up a connection between the ODBC interface and the database</p></li>
+<li><p>ODBC driver (install)</p></li>
+<li><p>The ODBC Data Source Administrator (64-bit)</p></li>
+<li><p>Set up a connection between R and the ODBC interface</p></li>
+<li><p>R</p></li>
+</ul>
+
+
+
+</a></main><a href="https://dev.mysql.com/downloads/connector/odbc/" target="_blank"> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</a><nav class="page-navigation"><a href="https://dev.mysql.com/downloads/connector/odbc/" target="_blank">
+  </a><div class="nav-page nav-page-previous"><a href="https://dev.mysql.com/downloads/connector/odbc/" target="_blank">
+      </a><a href="./odbc.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Working with DBMS</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

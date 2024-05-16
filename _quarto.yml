@@ -10,8 +10,9 @@ book:
   chapters:
     - index.qmd
     - intro.qmd
-    - r.qmd
+    - s4.qmd
     - odbc.qmd
+    - r_and_dbms.qmd
     - references.qmd
 
 bibliography: references.bib

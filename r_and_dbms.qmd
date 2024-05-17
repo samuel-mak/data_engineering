@@ -103,24 +103,39 @@
             - Both `DBI` and `RODBC` are reliable, simple to use, and developed by great developers. However, `DBI` has more functionalities (e.g. error handling, integrative functionalities with RStudio, specifically, it usefully shows the structure of the connected DBMS engine/server with databases, tables and table columns and their data types in the "Connection" pane), covers more data sources (i.e. DBMSs), and, in some cases/reportedly seems to be faster than `RODBC` 
 
 
-**Working with a DBMS from R**
-- **Connecting R to Microsoft SQL Server**
-    - **DBI**
-      - The `dbConnect()` function connects R to a DBMS-specific ODBC driver/
-      - The `dbConnect()` function has the general form and usage
-        ```{r, eval = F, include = T}
-        connection_object_dbi <- DBI::dbConnect(drv, ...)
-        ```
-          - ***Where***
-            - `drv` is the back-end of `dbConnect` that drives the connection based on the 
-    - **RODBC**
-      ```{r, eval = F, include = T}
-      connection_object_rodbc <- RODBC::odbcDriverConnect(
-        connection = "Driver={ODBC Driver 17 for SQL Server};Server={Server Name};Database={Database Name};"
-        )
-      ```
-      
+**Working with an ODBC-compliant DBMS from R**
 
+- **Introduction**
+  - ODBC-compliant DBMSs are worked with from R through an ODBC interface of R in the form of an R package and, as mentioned, there are two main packages, namely `DBI` and `RODBC`, that are independently capable of some basic operations. These basic operations are described with methods for both packages. 
+- **Connect R to an ODBC-compliant DBMS**
+  - **DBI**
+    - The `dbConnect` function is a generic for connecting R to various DBMSs 
+    - The `dbConnect` function has the general form and usage
+      ```{r, eval = F, include = T}
+      connection_object_dbi <- DBI::dbConnect(drv, ...)
+      ```
+        - ***Where***
+          - `drv` is a function that specifies the type of the DBMS to be connected to and hence the method being called to connect R to that DBMS. For ODBC-compliant DBMSs, it would be the `odbc::odbc()` function.
+          - `...` is a set of arguments that depends on the input to the `drv` argument, hence, refer to the drv function for specifics, these usually relate to the DSN 
+  - **RODBC**
+    - The `odbcDriverConnect` function connects R to ODBC-compliant DBMSs
+    - The `odbcDriverConnect` function has the general form and usage
+      ```{r, eval = F, include = T}
+      connection_object_rodbc <- RODBC::odbcDriverConnect(connection)
+      ```
+        - ***Where***   
+          - `connection` is the DSN (or connection string), usually in the form of "Driver={ODBC Driver 17 for SQL Server};Server={Server Name};Database={Database Name};"
+- **
+
+     
+
+```{r}
+library(DBI)
+dbConnect
+library(RODBC)
+?odbcConnect
+?RODBC::sqlQuery
+```
 
 
 

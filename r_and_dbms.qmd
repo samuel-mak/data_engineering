@@ -9,92 +9,130 @@
 
 
 
-```{r}
-#file.show(here::here("./_book/index.html"))
-
-```
-
 
 **Working with ODBC-compliant DBMS from ODBC-compliant applications**
 
 - **The General Process**
-  - Working with an ODBC-compliant DBMS from an application (e.g. R and RStudio) necessarily involves, in addition to the application and the DBMS, an ODBC interface, an ODBC manager, and a DBMS-specific ODBC driver, all for mediating the connection between the application and the DBMS. 
+  - ODBC-compliant DBMSs and applications are those that adhere to ODBC standards thus can be connected through ODBC 
+  - ODBC-compliant DBMSs include Microsoft SQL Server, Microsoft Access, and MySQL, ODBC-compliant applications include R, Python, Excel, and SPSS
+  - Working with an ODBC-compliant DBMS from an ODBC-compliant application necessarily involves, in addition to the application and the DBMS, an ODBC interface, an ODBC manager, and a DBMS-specific ODBC driver, all for mediating the connection between the application and the DBMS. 
   - Upon a request being called by the application, the application sends the application-specific call to the ODBC interface, the ODBC interface translates the application-specific calls from the application to an ODBC call, which is a call adhering to the ODBC standards, through its ODBC functions, it then establishes a connection with and sends the ODBC call to the DBMS-specific ODBC driver either directly or indirectly through the ODBC manager, which manages one or more DBMS-specific ODBC drivers. 
   - The DBMS-specific ODBC driver translates the ODBC call to a DBMS-specific call (which may involve DBMS-specific SQL), it then establishes a connection to and sends the DBMS-specific call to the DBMS (e.g. its server/engine) where the call is executed. 
   - If the call involves extracting information from the DBMS, the DBMS sends the information to its DBMS-specific ODBC driver, the DBMS-specific ODBC driver fetches the information from the DBMS, translates it to an ODBC information, and sends it to the ODBC interface, the ODBC interface fetches the ODBC information from the DBMS-specific driver and may further process it (e.g. translation) if there is an upper layer (e.g. application). 
-- **Working with ODBC-compliant DBMS with R**
-  - **ODBC manager**
-    - Ensure that an appropriate ODBC manager is ready for use. ODBC managers are usually an individual software/programme that are specific to an operating system, hence, they should be considered with regards to specific operating systems:
-      - **Windows OS**
-        - Windows OS comes with an ODBC manager in the form of a system application called "ODBC Data Source Administrator". 
-      - **MacOS**
-        - MacOs used to come with an ODBC manager in form of system application called "ODBC Administrator" until Mac OS "Snow Leopard" from which ODBC managers for MacOS are downloaded from external developers. ODBC managers for MacOS include:
-          - **ODBC Manager** 
-            - ODBC Manager is free proprietary ODBC manager developed by Actual Technologies 
-            - Go to <a href = "https://odbcmanager.net/" target = "_blank"> ODBC Manger </a> to learn more or download 
-          - **Independent ODBC (iODBC) for MacOS** 
-            - iODBC is both an open-source initiative initiated and managed by OpenLink Software that encourages the open-source development of ODBC managers for various Linux or Unix-based OS (incl. MacOS) and the ODBC managers under this initiative 
-            - Go to <a href = "https://www.iodbc.org/dataspace/doc/iodbc/wiki/iodbcWiki/WelcomeVisitors" target = "_blank"> iODBC </a> to learn more about iODBC and to download
+- **General Steps**
+  1. **Make sure an ODBC manager is ready for use**
+      - ODBC managers are usually an individual software/programme that are specific to an operating system, hence, they should be considered with regards to specific operating systems:
+        - **Windows OS**
+          - Windows OS comes with an ODBC manager in the form of a system application called "ODBC Data Source Administrator". 
+        - **MacOS**
+          - MacOs used to come with an ODBC manager in form of system application called "ODBC Administrator" until Mac OS "Snow Leopard" from which ODBC managers for MacOS are downloaded from external developers. ODBC managers for MacOS include:
+            - **ODBC Manager** 
+              - ODBC Manager is free proprietary ODBC manager developed by Actual Technologies 
+              - Go to <a href = "https://odbcmanager.net/" target = "_blank"> ODBC Manger </a> to learn more or download 
+            - **Independent ODBC (iODBC) for MacOS** 
+              - iODBC is both an open-source initiative initiated and managed by OpenLink Software that encourages the open-source development of ODBC managers for various Linux or Unix-based OS (incl. MacOS) and the ODBC managers under this initiative 
+              - Go to <a href = "https://www.iodbc.org/dataspace/doc/iodbc/wiki/iodbcWiki/WelcomeVisitors" target = "_blank"> iODBC </a> to learn more about iODBC and to download
+  2. **Make sure an ODBC driver for the DBMS is ready for use**
+      - ODBC-specific ODBC drivers are usually an individual software/programme that is specific to a DBMS, hence, they should be considered with regards to the DBMS:
+        - **Microsoft SQL Server** 
+          - **ODBC Driver for SQL Server**
+            - Developed and distributed by Microsoft 
+            - Go to <a href = "https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server?view=sql-server-ver16" target = "_blank"> ODBC Driver for SQL Server </a> to learn more or download 
+        - **MySQL**
+          - **Connector/ODBC**
+            - Developed and distributed by MySQL 
+            - Go to <a href = "https://dev.mysql.com/downloads/connector/odbc/" target = "_blank"> MySQL </a> to download
+  3. **Make sure an ODBC interface is ready for use**
+      - ODBC interfaces are usually specific to the application and exist as either an in-built functionality of the application or an extension (e.g. packages/modules/plug-ins), hence, they should be considered with regards to the application:
+        - **R**
+          - **DBI**
+            - An R package in CRAN developed by R Special Interest Group on Databases (R-SIG-DB) and Hadley Wickham and maintained by Kirill Müller
+            - Install/update the DBI package from CRAN by running the R command if it hasn't been installed/needs to be updated 
+            - <details><summary>Installation guidance</summary>
+              - Install the package `DBI` by running the following R codes
+                ```{r, eval = F, include = T}
+                install.package("DBI")
+                ```
+              - You can access whether the package `DBI` is installed in R by running the following R codes
+                ```{r, eval = F, include = T}
+                "DBI" %in% installed.packages()
+                ```
+              - The version of the installed `DBI` package can be accessed by running the following R codes
+                ```{r}
+                packageVersion("DBI")
+                ```
+            </details>
+            - See package documentation by running `RShowDoc(what = "DBI", package = "DBI")`
+          - **RODBC**
+            - An R package developed by Brian Ripley and Michael Lapsley and maintained by Brian Ripley
+            - Install/update the RODBC package from CRAN by running the R command if it hasn't been installed/needs to be updated
+            - <details><summary>Installation guidance</summary>
+              - Install the package `DBI` by running the following R codes
+                ```{r, eval = F, include = T}
+                install.package("DBI")
+                ```
+              - It has been reported that the above method may not work for MacOS (e.g. <a href = "https://stackoverflow.com/questions/43804850/how-to-install-rodbc-on-macos-sierra-10-12-4" target = "_blank"> here on Stack Overflow </a>)
+              - <details> <summary> Alternative method for MacOS </summary>
+                - Any CRAN packages can be installed in the terminal
+                - Install the Homebrew package if it hasn't been installed by running the following Bash commands in the terminal
+                  - `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
+                - Install wget using Homebrew if it hasn't been installed by running the following brew command line utility codes in the terminal
+                  - `brew install wget`
+                - Download the package tar.gz file from CRAN to the Shell directory by running the following wget command-line interface codes in the terminal
+                  - `wget "http://cran.r-project.org/src/contrib/tar_filename.tar.gz"`
+                - Install the package to R by running the following R command-line interface codes in the terminal
+                  - `R CMD INSTALL tar_filename.tar.gz`
+                    - ***Where***
+                      - `tar_filename` is the name of the tar.gz file of the package on CRAN, which can change, especially with the version of the package. The name of the tar.gz file for the latest version an R package on CRAN can be found on CRAN <a href = "http://cran.r-project.org/src/contrib/" target = "_blank">here</a> 
+                - Remove the initially downloaded tar.gz file by running the following bash commands in the terminal 
+                  - `rm tar_filename.tar.gz`
+                    - ***Where***
+                      - `tar_filename` is the name of the tar.gz file of the package initially downloaded from CRAN 
+                </details>
+              - You can access whether the package `DBI` is installed in R by running the following R codes
+                ```{r, eval = F, include = T}
+                "DBI" %in% installed.packages()
+                ```
+              - The version of the installed `DBI` package can be accessed by running the following R codes
+                ```{r, eval = F, include = T}
+                packageVersion("DBI")
+                ```
+              </details>
+            - See package documentation by running `RShowDoc(what = "RODBC", package = "RODBC")`
+          - **Comparison**
+            - Both `DBI` and `RODBC` are reliable, simple to use, and developed by great developers. However, `DBI` has more functionalities (e.g. error handling, integrative functionalities with RStudio, specifically, it usefully shows the structure of the connected DBMS engine/server with databases, tables and table columns and their data types in the "Connection" pane), covers more data sources (i.e. DBMSs), and, in some cases/reportedly seems to be faster than `RODBC` 
 
-  - **DBMS-specific ODBC driver**
-    - Ensure that an appropriate ODBC driver for the DBMS is ready for use. ODBC-specific ODBC drivers are usually an individual software/programme that is specific to a DBMS, hence, they should be considered with regards to the DBMS:
-    they are downloaded from developers of the DBMS or external parties. The ODBC drivers for the following DBMSs are:
-      - **Microsoft SQL Server** 
-        - **ODBC Driver for SQL Server**
-          - Developed and distributed by Microsoft 
-          - Go to <a href = "https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server?view=sql-server-ver16" target = "_blank"> ODBC Driver for SQL Server </a> to learn more or download 
-      - **MySQL**
-        - **Connector/ODBC**
-          - Developed and distributed by MySQL 
-          - Go to <a href = "https://dev.mysql.com/downloads/connector/odbc/" target = "_blank"> MySQL </a> to download 
-          
-  - **ODBC interface**
-    - Ensure that an appropriate ODBC interface is ready for use. ODBC interfaces are usually specific to the application and exist as either an in-built functionality of the application or an extension (e.g. packages/modules/plug-ins), hence, they should be considered with regards to the application:
-      - **R**
-        - **DBI**
-          - An R package in CRAN developed by R Special Interest Group on Databases (R-SIG-DB) and Hadley Wickham and maintained by Kirill Müller
-          - Install/update the DBI package from CRAN by running the R command `install.packages("DBI")` if it hasn't been installed/needs to be updated (you can check whether it is installed in R by running the R command `"RODBC" %in% installed.packages()`)
-          - Load the DBI package for use by running the R command `library(DBI)`
-          - See package documentation by running `RShowDoc(what = "DBI", package = "DBI")`
-        - **RODBC**
-          - An R package developed by Brian Ripley and Michael Lapsley and maintained by Brian Ripley
-          - Install/update the RODBC package from CRAN by running the R command `install.packages("RODBC")` if it hasn't been installed/needs to be updated (you can check whether it is installed in R by running the R command `"RODBC" %in% installed.packages()`)
-          - <details> <summary> Click here for an alternative installation method for MacOS if the `install.packages` method didn't work </summary> 
-            - It has been reported that Mac users are unable to install through the `install.packages` method
-            - Try this 
-              - Install Homebrew if it hasn't been installed by running the following Bash commands in the terminal
-                - `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
-              - Install wget if if it hasn't been installed by running the following Bash commands in the terminal
-                - `brew install wget`
-              - Install RODBC by running the following Bash commands in the terminal
-                - `brew install unixODBC`
-                - `wget "http://cran.r-project.org/src/contrib/tar_filename.tar.gz"`
-                  - ***Where***
-                    - `tar_filename` is the name of the tar file on CRAN, which can change with the version of RODBC. The name of the tar file for the latest version of RODBC on CRAN can be found on CRAN <a href = "http://cran.r-project.org/src/contrib/" target = "_blank">here</a> 
-                - `R CMD INSTALL tar_filename.tar.gz`
-                  - ***Where***
-                    - `tar_filename` is the name of the tar file 
-          </details>
-          - Load the package for use by running the R command `library(RODBC)`
-          - See package documentation by running `RShowDoc(what = "RODBC", package = "RODBC")`
-        - **Comparison**
-          - Both `DBI` and `RODBC` are reliable, simple to use, and developed by great developers. However, `DBI` has more functionalities (e.g. error handling, integrative functionalities with RStudio, specifically, it usefully shows the structure of the connected DBMS engine/server with databases, tables and table columns and their data types in the "Connection" pane), covers more data sources (i.e. DBMSs), and, in some cases/reportedly seems to be faster than `RODBC` 
-  
-  
-```{r}
-"RODBC" %in% installed.packages()
 
-installed.packages()[installed.packages()[,1] == "RODBC"]
+**Working with a DBMS from R**
+- **Connecting R to Microsoft SQL Server**
+    - **DBI**
+      - The `dbConnect()` function connects R to a DBMS-specific ODBC driver/
+      - The `dbConnect()` function has the general form and usage
+        ```{r, eval = F, include = T}
+        connection_object_dbi <- DBI::dbConnect(drv, ...)
+        ```
+          - ***Where***
+            - `drv` is the back-end of `dbConnect` that drives the connection based on the 
+    - **RODBC**
+      ```{r, eval = F, include = T}
+      connection_object_rodbc <- RODBC::odbcDriverConnect(
+        connection = "Driver={ODBC Driver 17 for SQL Server};Server={Server Name};Database={Database Name};"
+        )
+      ```
+      
 
-installed.packages()[]
-```
+
+
+
+      
+somethig
+- Something
+        - ***Notes***
+          - The "Driver" and "Server" parameters are required while the "Database" parameter is optional and can be specified downstream when specifying a request call to the DBMS
+    
+
   
-  
-  brew update && brew install unixODBC && \
-  wget "https://cran.r-project.org/src/contrib/RODBC_1.3-23.tar.gz" && \
-  R CMD INSTALL RODBC_1.3-23.tar.gz
-  
-```{r}
+```{r eval = F}
 
 system(paste("open -a 'Google Chrome' ","_book/index.html"))
 

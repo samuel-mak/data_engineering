@@ -63,18 +63,34 @@ details>summary {
 details[open] > summary {
     list-style-type: '';
     color: #8FC4B7;
+
+}
+details{
+
+  margin-bottom: 0px;
 }
 summary:hover{
   color: #8FC4B7;
   transition: 0.2s;
 }
 
+summary{
+  text-decoration: underline;
+}
+
 code {
   color: #8FC4B7;
 }
 
-
-
+/*width: 100%; 
+  margin: 0px; 
+  padding: 0em; 
+  line-height: 20px; 
+  padding-left: 1%; 
+  padding-bottom: 0px; 
+  margin-bottom: 0px;
+  margin-top: 0px;
+  padding-top: -50px;*/
 
 
 

@@ -181,7 +181,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">May 17, 2024</p>
+      <p class="date-modified">May 18, 2024</p>
     </div>
   </div>
     
@@ -262,6 +262,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li><strong>R</strong>
 <ul>
+<li>ODBC interfaces for R are in the form of R packages (aka ODBC interface R packages) with specific operations handled by specific functions. There are multiple ODBC interface R packages that are independently capable of working with an ODBC-compliant DBMS. The main ODBC interface R packages are:
+<ul>
 <li><strong>DBI</strong>
 <ul>
 <li>An R package in CRAN developed by R Special Interest Group on Databases (R-SIG-DB) and Hadley Wickham and maintained by Kirill Müller</li>
@@ -308,11 +310,11 @@ Installation guidance
 <li><p>It has been reported that the above method may not work for MacOS (e.g.&nbsp;<a href="https://stackoverflow.com/questions/43804850/how-to-install-rodbc-on-macos-sierra-10-12-4" target="_blank"> here on Stack Overflow </a>)</p></li>
 <li><details>
 <summary>
-<p>Click here for an alternative method for MacOS</p>
+<p>Alternative method for MacOS</p>
 </summary>
 <ul>
 <li>Any CRAN packages can be installed in the terminal</li>
-<li>Install the Homebrew command line utility if it hasn’t been installed by running the following Bash commands in the terminal
+<li>Install the Homebrew package if it hasn’t been installed by running the following Bash commands in the terminal
 <ul>
 <li><code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code></li>
 </ul></li>
@@ -320,11 +322,11 @@ Installation guidance
 <ul>
 <li><code>brew install wget</code></li>
 </ul></li>
-<li>Download the package tar.gz file from CRAN to the Shell directory by running the following wget command line utility codes in the terminal
+<li>Download the package tar.gz file from CRAN to the Shell directory by running the following wget command-line interface codes in the terminal
 <ul>
 <li><code>wget "http://cran.r-project.org/src/contrib/tar_filename.tar.gz"</code></li>
 </ul></li>
-<li>Install the package to R by running the following R command line utility codes in the terminal
+<li>Install the package to R by running the following R command-line interface codes in the terminal
 <ul>
 <li><code>R CMD INSTALL tar_filename.tar.gz</code>
 <ul>
@@ -358,9 +360,10 @@ Installation guidance
 </details></li>
 <li>See package documentation by running <code>RShowDoc(what = "RODBC", package = "RODBC")</code></li>
 </ul></li>
+</ul></li>
 <li><strong>Comparison</strong>
 <ul>
-<li>Both <code>DBI</code> and <code>RODBC</code> are reliable, simple to use, and developed by great developers. However, <code>DBI</code> has more functionalities (e.g.&nbsp;error handling, integrative functionalities with RStudio, specifically, it usefully shows the structure of the connected DBMS engine/server with databases, tables and table columns and their data types in the “Connection” pane), covers more data sources (i.e.&nbsp;DBMSs), and, in some cases/reportedly seems to be faster than <code>RODBC</code></li>
+<li>Both <code>DBI</code> and <code>RODBC</code> are independently capable, reliable, simple to use, and developed by great developers. However, <code>DBI</code> has more functionalities (e.g.&nbsp;error handling, integrative functionalities with RStudio, specifically, it usefully shows the structure of the connected DBMS engine/server with databases, tables and table columns and their data types in the “Connection” pane), covers more types of DBMSs (not just ODBC-compliant ones), and, in some cases/reportedly seems to be faster than <code>RODBC</code></li>
 </ul></li>
 </ul></li>
 </ul></li>
@@ -368,39 +371,80 @@ Installation guidance
 </ol></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">packageVersion</span>(<span class="st">"RODBC"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] '1.3.23'</code></pre>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>?odbc<span class="sc">::</span>odbc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
+<p><strong>Working with an ODBC-compliant DBMS from R</strong></p>
 <ul>
-<li><strong>Working with a DBMS from R</strong>
+<li><strong>Introduction</strong>
 <ul>
-<li><strong>Connecting R to Microsoft SQL Server</strong>
+<li>As mentioned, ODBC-compliant DBMSs are worked with from R through an ODBC interface R package (e.g.&nbsp;<code>DBI</code> or <code>RODBC</code>) with specific operations handled by specific functions. The main operations are described for both <code>DBI</code> and <code>RODBC</code>.</li>
+</ul></li>
+<li><strong>Connect R to an ODBC-compliant DBMS</strong>
 <ul>
-<li><p><strong>DBI</strong></p>
+<li><strong>DBI</strong>
 <ul>
-<li><p>The <code>dbConnect()</code> function connects R to a DBMS-specific ODBC driver/</p></li>
-<li><p>The <code>dbConnect()</code> function has the general form and usage</p>
+<li><p>The <code>dbConnect</code> function is a generic for connecting R to a DBMS</p></li>
+<li><p>The <code>dbConnect</code> function has the general form and usage</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>connection_object_dbi <span class="ot">&lt;-</span> DBI<span class="sc">::</span><span class="fu">dbConnect</span>(drv, ...)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>connection_object_dbi <span class="ot">&lt;-</span> DBI<span class="sc">::</span><span class="fu">dbConnect</span>(drv, ...)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
 <li><strong><em>Where</em></strong>
 <ul>
-<li><code>drv</code> is the back-end of <code>dbConnect</code> that drives the connection based on the</li>
+<li><code>drv</code> specifies the type of the DBMS to be connected to using a back-end function for calling an appropriate method for connecting R to the specific DBMS. For ODBC-compliant DBMSs, it would be the <code>odbc::odbc()</code> function.</li>
+<li><code>...</code> is a set of argument(s) that depends on the back-end function to the <code>drv</code> argument (or the specific method being called), hence, refer to the back-end function for the specific set of arguments and details, these usually involve the DSN</li>
 </ul></li>
 </ul></li>
 </ul></li>
-<li><p><strong>RODBC</strong></p>
+<li><strong>RODBC</strong>
+<ul>
+<li><p>The <code>odbcDriverConnect</code> function connects R to an ODBC-compliant DBMS</p></li>
+<li><p>The <code>odbcDriverConnect</code> function has the general form and usage</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>connection_object_rodbc <span class="ot">&lt;-</span> RODBC<span class="sc">::</span><span class="fu">odbcDriverConnect</span>(</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">connection =</span> <span class="st">"Driver={ODBC Driver 17 for SQL Server};Server={Server Name};Database={Database Name};"</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div></li>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>connection_object_rodbc <span class="ot">&lt;-</span> RODBC<span class="sc">::</span><span class="fu">odbcDriverConnect</span>(connection)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>connection</code> is the DSN (aka connection string). The format of a DSN is specific to the ODBC driver and/or ODBC-compliant DBMS. For example, the DSN for Microsoft SQL Server is “Driver={ODBC Driver 17 for SQL Server};Server={Server Name};Database={Database Name};”</li>
+</ul></li>
+<li><strong><em>Notes</em></strong>
+<ul>
+<li>The <code>RODBC</code> packages actually provides two ways of doing this, one that’s shown above, the other is through the <code>odbcConnect</code> function. The <code>odbcDriverConnect</code> method is preferred as the <code>odbcConnect</code> function is less flexible in that it requires the manual action of first setting up a DSN registry in the ODBC manager (e.g.&nbsp;ODBC Data Source Administrator application on Windows OS), which is done outside of R, while the <code>odbcDriverConnect</code> method doesn’t require this step, hence <code>odbcDriverConnect</code> has advantages in terms of automation and collaboration. Though, many people still use <code>odbcConnect</code> probably because they haven’t caught up with updates or even read package documentation at all or it not working for them.</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><strong>Send a request call to the DBMS</strong>
+<ul>
+<li><strong>DBI</strong>
+<ul>
+<li>The <code>DBI</code> package has a set of low-level functions for executing different specific operations when sending a request call to a DBMS (e.g.&nbsp;sending the request to the DBMS, fetching the results, clearing the result in the DBMS, etc.) and a set of high-level functions which execute multiple low-level functions at once for ease and perhaps for additional functionalities:
+<ul>
+<li><strong>Low-level functions</strong>
+<ul>
+<li><code>dbExecute</code></li>
+</ul></li>
+</ul></li>
+<li>The <code>DBI</code> package provides two methods, the “R environment method” in which request calls are coded in R in an R environment (e.g.&nbsp;R script, R console, R code chunk/block within an R Markdown or Quarto document) and the “SQL environment in an R environment method” in which request calls are coded in SQL in an SQL environment within an R environment (e.g.&nbsp;SQL code chunk/block in an R Markdown or Quarto document)
+<ul>
+<li><strong>R environment method</strong>
+<ul>
+<li>The <code>dbGetQuery</code> function takes a DBI connection object (returned from <code>dbConnect</code>) and a request call in SQL, upon being called, it sends the request call to the DBMS (specified in the DBI connection object) where the request call is executed and fetch and return any results returned from the DBMS.</li>
 </ul></li>
 </ul></li>
 </ul>
+that’s in an R environment (e.g.&nbsp;R script, R console, R code chunk/block within an R Markdown or a Quarto document) and the other that’s in an SQL environment within an R environment (i.e.&nbsp;SQL code chunk/block within an R Markdown or a Quarto document)</li>
+<li><h2 id="rodbc" class="anchored"><strong>RODBC</strong></h2>
+dbSendStatement - Submits and executes statement for data manipulation and select queries dbSendQuery - Submits and executes statement for select queries dbExecute - calls dbSendStatement to send and execute statements, then calls dbGetRowsAffected, then calls dbClearResults</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>?dbExecute</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>?dbSendQuery</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>?dbSendStatement</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>?DBI<span class="sc">::</span>dbWriteTable</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>somethig - Something - <strong><em>Notes</em></strong> - The “Driver” and “Server” parameters are required while the “Database” parameter is optional and can be specified downstream when specifying a request call to the DBMS</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(<span class="fu">paste</span>(<span class="st">"open -a 'Google Chrome' "</span>,<span class="st">"_book/index.html"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>

@@ -26,7 +26,14 @@ ul li {
 
 ul{
   margin-bottom: 0px;
+  padding-inline-start: 30px;
 }
+
+/* When there is a code block in a list, Quarto will add some marginal space on top (margin-top) some elements by default, this removes the marginal space */
+ul>li:not(:has(>p))>ul>li:has(>p), ol>li:not(:has(>p))>ul>li:has(>p), ul>li:not(:has(>p))>ol>li:has(>p), ol>li:not(:has(>p))>ol>li:has(>p) {
+    margin-top: 0px;
+}
+
 
 html, body {
   margin:0px;

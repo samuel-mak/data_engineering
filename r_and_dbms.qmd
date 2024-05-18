@@ -45,97 +45,122 @@
   3. **Make sure an ODBC interface is ready for use**
       - ODBC interfaces are usually specific to the application and exist as either an in-built functionality of the application or an extension (e.g. packages/modules/plug-ins), hence, they should be considered with regards to the application:
         - **R**
-          - **DBI**
-            - An R package in CRAN developed by R Special Interest Group on Databases (R-SIG-DB) and Hadley Wickham and maintained by Kirill Müller
-            - Install/update the DBI package from CRAN by running the R command if it hasn't been installed/needs to be updated 
-            - <details><summary>Installation guidance</summary>
-              - Install the package `DBI` by running the following R codes
-                ```{r, eval = F, include = T}
-                install.package("DBI")
-                ```
-              - You can access whether the package `DBI` is installed in R by running the following R codes
-                ```{r, eval = F, include = T}
-                "DBI" %in% installed.packages()
-                ```
-              - The version of the installed `DBI` package can be accessed by running the following R codes
-                ```{r}
-                packageVersion("DBI")
-                ```
-            </details>
-            - See package documentation by running `RShowDoc(what = "DBI", package = "DBI")`
-          - **RODBC**
-            - An R package developed by Brian Ripley and Michael Lapsley and maintained by Brian Ripley
-            - Install/update the RODBC package from CRAN by running the R command if it hasn't been installed/needs to be updated
-            - <details><summary>Installation guidance</summary>
-              - Install the package `DBI` by running the following R codes
-                ```{r, eval = F, include = T}
-                install.package("DBI")
-                ```
-              - It has been reported that the above method may not work for MacOS (e.g. <a href = "https://stackoverflow.com/questions/43804850/how-to-install-rodbc-on-macos-sierra-10-12-4" target = "_blank"> here on Stack Overflow </a>)
-              - <details> <summary> Alternative method for MacOS </summary>
-                - Any CRAN packages can be installed in the terminal
-                - Install the Homebrew package if it hasn't been installed by running the following Bash commands in the terminal
-                  - `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
-                - Install wget using Homebrew if it hasn't been installed by running the following brew command line utility codes in the terminal
-                  - `brew install wget`
-                - Download the package tar.gz file from CRAN to the Shell directory by running the following wget command-line interface codes in the terminal
-                  - `wget "http://cran.r-project.org/src/contrib/tar_filename.tar.gz"`
-                - Install the package to R by running the following R command-line interface codes in the terminal
-                  - `R CMD INSTALL tar_filename.tar.gz`
-                    - ***Where***
-                      - `tar_filename` is the name of the tar.gz file of the package on CRAN, which can change, especially with the version of the package. The name of the tar.gz file for the latest version an R package on CRAN can be found on CRAN <a href = "http://cran.r-project.org/src/contrib/" target = "_blank">here</a> 
-                - Remove the initially downloaded tar.gz file by running the following bash commands in the terminal 
-                  - `rm tar_filename.tar.gz`
-                    - ***Where***
-                      - `tar_filename` is the name of the tar.gz file of the package initially downloaded from CRAN 
-                </details>
-              - You can access whether the package `DBI` is installed in R by running the following R codes
-                ```{r, eval = F, include = T}
-                "DBI" %in% installed.packages()
-                ```
-              - The version of the installed `DBI` package can be accessed by running the following R codes
-                ```{r, eval = F, include = T}
-                packageVersion("DBI")
-                ```
+          - ODBC interfaces for R are in the form of R packages (aka ODBC interface R packages) with specific operations handled by specific functions. There are multiple ODBC interface R packages that are independently capable of working with an ODBC-compliant DBMS. The main ODBC interface R packages are:
+            - **DBI**
+              - An R package in CRAN developed by R Special Interest Group on Databases (R-SIG-DB) and Hadley Wickham and maintained by Kirill Müller
+              - Install/update the DBI package from CRAN by running the R command if it hasn't been installed/needs to be updated 
+              - <details><summary>Installation guidance</summary>
+                - Install the package `DBI` by running the following R codes
+                  ```{r, eval = F, include = T}
+                  install.package("DBI")
+                  ```
+                - You can access whether the package `DBI` is installed in R by running the following R codes
+                  ```{r, eval = F, include = T}
+                  "DBI" %in% installed.packages()
+                  ```
+                - The version of the installed `DBI` package can be accessed by running the following R codes
+                  ```{r}
+                  packageVersion("DBI")
+                  ```
               </details>
-            - See package documentation by running `RShowDoc(what = "RODBC", package = "RODBC")`
+              - See package documentation by running `RShowDoc(what = "DBI", package = "DBI")`
+            - **RODBC**
+              - An R package developed by Brian Ripley and Michael Lapsley and maintained by Brian Ripley
+              - Install/update the RODBC package from CRAN by running the R command if it hasn't been installed/needs to be updated
+              - <details><summary>Installation guidance</summary>
+                - Install the package `DBI` by running the following R codes
+                  ```{r, eval = F, include = T}
+                  install.package("DBI")
+                  ```
+                - It has been reported that the above method may not work for MacOS (e.g. <a href = "https://stackoverflow.com/questions/43804850/how-to-install-rodbc-on-macos-sierra-10-12-4" target = "_blank"> here on Stack Overflow </a>)
+                - <details> <summary> Alternative method for MacOS </summary>
+                  - Any CRAN packages can be installed in the terminal
+                  - Install the Homebrew package if it hasn't been installed by running the following Bash commands in the terminal
+                    - `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
+                  - Install wget using Homebrew if it hasn't been installed by running the following brew command line utility codes in the terminal
+                    - `brew install wget`
+                  - Download the package tar.gz file from CRAN to the Shell directory by running the following wget command-line interface codes in the terminal
+                    - `wget "http://cran.r-project.org/src/contrib/tar_filename.tar.gz"`
+                  - Install the package to R by running the following R command-line interface codes in the terminal
+                    - `R CMD INSTALL tar_filename.tar.gz`
+                      - ***Where***
+                        - `tar_filename` is the name of the tar.gz file of the package on CRAN, which can change, especially with the version of the package. The name of the tar.gz file for the latest version an R package on CRAN can be found on CRAN <a href = "http://cran.r-project.org/src/contrib/" target = "_blank">here</a> 
+                  - Remove the initially downloaded tar.gz file by running the following bash commands in the terminal 
+                    - `rm tar_filename.tar.gz`
+                      - ***Where***
+                        - `tar_filename` is the name of the tar.gz file of the package initially downloaded from CRAN 
+                  </details>
+                - You can access whether the package `DBI` is installed in R by running the following R codes
+                  ```{r, eval = F, include = T}
+                  "DBI" %in% installed.packages()
+                  ```
+                - The version of the installed `DBI` package can be accessed by running the following R codes
+                  ```{r, eval = F, include = T}
+                  packageVersion("DBI")
+                  ```
+                </details>
+              - See package documentation by running `RShowDoc(what = "RODBC", package = "RODBC")`
           - **Comparison**
-            - Both `DBI` and `RODBC` are reliable, simple to use, and developed by great developers. However, `DBI` has more functionalities (e.g. error handling, integrative functionalities with RStudio, specifically, it usefully shows the structure of the connected DBMS engine/server with databases, tables and table columns and their data types in the "Connection" pane), covers more data sources (i.e. DBMSs), and, in some cases/reportedly seems to be faster than `RODBC` 
+            - Both `DBI` and `RODBC` are independently capable, reliable, simple to use, and developed by great developers. However, `DBI` has more functionalities (e.g. error handling, integrative functionalities with RStudio, specifically, it usefully shows the structure of the connected DBMS engine/server with databases, tables and table columns and their data types in the "Connection" pane), covers more types of DBMSs (not just ODBC-compliant ones), and, in some cases/reportedly seems to be faster than `RODBC` 
 
+```{r}
+?odbc::odbc
+```
 
 **Working with an ODBC-compliant DBMS from R**
 
 - **Introduction**
-  - ODBC-compliant DBMSs are worked with from R through an ODBC interface of R in the form of an R package and, as mentioned, there are two main packages, namely `DBI` and `RODBC`, that are independently capable of some basic operations. These basic operations are described with methods for both packages. 
+  - As mentioned, ODBC-compliant DBMSs are worked with from R through an ODBC interface R package (e.g. `DBI` or `RODBC`) with specific operations handled by specific functions. The main operations are described for both `DBI` and `RODBC`.
 - **Connect R to an ODBC-compliant DBMS**
   - **DBI**
-    - The `dbConnect` function is a generic for connecting R to various DBMSs 
+    - The `dbConnect` function is a generic for connecting R to a DBMS
     - The `dbConnect` function has the general form and usage
       ```{r, eval = F, include = T}
       connection_object_dbi <- DBI::dbConnect(drv, ...)
       ```
         - ***Where***
-          - `drv` is a function that specifies the type of the DBMS to be connected to and hence the method being called to connect R to that DBMS. For ODBC-compliant DBMSs, it would be the `odbc::odbc()` function.
-          - `...` is a set of arguments that depends on the input to the `drv` argument, hence, refer to the drv function for specifics, these usually relate to the DSN 
+          - `drv` specifies the type of the DBMS to be connected to using a back-end function for calling an appropriate method for connecting R to the specific DBMS. For ODBC-compliant DBMSs, it would be the `odbc::odbc()` function.
+          - `...` is a set of argument(s) that depends on the back-end function to the `drv` argument (or the specific method being called), hence, refer to the back-end function for the specific set of arguments and details, these usually involve the DSN
   - **RODBC**
-    - The `odbcDriverConnect` function connects R to ODBC-compliant DBMSs
+    - The `odbcDriverConnect` function connects R to an ODBC-compliant DBMS
     - The `odbcDriverConnect` function has the general form and usage
       ```{r, eval = F, include = T}
       connection_object_rodbc <- RODBC::odbcDriverConnect(connection)
       ```
         - ***Where***   
-          - `connection` is the DSN (or connection string), usually in the form of "Driver={ODBC Driver 17 for SQL Server};Server={Server Name};Database={Database Name};"
-- **
+          - `connection` is the DSN (aka connection string). The format of a DSN is specific to the ODBC driver and/or ODBC-compliant DBMS. For example, the DSN for Microsoft SQL Server is "Driver={ODBC Driver 17 for SQL Server};Server={Server Name};Database={Database Name};"
+        - ***Notes***
+          - The `RODBC` packages actually provides two ways of doing this, one that's shown above, the other is through the `odbcConnect` function. The `odbcDriverConnect` method is preferred as the `odbcConnect` function is less flexible in that it requires the manual action of first setting up a DSN registry in the ODBC manager (e.g. ODBC Data Source Administrator application on Windows OS), which is done outside of R, while the `odbcDriverConnect` method doesn't require this step, hence `odbcDriverConnect` has advantages in terms of automation and collaboration. Though, many people still use `odbcConnect` probably because they haven't caught up with updates or even read package documentation at all or it not working for them. 
+- **Send a request call to the DBMS**
+  - **DBI**
+    - The `DBI` package has a set of low-level functions for executing different specific operations when sending a request call to a DBMS (e.g. sending the request to the DBMS, fetching the results, clearing the result in the DBMS, etc.) and a set of high-level functions which execute multiple low-level functions at once for ease and perhaps for additional functionalities:
+      - **Low-level functions**
+        - `dbExecute`
+    
+    - The `DBI` package provides two methods, the "R environment method" in which request calls are coded in R in an R environment (e.g. R script, R console, R code chunk/block within an R Markdown or Quarto document) and the "SQL environment in an R environment method" in which request calls are coded in SQL in an SQL environment within an R environment (e.g. SQL code chunk/block in an R Markdown or Quarto document)
+      - **R environment method**
+        - The `dbGetQuery` function takes a DBI connection object (returned from `dbConnect`) and a request call in SQL, upon being called, it sends the request call to the DBMS (specified in the DBI connection object) where the request call is executed and fetch and return any results returned from the DBMS.
+        ```{r}
+        
+  
+        ```
+    
+    that's in an R environment (e.g. R script, R console, R code chunk/block within an R Markdown or a Quarto document) and the other that's in an SQL environment within an R environment (i.e. SQL code chunk/block within an R Markdown or a Quarto document)
+  - **RODBC**
+    - 
+dbSendStatement - Submits and executes statement for data manipulation and select queries
+dbSendQuery - Submits and executes statement for select queries 
+dbExecute - calls dbSendStatement to send and execute statements, then calls dbGetRowsAffected, then calls dbClearResults
 
-     
-
-```{r}
-library(DBI)
-dbConnect
-library(RODBC)
-?odbcConnect
-?RODBC::sqlQuery
+```{r eval = F}
+?dbExecute
+?dbSendQuery
+?dbSendStatement
+?DBI::dbWriteTable
 ```
+    
+
+
 
 
 

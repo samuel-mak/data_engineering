@@ -150,13 +150,19 @@
     - 
 dbSendStatement - Submits and executes statement for data manipulation and select queries
 dbSendQuery - Submits and executes statement for select queries 
+dbFetch - Fetch results from the DBMS and return them as a data.frame
 dbExecute - calls dbSendStatement to send and execute statements, then calls dbGetRowsAffected, then calls dbClearResults
+dbGetQuery - First calls dbSendQuery, then dbFetch, then dbClearResult to clear result in DBMS
+dbGetRowsAffected - Returns the number of rows being affected given an object inheriting from DBIResult (internal function)
+dbCreateTable - Creates a table - First calls sqlCreateTable to create an SQL statement for creating a table, then pass the statement to dbExecute to execute the statement to create the table 
+dbWriteTable - Create and write a table - I believe it creates a table with dbCreateTable first (the documentation didn't say). It uses dbExistsTable and dbRemoveTable for overwriting tables 
+dbAppendTable - Assuming a table has been created beforehand, it calls sqlAppendTableTemplate to create an SQL statement for appending the table in a specific way and pass the statement to dbExecute to execute the statement in DBMS
+dbRemoveTable - Generates SQL statement using dbQuoteIdentifier then pass it to dbExecute
 
 ```{r eval = F}
-?dbExecute
-?dbSendQuery
-?dbSendStatement
-?DBI::dbWriteTable
+?DBI::dbAppendTable
+?DBI::dbReadTable
+?DBI::dbRemoveTable
 ```
     
 
@@ -165,7 +171,7 @@ dbExecute - calls dbSendStatement to send and execute statements, then calls dbG
 
 
       
-somethig
+sdbGetRowCountsomethig
 - Something
         - ***Notes***
           - The "Driver" and "Server" parameters are required while the "Database" parameter is optional and can be specified downstream when specifying a request call to the DBMS

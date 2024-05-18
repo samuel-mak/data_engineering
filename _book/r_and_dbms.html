@@ -436,16 +436,15 @@ Installation guidance
 </ul>
 that’s in an R environment (e.g.&nbsp;R script, R console, R code chunk/block within an R Markdown or a Quarto document) and the other that’s in an SQL environment within an R environment (i.e.&nbsp;SQL code chunk/block within an R Markdown or a Quarto document)</li>
 <li><h2 id="rodbc" class="anchored"><strong>RODBC</strong></h2>
-dbSendStatement - Submits and executes statement for data manipulation and select queries dbSendQuery - Submits and executes statement for select queries dbExecute - calls dbSendStatement to send and execute statements, then calls dbGetRowsAffected, then calls dbClearResults</li>
+dbSendStatement - Submits and executes statement for data manipulation and select queries dbSendQuery - Submits and executes statement for select queries dbFetch - Fetch results from the DBMS and return them as a data.frame dbExecute - calls dbSendStatement to send and execute statements, then calls dbGetRowsAffected, then calls dbClearResults dbGetQuery - First calls dbSendQuery, then dbFetch, then dbClearResult to clear result in DBMS dbGetRowsAffected - Returns the number of rows being affected given an object inheriting from DBIResult (internal function) dbCreateTable - Creates a table - First calls sqlCreateTable to create an SQL statement for creating a table, then pass the statement to dbExecute to execute the statement to create the table dbWriteTable - Create and write a table - I believe it creates a table with dbCreateTable first (the documentation didn’t say). It uses dbExistsTable and dbRemoveTable for overwriting tables dbAppendTable - Assuming a table has been created beforehand, it calls sqlAppendTableTemplate to create an SQL statement for appending the table in a specific way and pass the statement to dbExecute to execute the statement in DBMS dbRemoveTable - Generates SQL statement using dbQuoteIdentifier then pass it to dbExecute</li>
 </ul></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>?dbExecute</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>?dbSendQuery</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>?dbSendStatement</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>?DBI<span class="sc">::</span>dbWriteTable</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>?DBI<span class="sc">::</span>dbAppendTable</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>?DBI<span class="sc">::</span>dbReadTable</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>?DBI<span class="sc">::</span>dbRemoveTable</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>somethig - Something - <strong><em>Notes</em></strong> - The “Driver” and “Server” parameters are required while the “Database” parameter is optional and can be specified downstream when specifying a request call to the DBMS</p>
+<p>sdbGetRowCountsomethig - Something - <strong><em>Notes</em></strong> - The “Driver” and “Server” parameters are required while the “Database” parameter is optional and can be specified downstream when specifying a request call to the DBMS</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(<span class="fu">paste</span>(<span class="st">"open -a 'Google Chrome' "</span>,<span class="st">"_book/index.html"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>

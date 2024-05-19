@@ -131,38 +131,204 @@
           - `connection` is the DSN (aka connection string). The format of a DSN is specific to the ODBC driver and/or ODBC-compliant DBMS. For example, the DSN for Microsoft SQL Server is "Driver={ODBC Driver 17 for SQL Server};Server={Server Name};Database={Database Name};"
         - ***Notes***
           - The `RODBC` packages actually provides two ways of doing this, one that's shown above, the other is through the `odbcConnect` function. The `odbcDriverConnect` method is preferred as the `odbcConnect` function is less flexible in that it requires the manual action of first setting up a DSN registry in the ODBC manager (e.g. ODBC Data Source Administrator application on Windows OS), which is done outside of R, while the `odbcDriverConnect` method doesn't require this step, hence `odbcDriverConnect` has advantages in terms of automation and collaboration. Though, many people still use `odbcConnect` probably because they haven't caught up with updates or even read package documentation at all or it not working for them. 
-- **Send a request call to the DBMS**
+- **Sending request calls**
   - **DBI**
-    - The `DBI` package has a set of low-level functions for executing different specific operations when sending a request call to a DBMS (e.g. sending the request to the DBMS, fetching the results, clearing the result in the DBMS, etc.) and a set of high-level functions which execute multiple low-level functions at once for ease and perhaps for additional functionalities:
+    - **Introduction**
+      - The `DBI` package provides a set of functions for sending different request calls to the DBMS/DBMS driver upon being called. These functions can be organised in a hierarchy where lower level functions are used to send relatively simple/basic request calls (usually in line with ODBC standard calls) while higher level functions are built on multiple lower level functions and possibly other functions for sending more complex/abstract request calls (usually specific to R). Some of these functions are described below.
+    - **Level 1 functions**
+      - `dbSendQuery`
+        - **Description**
+          - Send an SQL select statement to a specified DBMS for execution and returns an instance of class `DBIResult`
+          - This is recommended for simple SQL select statements, for more complex non-select data manipulation SQL statements, use `dbSendStatement` (see below)
+        - **Usage**
+          - `dbSendQuery(conn, statement,...)`
+            - ***Where***
+              - `conn` is a DBI connection object
+              - `statement` is a SQL select statement 
+              - `...` a set of arguments and inputs that is specific/to be passed on to a method (refer to the method for these)
+      - `dbSendStatement`
+        - **Description**
+          - Send an SQL statement to a specified DBMS for execution and returns an instance of class `DBIResult`
+          - This is recommended for non-select data manipulation SQL statements, for simple select SQL statements, use `dbSendQuery` (see above)
+        - **Usage**
+          - `dbSendStatement(conn, statement,...)`  
+            - ***Where***
+              - `conn` is a DBI connection object
+              - `statement` is a SQL statement 
+              - `...` a set of arguments and inputs that is specific/to be passed on to a method (refer to the method for these)
+      - `dbGetRowsAffected`
+        - **Description**
+          - Takes an instance object of class `DBIResult` and returns the number of rows being affected due to a request call (e.g. by `dbSendQuery` or `dbSendStatement`)
+        - **Usage**
+          - `dbGetRowsAffected(res, ...)`
+            - ***Where***
+              - `res` is an object of class `DBIResult` 
+              - `...` a set of arguments and inputs that are specific/to be passed on to a method (refer to the method for these)
+      - `dbFetch`
+        - **Description**
+          - Fetch any results returned by the DBMS due to a request call and return them in the form of a data.frame
+        - **Usage**
+          - `dbFetch(res, n, ...)`
+            - ***Where***
+              - `res` is an object of class `DBIResult`
+              - `n` is the maximum number of records to retrieve per fetch. `-1` or `Inf` to retrieve all pending records.
+              - `...` a set of arguments and inputs that are specific/to be passed on to a method (refer to the method for these)
+      - `dbHasCompleted`
+        - **Description**
+          - Takes an instance object of class `DBIResult` and returns a logical that indicates whether the request call execution has completed
+        - **Usage**
+          - `dbHasCompleted(res, ...)`
+            - ***Where***
+              - `res` is an object of class `DBIResult`
+              - `...` a set of arguments and inputs that are specific/to be passed on to a method (refer to the method for these)
+      - `dbClearResult`
+        - **Description**
+          - Takes an instance object of class `DBIResult` and frees all local and remote resources that have been used by a request call and its execution 
+          - This is a necessity after a request call execution even if no rows have been affected/fetched or it led to an error
+        - **Usage**
+          - `dbClearResult(res, ...)`
+            - ***Where***
+              - `res` is an object of class `DBIResult`
+              - `...` is a set of arguments and inputs that is specific/to be passed on to a method (refer to the method for these)
+      - `dbQuoteIdentifier`
+        - **Description**
+          - Takes a DBI DBMS connection object and DBMS table identifier object and generates an SQL statement in a safe way (e.g. ensure characters are escaped, avoid SQL injection attacks)
+        - **Usage**
+          - `dbQuoteIdentifier(conn, x, ...)`
+            - ***Where***
+              - `conn` is a DBI DBMS connection object  
+              - `x` is a character vector of column names and their data types, or an SQL statement (object of class `SQL`), or a DBMS table identifier (an object of class `Id`)
+              - `...` is a set of arguments and inputs that is specific/to be passed on to a method (refer to the method for these)
+      - `dbListTables`
+        - **Description**
+          - Show tables in a DBI DBMS connection
+        - **Usage**
+          - `dbListTables(conn, ...)`
+            - ***Where***
+              - `conn` is a DBI DBMS connection instance object   
+              - `...` is a set of arguments and inputs that is specific/to be passed on to a method (refer to the method for these)
+    - **Level 2 functions**
+      - `sqlAppendTable`
+        - **Description**
+          - Takes a DBI DBMS connection instance object and DBMS table identifier and calls `dbQuoteIdentifier` to generate an SQL statement for appending an existing table 
+          - This automates the process of typing the SQL statement for appending a table, which could be tedious if done manually on a large table
+        - **Usage**
+          - `sqlAppendTable(con, table, values, ...)`
+            - ***Where***
+              - `con` is a DBI DBMS connection instance object
+              - `table` is a DBMS table identifier (a character string, an instance object of class `Id`, or an instance object of class `SQL`)
+              - `values` is an instance object of class data.frame, this is the table in R to be defined in SQL in the SQL statement 
+              - `...` a set of arguments and inputs that are either optional or are specific/to be passed on to a method 
+      - `sqlCreateTable`
+        - **Description**
+          - Takes a DBI DBMS connection instance object and a DBMS table identifier and calls `dbQuoteIdentifier` to generate an SQL statement for creating a table
+        - **Usage**
+          - `sqlCreateTable(con, table, values, ...)`
+            - ***Where***
+              - `con` is a DBI DBMS connection instance object
+              - `table` is a DBMS table identifier (a character string, an instance object of class `Id`, or an instance object of class `SQL`)
+    - **Level 3 functions**
+      - `dbExecute`
+        - **Description**
+          - Takes an SQL statement and sequentially calls `dbSendStatement`, `dbGetRowsAffected`, and `dbClearResults`
+          - Automates the process of sending an SQL statement to a specified DBMS for execution 
+        - **Usage**
+          - `dbExecute(conn, statement, ...)`
+            - ***Where***
+              - `conn` is a DBI DBMS connection instance object   
+              - `statement` is an SQL statement as a string
+      - `dbGetQuery`
+        - **Description**
+          - Takes an SQL select statement and sequentially calls `dbSendQuery`, `dbFetch`, and `dbClearResults`
+          - Automates the process of sending a retrieval (select) request
+        - **Usage**
+          - `dbGetQuery(conn, statement, ...)`
+            - ***Where***
+              - `conn` is a DBI DBMS connection object 
+              - `statement` is an SQL select statement as a string
+    - **Level 4 functions**
+      - `dbReadTable`
+        - **Description**
+          - Takes a DBI DBMS connection instance-object and table identifier and calls `dbQuoteIdentifier` to generate an SQL select statement for the specified table and passes the SQL select statement to and calls `dbGetQuery`
+          - This automates the process of reading a table in a DBMS from R
+        - **Usage**
+          - `dbReadTable(conn, name, ...)`
+            - ***Where***
+              - `conn` is a DBI DBMS connection instance-object
+              - `name` is a table identifier, which is a character string with the unquoted DBMS table name (e.g. "table_name"), or an instance-object of class `Id`returned by the `DBI::Id` function, or an instance-object of class `SQL` returned by the `DBI::SQL` function
+      - `dbCreateTable`
+        - **Description**
+          - Takes a DBI DBMS connection instance-object and a table identifier and calls `sqlCreateTable` to generate an SQL statement for creating a specified table and passes the SQL statement to and calls `dbExecute`
+          - This creates a table in a more automated and safer way 
+        - **Usage**
+          - `dbCreateTable(conn, name, fields, ...)`
+            - ***Where***
+              - `conn` is a DBI DBMS connection instance-object of class `DBIConnection`
+              - `name` is a table identifier, which can be a character string with the unquoted DBMS table name (e.g. "table_name"), or an instance-object of class `Id` returned by the `DBI::Id` function, or an instance-object of class `SQL` returned by the `DBI::SQL` function
+      - `dbAppendTable`
+        - **Description**
+          - Takes a DBI DBMS connection instance-object, a table identifier, and a table in R and calls `sqlAppendTable` to generate an SQL statement for appending a specified table in a specified way and passes the SQL statement to and calls `dbExecute`
+          - This appends a table in a more automated and safer way 
+        - **Usage**
+          - `dbAppendTable(conn, name, value, ...)`
+            - ***Where***
+              - `conn` is the DBMS connection instance-object of class `DBIConnection` returned by the `dbConnect` function
+              - `name` is a table identifier, which can be a character string with the unquoted DBMS table name (e.g. "table_name"), or an instance-object of class `Id` returned by the `DBI::Id` function, or an instance-object of class `SQL` returned by the `DBI::SQL` function
+      - `dbRemoveTable`
+        - **Description**
+          - 
+        - **Usage**
+          - `dbRemoveTable(conn, name, ...)`
+            - ***Where***
+              - `conn` is the DBMS connection instance-object of class `DBIConnection` returned by the `dbConnect` function   
+
+      
+              
+```{r}
+?dbRemoveTable
+```
       - **Low-level functions**
         - `dbExecute`
     
     - The `DBI` package provides two methods, the "R environment method" in which request calls are coded in R in an R environment (e.g. R script, R console, R code chunk/block within an R Markdown or Quarto document) and the "SQL environment in an R environment method" in which request calls are coded in SQL in an SQL environment within an R environment (e.g. SQL code chunk/block in an R Markdown or Quarto document)
-      - **R environment method**
-        - The `dbGetQuery` function takes a DBI connection object (returned from `dbConnect`) and a request call in SQL, upon being called, it sends the request call to the DBMS (specified in the DBI connection object) where the request call is executed and fetch and return any results returned from the DBMS.
-        ```{r}
-        
-  
-        ```
-    
+
     that's in an R environment (e.g. R script, R console, R code chunk/block within an R Markdown or a Quarto document) and the other that's in an SQL environment within an R environment (i.e. SQL code chunk/block within an R Markdown or a Quarto document)
   - **RODBC**
-    - 
-dbSendStatement - Submits and executes statement for data manipulation and select queries
-dbSendQuery - Submits and executes statement for select queries 
-dbFetch - Fetch results from the DBMS and return them as a data.frame
-dbExecute - calls dbSendStatement to send and execute statements, then calls dbGetRowsAffected, then calls dbClearResults
-dbGetQuery - First calls dbSendQuery, then dbFetch, then dbClearResult to clear result in DBMS
-dbGetRowsAffected - Returns the number of rows being affected given an object inheriting from DBIResult (internal function)
-dbCreateTable - Creates a table - First calls sqlCreateTable to create an SQL statement for creating a table, then pass the statement to dbExecute to execute the statement to create the table 
-dbWriteTable - Create and write a table - I believe it creates a table with dbCreateTable first (the documentation didn't say). It uses dbExistsTable and dbRemoveTable for overwriting tables 
-dbAppendTable - Assuming a table has been created beforehand, it calls sqlAppendTableTemplate to create an SQL statement for appending the table in a specific way and pass the statement to dbExecute to execute the statement in DBMS
-dbRemoveTable - Generates SQL statement using dbQuoteIdentifier then pass it to dbExecute
+
+DBIResult - An S4 Class for representing a statement execution, specifically, the results and state
+
+ 
+LEVEL 2 FUNCTIONS
+
+dbExecute - dbSendStatement, dbGetRowsAffected, dbClearResults
+dbGetQuery - dbSendQuery, dbFetch, then dbClearResult 
+
+LEVEL 3 FUNCTIONS
+dbReadTable - Takes parameters and calls dbQuoteIdentifier to generate an SQL select statement and dbGetQuery
+dbCreateTable - sqlCreateTable, dbExecute
+dbAppendTable - sqlAppendTable, dbExecute
+dbRemoveTable - Takes parameters and passes them to and calls dbQuoteIdentifier to generate an SQL statement for removing a table in the DBMS and dbExecute 
+dbExistsTable - Takes parameters and passes them to and calls dbQuoteIdentifier to generate an SQL statement for checking if a table exists and pass the statement to dbExecute to execute 
+
+
+LEVEL FOUR FUNCTIONS
+dbWriteTable - A function for appending or overwriting an existing or non-existing table. For all cases, it first checks whether the specified table exists using dbExistsTable. For appending, if the table exists, it calls dbAppendTable to append the table, if the table doesn't exist, it calls dbCreateTable to create the table first and then dbAppendTable to append (or push) the table. For overwriting, if the table exists, it calls dbRemoveTable to remove the existing table, then calls dbCreateTable to create the table, and then calls dbAppendTable to append (or push) the table; if the table doesn't exist, it calls dbCreateTable to create the table, and then calls dbAppendTable to append (or push) the table. 
+
+
+
 
 ```{r eval = F}
-?DBI::dbAppendTable
+?dbCreateTable
+?dbWriteTable
+?dbAppendTable
+?sqlAppendTableTemplate
+?dbRemoveTable
+RShowDoc("DBI", package = "DBI")
+
+?DBI::dbExistsTable
+??odbc::dbWriteTable
 ?DBI::dbReadTable
-?DBI::dbRemoveTable
+?DBI::dbListTables
 ```
     
 

@@ -181,7 +181,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">May 18, 2024</p>
+      <p class="date-modified">May 19, 2024</p>
     </div>
   </div>
     
@@ -415,38 +415,113 @@ Installation guidance
 </ul></li>
 </ul></li>
 </ul></li>
-<li><strong>Send a request call to the DBMS</strong>
+<li><strong>Sending request calls</strong>
 <ul>
 <li><strong>DBI</strong>
 <ul>
-<li>The <code>DBI</code> package has a set of low-level functions for executing different specific operations when sending a request call to a DBMS (e.g.&nbsp;sending the request to the DBMS, fetching the results, clearing the result in the DBMS, etc.) and a set of high-level functions which execute multiple low-level functions at once for ease and perhaps for additional functionalities:
+<li><strong>Introduction</strong>
 <ul>
-<li><strong>Low-level functions</strong>
+<li>The <code>DBI</code> package provides a set of functions for sending different request calls to the DBMS/DBMS driver upon being called. These functions can be organised in a hierarchy where lower level functions are used to send relatively simple/basic request calls (usually in line with ODBC standard calls) while higher level functions are built on multiple lower level functions and possibly other functions for sending more complex/abstract request calls (usually specific to R). Some of these functions are described below.</li>
+</ul></li>
+<li><strong>Level 1 functions</strong>
 <ul>
-<li><code>dbExecute</code></li>
+<li><code>dbSendQuery</code>
+<ul>
+<li><strong>Description</strong>
+<ul>
+<li>Send an SQL select statement to a specified DBMS for execution and returns an instance of class <code>DBIResult</code></li>
+<li>This is recommended for simple SQL select statements, for more complex non-select data manipulation SQL statements, use <code>dbSendStatement</code> (see below)</li>
+</ul></li>
+<li><strong>Usage</strong>
+<ul>
+<li><code>dbSendQuery(conn, statement,...)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>conn</code> is a DBI connection object</li>
+<li><code>statement</code> is a SQL select statement</li>
+<li><code>...</code> a set of arguments and inputs specific/to be passed on to a method (refer to the method for these)</li>
 </ul></li>
 </ul></li>
-<li>The <code>DBI</code> package provides two methods, the “R environment method” in which request calls are coded in R in an R environment (e.g.&nbsp;R script, R console, R code chunk/block within an R Markdown or Quarto document) and the “SQL environment in an R environment method” in which request calls are coded in SQL in an SQL environment within an R environment (e.g.&nbsp;SQL code chunk/block in an R Markdown or Quarto document)
-<ul>
-<li><strong>R environment method</strong>
-<ul>
-<li>The <code>dbGetQuery</code> function takes a DBI connection object (returned from <code>dbConnect</code>) and a request call in SQL, upon being called, it sends the request call to the DBMS (specified in the DBI connection object) where the request call is executed and fetch and return any results returned from the DBMS.</li>
 </ul></li>
 </ul></li>
-</ul>
-that’s in an R environment (e.g.&nbsp;R script, R console, R code chunk/block within an R Markdown or a Quarto document) and the other that’s in an SQL environment within an R environment (i.e.&nbsp;SQL code chunk/block within an R Markdown or a Quarto document)</li>
-<li><h2 id="rodbc" class="anchored"><strong>RODBC</strong></h2>
-dbSendStatement - Submits and executes statement for data manipulation and select queries dbSendQuery - Submits and executes statement for select queries dbFetch - Fetch results from the DBMS and return them as a data.frame dbExecute - calls dbSendStatement to send and execute statements, then calls dbGetRowsAffected, then calls dbClearResults dbGetQuery - First calls dbSendQuery, then dbFetch, then dbClearResult to clear result in DBMS dbGetRowsAffected - Returns the number of rows being affected given an object inheriting from DBIResult (internal function) dbCreateTable - Creates a table - First calls sqlCreateTable to create an SQL statement for creating a table, then pass the statement to dbExecute to execute the statement to create the table dbWriteTable - Create and write a table - I believe it creates a table with dbCreateTable first (the documentation didn’t say). It uses dbExistsTable and dbRemoveTable for overwriting tables dbAppendTable - Assuming a table has been created beforehand, it calls sqlAppendTableTemplate to create an SQL statement for appending the table in a specific way and pass the statement to dbExecute to execute the statement in DBMS dbRemoveTable - Generates SQL statement using dbQuoteIdentifier then pass it to dbExecute</li>
+<li><code>dbSendStatement</code>
+<ul>
+<li><strong>Description</strong>
+<ul>
+<li>Send an SQL statement to a specified DBMS for execution and returns an instance of class <code>DBIResult</code></li>
+<li>This is recommended for non-select data manipulation SQL statements, for simple select SQL statements, use <code>dbSendQuery</code> (see above)</li>
+</ul></li>
+<li><strong>Usage</strong>
+<ul>
+<li><code>dbSendStatement(conn, statement,...)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>conn</code> is a DBI connection object</li>
+<li><code>statement</code> is a SQL statement</li>
+<li><code>...</code> a set of arguments and inputs specific/to be passed on to a method (refer to the method for these)</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><code>dbGetRowsAffected</code>
+<ul>
+<li><strong>Description</strong>
+<ul>
+<li>Takes an instance object of class <code>DBIResult</code> and returns the number of rows being affected due to a request call (e.g.&nbsp;by <code>dbSendQuery</code> or <code>dbSendStatement</code>)</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
 </ul></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>?DBI<span class="sc">::</span>dbAppendTable</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>?DBI<span class="sc">::</span>dbReadTable</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>?DBI<span class="sc">::</span>dbRemoveTable</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>?dbSendStatement</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>No documentation for 'dbSendStatement' in specified packages and libraries:
+you could try '??dbSendStatement'</code></pre>
+</div>
+</div>
+<p>LEVEL 0 FUNCTIONS dbSendQuery - Send a statement to the DBMS for execution (recommended for select statements only) - Returns an instance of class DBIResult dbSendStatement - Send a statement to the DBMS for execution (any statements, though not recommened for select statements because it doesn’t fetch any results) - Returns an instance of class DBIResult dbGetRowsAffected - Takes a DBIResult object and returns the number of rows being affected due to that statement execution dbFetch - Fetch any results returned by the DBMS due to a statement execution and return them as a data.frame in R dbHasCompleted - Takes a DBIResult object and determines whether the statement execution in the DBMS has completed dbClearResult - Takes a DBIResult object and frees local and remote resources that have been used by a statement execution (this is a necessity after a statement execution - e.g.&nbsp;by dbSendQuery or dbSendStatement - even if no rows have been affected/fetched or it led to an error) dbQuoteIdentifier - Takes parameters and generates an SQL statement string in a safe way (e.g.&nbsp;ensure characters are escaped) to avoid SQL injection attacks dbListTables - Show tables in the connection</p>
+<pre><code>  - **Low-level functions**
+    - `dbExecute`
+
+- The `DBI` package provides two methods, the "R environment method" in which request calls are coded in R in an R environment (e.g. R script, R console, R code chunk/block within an R Markdown or Quarto document) and the "SQL environment in an R environment method" in which request calls are coded in SQL in an SQL environment within an R environment (e.g. SQL code chunk/block in an R Markdown or Quarto document)
+  - **R environment method**
+    - The `dbGetQuery` function takes a DBI connection object (returned from `dbConnect`) and a request call in SQL, upon being called, it sends the request call to the DBMS (specified in the DBI connection object) where the request call is executed and fetch and return any results returned from the DBMS.
+
+    ::: {.cell}
+    
+    :::
+
+
+that's in an R environment (e.g. R script, R console, R code chunk/block within an R Markdown or a Quarto document) and the other that's in an SQL environment within an R environment (i.e. SQL code chunk/block within an R Markdown or a Quarto document)</code></pre>
+<ul>
+<li><strong>RODBC</strong></li>
+</ul>
+<p>DBIResult - An S4 Class for representing a statement execution, specifically, the results and state</p>
+<p>LEVEL 1 FUNCTIONS sqlAppendTable - Takes parameters and a table from R in the form of a data.frame and call dbQuoteIdentifier to generate an SQL statement string for appending an existing table (automates the process of typing the SQL statement for appending a table) sqlCreateTable - Takes parameters and dbQuoteIdentifier to generate an SQL statement for creating a table in the DBMS given its parameters</p>
+<p>LEVEL 2 FUNCTIONS</p>
+<p>dbExecute - dbSendStatement, dbGetRowsAffected, dbClearResults dbGetQuery - dbSendQuery, dbFetch, then dbClearResult</p>
+<p>LEVEL 3 FUNCTIONS dbReadTable - Takes parameters and calls dbQuoteIdentifier to generate an SQL select statement and dbGetQuery dbCreateTable - sqlCreateTable, dbExecute dbAppendTable - sqlAppendTable, dbExecute dbRemoveTable - Takes parameters and passes them to and calls dbQuoteIdentifier to generate an SQL statement for removing a table in the DBMS and dbExecute dbExistsTable - Takes parameters and passes them to and calls dbQuoteIdentifier to generate an SQL statement for checking if a table exists and pass the statement to dbExecute to execute</p>
+<p>LEVEL FOUR FUNCTIONS dbWriteTable - A function for appending or overwriting an existing or non-existing table. For all cases, it first checks whether the specified table exists using dbExistsTable. For appending, if the table exists, it calls dbAppendTable to append the table, if the table doesn’t exist, it calls dbCreateTable to create the table first and then dbAppendTable to append (or push) the table. For overwriting, if the table exists, it calls dbRemoveTable to remove the existing table, then calls dbCreateTable to create the table, and then calls dbAppendTable to append (or push) the table; if the table doesn’t exist, it calls dbCreateTable to create the table, and then calls dbAppendTable to append (or push) the table.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>?dbCreateTable</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>?dbWriteTable</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>?dbAppendTable</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>?sqlAppendTableTemplate</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>?dbRemoveTable</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">RShowDoc</span>(<span class="st">"DBI"</span>, <span class="at">package =</span> <span class="st">"DBI"</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>?DBI<span class="sc">::</span>dbExistsTable</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>??odbc<span class="sc">::</span>dbWriteTable</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>?DBI<span class="sc">::</span>dbReadTable</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>?DBI<span class="sc">::</span>dbListTables</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>sdbGetRowCountsomethig - Something - <strong><em>Notes</em></strong> - The “Driver” and “Server” parameters are required while the “Database” parameter is optional and can be specified downstream when specifying a request call to the DBMS</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(<span class="fu">paste</span>(<span class="st">"open -a 'Google Chrome' "</span>,<span class="st">"_book/index.html"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(<span class="fu">paste</span>(<span class="st">"open -a 'Google Chrome' "</span>,<span class="st">"_book/index.html"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <pre><code>For Windows, Windows comes with an ODBC manager, </code></pre>
 <p>The ODBC interface is usually associated with the application, specifically, it is either a functionality of the application or an extension to the application (e.g.&nbsp;packages/modules/plug-ins). The ODBC-specific ODBC driver is usually a separate software associated with the DBMS The DBMS-specific ODBC driver is usually associated with the DBMS, - <strong>Some terms</strong> - <strong>DBMS</strong> - A system for managing data - Examples include Microsoft SQL Server, Microsoft Access, Oracle, MySQL, PostgreSQL, MariaDB, SQLite - <strong>Open Database Connectivity (ODBC)</strong> - An ODBC is a connection between a software/application (e.g.&nbsp;R, Python, SPSS, Excel) and a DBMS through an ODBC interface/system (a standardised connection) - <strong>ODBC-compliant DBMS</strong> - ODBC-compliant DBMSs are DBMSs that adheres to the ODBC standards to allow applications to access them through ODBC (a standardised way of doing so) - ODBC-compliant DBMSs include Microsoft SQL Server, Microsoft Access, MySQL, PostgreSQL, Oracle Database, IBM Db2, SQLite, MariaDB, Amazon Redshift, Google BigQuery, etc.</p>

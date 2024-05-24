@@ -181,7 +181,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">May 19, 2024</p>
+      <p class="date-modified">May 24, 2024</p>
     </div>
   </div>
     
@@ -206,9 +206,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>The DBMS-specific ODBC driver translates the ODBC call to a DBMS-specific call (which may involve DBMS-specific SQL), it then establishes a connection to and sends the DBMS-specific call to the DBMS (e.g.&nbsp;its server/engine) where the call is executed.</li>
 <li>If the call involves extracting information from the DBMS, the DBMS sends the information to its DBMS-specific ODBC driver, the DBMS-specific ODBC driver fetches the information from the DBMS, translates it to an ODBC information, and sends it to the ODBC interface, the ODBC interface fetches the ODBC information from the DBMS-specific driver and may further process it (e.g.&nbsp;translation) if there is an upper layer (e.g.&nbsp;application).</li>
 </ul></li>
-<li><strong>General Steps</strong>
+<li><strong>General Requirements</strong>
 <ol type="1">
-<li><strong>Make sure an ODBC manager is ready for use</strong>
+<li><strong>An ODBC manager that is ready for use</strong>
 <ul>
 <li>ODBC managers are usually an individual software/programme that are specific to an operating system, hence, they should be considered with regards to specific operating systems:
 <ul>
@@ -234,7 +234,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul></li>
 </ul></li>
 </ul></li>
-<li><strong>Make sure an ODBC driver for the DBMS is ready for use</strong>
+<li><strong>An ODBC driver for the DBMS that is ready for use</strong>
 <ul>
 <li>ODBC-specific ODBC drivers are usually an individual software/programme that is specific to a DBMS, hence, they should be considered with regards to the DBMS:
 <ul>
@@ -256,13 +256,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul></li>
 </ul></li>
 </ul></li>
-<li><strong>Make sure an ODBC interface is ready for use</strong>
+<li><strong>An ODBC interface that is ready for use</strong>
 <ul>
 <li>ODBC interfaces are usually specific to the application and exist as either an in-built functionality of the application or an extension (e.g.&nbsp;packages/modules/plug-ins), hence, they should be considered with regards to the application:
 <ul>
 <li><strong>R</strong>
 <ul>
-<li>ODBC interfaces for R are in the form of R packages (aka ODBC interface R packages) with specific operations handled by specific functions. There are multiple ODBC interface R packages that are independently capable of working with an ODBC-compliant DBMS. The main ODBC interface R packages are:
+<li>ODBC interfaces for R are in the form of R packages (aka ODBC interface R packages) with specific requests handled by their specific functions. There are multiple ODBC interface R packages that are independently capable of working with an ODBC-compliant DBMS. The main ODBC interface R packages are:
 <ul>
 <li><strong>DBI</strong>
 <ul>
@@ -303,9 +303,9 @@ Installation guidance
 Installation guidance
 </summary>
 <ul>
-<li><p>Install the package <code>DBI</code> by running the following R codes</p>
+<li><p>Install the package <code>RODBC</code> by running the following R codes</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.package</span>(<span class="st">"DBI"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"RODBC"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></li>
 <li><p>It has been reported that the above method may not work for MacOS (e.g.&nbsp;<a href="https://stackoverflow.com/questions/43804850/how-to-install-rodbc-on-macos-sierra-10-12-4" target="_blank"> here on Stack Overflow </a>)</p></li>
 <li><details>
@@ -348,13 +348,13 @@ Installation guidance
 </ul></li>
 </ul>
 </details></li>
-<li><p>You can access whether the package <code>DBI</code> is installed in R by running the following R codes</p>
+<li><p>You can access whether the package <code>RODBC</code> is installed in R by running the following R codes</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="st">"DBI"</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="st">"RODBC"</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></li>
-<li><p>The version of the installed <code>DBI</code> package can be accessed by running the following R codes</p>
+<li><p>The version of the installed <code>RODBC</code> package can be accessed by running the following R codes</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">packageVersion</span>(<span class="st">"DBI"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">packageVersion</span>(<span class="st">"RODBC"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></li>
 </ul>
 </details></li>
@@ -370,14 +370,11 @@ Installation guidance
 </ul></li>
 </ol></li>
 </ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>?odbc<span class="sc">::</span>odbc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 <p><strong>Working with an ODBC-compliant DBMS from R</strong></p>
 <ul>
 <li><strong>Introduction</strong>
 <ul>
-<li>As mentioned, ODBC-compliant DBMSs are worked with from R through an ODBC interface R package (e.g.&nbsp;<code>DBI</code> or <code>RODBC</code>) with specific operations handled by specific functions. The main operations are described for both <code>DBI</code> and <code>RODBC</code>.</li>
+<li>As mentioned, ODBC-compliant DBMSs are worked with from R through an R ODBC interface package (e.g.&nbsp;<code>DBI</code> or <code>RODBC</code>) with specific operations handled by specific functions. The main operations are described for both <code>DBI</code> and <code>RODBC</code>.</li>
 </ul></li>
 <li><strong>Connect R to an ODBC-compliant DBMS</strong>
 <ul>
@@ -386,7 +383,7 @@ Installation guidance
 <li><p>The <code>dbConnect</code> function is a generic for connecting R to a DBMS</p></li>
 <li><p>The <code>dbConnect</code> function has the general form and usage</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>connection_object_dbi <span class="ot">&lt;-</span> DBI<span class="sc">::</span><span class="fu">dbConnect</span>(drv, ...)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>connection_object_dbi <span class="ot">&lt;-</span> DBI<span class="sc">::</span><span class="fu">dbConnect</span>(drv, ...)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
 <li><strong><em>Where</em></strong>
@@ -401,7 +398,7 @@ Installation guidance
 <li><p>The <code>odbcDriverConnect</code> function connects R to an ODBC-compliant DBMS</p></li>
 <li><p>The <code>odbcDriverConnect</code> function has the general form and usage</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>connection_object_rodbc <span class="ot">&lt;-</span> RODBC<span class="sc">::</span><span class="fu">odbcDriverConnect</span>(connection)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>connection_object_rodbc <span class="ot">&lt;-</span> RODBC<span class="sc">::</span><span class="fu">odbcDriverConnect</span>(connection)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
 <li><strong><em>Where</em></strong>
@@ -421,11 +418,14 @@ Installation guidance
 <ul>
 <li><strong>Introduction</strong>
 <ul>
-<li>The <code>DBI</code> package provides a set of functions for sending different request calls to the DBMS/DBMS driver upon being called. These functions can be organised in a hierarchy where lower level functions are used to send relatively simple/basic request calls (usually in line with ODBC standard calls) while higher level functions are built on multiple lower level functions and possibly other functions for sending more complex/abstract request calls (usually specific to R). Some of these functions are described below.</li>
+<li>The <code>DBI</code> package provides a set of functions for sending different request calls to the DBMS/DBMS driver upon being called. These functions can be organised in a hierarchy where lower level functions are used to send relatively simple/basic request calls (usually in line with ODBC standard calls) while higher level functions are built on multiple lower level functions and possibly other functions for sending more complex/abstract request calls (usually specific to R). Some of these functions are organised into levels 1 to 5, where functions at one level are used to build functions at the next level, and are briefly described below (see their documentations for more details):</li>
 </ul></li>
 <li><strong>Level 1 functions</strong>
 <ul>
-<li><code>dbSendQuery</code>
+<li><details>
+<summary>
+<code>dbSendQuery</code>
+</summary>
 <ul>
 <li><strong>Description</strong>
 <ul>
@@ -438,14 +438,18 @@ Installation guidance
 <ul>
 <li><strong><em>Where</em></strong>
 <ul>
-<li><code>conn</code> is a DBI connection object</li>
-<li><code>statement</code> is a SQL select statement</li>
-<li><code>...</code> a set of arguments and inputs specific/to be passed on to a method (refer to the method for these)</li>
+<li><code>conn</code> is the DBMS connection instance-object of class <code>DBIConnection</code> returned by the <code>dbConnect</code> function</li>
+<li><code>statement</code> is a SQL select statement as a string</li>
+<li><code>...</code> a set of arguments and inputs that is specific/to be passed on to a method (refer to the method for these)</li>
 </ul></li>
 </ul></li>
 </ul></li>
-</ul></li>
-<li><code>dbSendStatement</code>
+</ul>
+</details></li>
+<li><details>
+<summary>
+<code>dbSendStatement</code>
+</summary>
 <ul>
 <li><strong>Description</strong>
 <ul>
@@ -458,70 +462,395 @@ Installation guidance
 <ul>
 <li><strong><em>Where</em></strong>
 <ul>
-<li><code>conn</code> is a DBI connection object</li>
+<li><code>conn</code> is the DBMS connection instance-object of class <code>DBIConnection</code> returned by the <code>dbConnect</code> function</li>
 <li><code>statement</code> is a SQL statement</li>
-<li><code>...</code> a set of arguments and inputs specific/to be passed on to a method (refer to the method for these)</li>
+<li><code>...</code> a set of arguments and inputs that is specific/to be passed on to a method (refer to the method for these)</li>
 </ul></li>
 </ul></li>
 </ul></li>
-</ul></li>
-<li><code>dbGetRowsAffected</code>
+</ul>
+</details></li>
+<li><details>
+<summary>
+<code>dbGetRowsAffected</code>
+</summary>
 <ul>
 <li><strong>Description</strong>
 <ul>
 <li>Takes an instance object of class <code>DBIResult</code> and returns the number of rows being affected due to a request call (e.g.&nbsp;by <code>dbSendQuery</code> or <code>dbSendStatement</code>)</li>
 </ul></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>?dbSendStatement</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>No documentation for 'dbSendStatement' in specified packages and libraries:
-you could try '??dbSendStatement'</code></pre>
-</div>
-</div>
-<p>LEVEL 0 FUNCTIONS dbSendQuery - Send a statement to the DBMS for execution (recommended for select statements only) - Returns an instance of class DBIResult dbSendStatement - Send a statement to the DBMS for execution (any statements, though not recommened for select statements because it doesn’t fetch any results) - Returns an instance of class DBIResult dbGetRowsAffected - Takes a DBIResult object and returns the number of rows being affected due to that statement execution dbFetch - Fetch any results returned by the DBMS due to a statement execution and return them as a data.frame in R dbHasCompleted - Takes a DBIResult object and determines whether the statement execution in the DBMS has completed dbClearResult - Takes a DBIResult object and frees local and remote resources that have been used by a statement execution (this is a necessity after a statement execution - e.g.&nbsp;by dbSendQuery or dbSendStatement - even if no rows have been affected/fetched or it led to an error) dbQuoteIdentifier - Takes parameters and generates an SQL statement string in a safe way (e.g.&nbsp;ensure characters are escaped) to avoid SQL injection attacks dbListTables - Show tables in the connection</p>
-<pre><code>  - **Low-level functions**
-    - `dbExecute`
-
-- The `DBI` package provides two methods, the "R environment method" in which request calls are coded in R in an R environment (e.g. R script, R console, R code chunk/block within an R Markdown or Quarto document) and the "SQL environment in an R environment method" in which request calls are coded in SQL in an SQL environment within an R environment (e.g. SQL code chunk/block in an R Markdown or Quarto document)
-  - **R environment method**
-    - The `dbGetQuery` function takes a DBI connection object (returned from `dbConnect`) and a request call in SQL, upon being called, it sends the request call to the DBMS (specified in the DBI connection object) where the request call is executed and fetch and return any results returned from the DBMS.
-
-    ::: {.cell}
-    
-    :::
-
-
-that's in an R environment (e.g. R script, R console, R code chunk/block within an R Markdown or a Quarto document) and the other that's in an SQL environment within an R environment (i.e. SQL code chunk/block within an R Markdown or a Quarto document)</code></pre>
+<li><strong>Usage</strong>
 <ul>
-<li><strong>RODBC</strong></li>
+<li><code>dbGetRowsAffected(res, ...)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>res</code> is a request call instance-object of class <code>DBIResult</code> returned by the <code>dbSendQuery</code> or the <code>dbSendStatement</code> function</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></details></li>
+<li><details>
+<summary>
+<code>dbFetch</code>
+</summary>
+<ul>
+<li><strong>Description</strong>
+<ul>
+<li>Fetch any results returned by the DBMS due to a request call and return them in the form of a data.frame</li>
+</ul></li>
+<li><strong>Usage</strong>
+<ul>
+<li><code>dbFetch(res, n, ...)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>res</code> is a request call instance-object of class <code>DBIResult</code> returned by the <code>dbSendQuery</code> or the <code>dbSendStatement</code> function</li>
+<li><code>n</code> is the maximum number of records to retrieve per fetch. <code>-1</code> or <code>Inf</code> to retrieve all pending records.</li>
+</ul></li>
+</ul></li>
+</ul></li>
 </ul>
-<p>DBIResult - An S4 Class for representing a statement execution, specifically, the results and state</p>
-<p>LEVEL 1 FUNCTIONS sqlAppendTable - Takes parameters and a table from R in the form of a data.frame and call dbQuoteIdentifier to generate an SQL statement string for appending an existing table (automates the process of typing the SQL statement for appending a table) sqlCreateTable - Takes parameters and dbQuoteIdentifier to generate an SQL statement for creating a table in the DBMS given its parameters</p>
-<p>LEVEL 2 FUNCTIONS</p>
-<p>dbExecute - dbSendStatement, dbGetRowsAffected, dbClearResults dbGetQuery - dbSendQuery, dbFetch, then dbClearResult</p>
-<p>LEVEL 3 FUNCTIONS dbReadTable - Takes parameters and calls dbQuoteIdentifier to generate an SQL select statement and dbGetQuery dbCreateTable - sqlCreateTable, dbExecute dbAppendTable - sqlAppendTable, dbExecute dbRemoveTable - Takes parameters and passes them to and calls dbQuoteIdentifier to generate an SQL statement for removing a table in the DBMS and dbExecute dbExistsTable - Takes parameters and passes them to and calls dbQuoteIdentifier to generate an SQL statement for checking if a table exists and pass the statement to dbExecute to execute</p>
-<p>LEVEL FOUR FUNCTIONS dbWriteTable - A function for appending or overwriting an existing or non-existing table. For all cases, it first checks whether the specified table exists using dbExistsTable. For appending, if the table exists, it calls dbAppendTable to append the table, if the table doesn’t exist, it calls dbCreateTable to create the table first and then dbAppendTable to append (or push) the table. For overwriting, if the table exists, it calls dbRemoveTable to remove the existing table, then calls dbCreateTable to create the table, and then calls dbAppendTable to append (or push) the table; if the table doesn’t exist, it calls dbCreateTable to create the table, and then calls dbAppendTable to append (or push) the table.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>?dbCreateTable</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>?dbWriteTable</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>?dbAppendTable</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>?sqlAppendTableTemplate</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>?dbRemoveTable</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">RShowDoc</span>(<span class="st">"DBI"</span>, <span class="at">package =</span> <span class="st">"DBI"</span>)</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>?DBI<span class="sc">::</span>dbExistsTable</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>??odbc<span class="sc">::</span>dbWriteTable</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>?DBI<span class="sc">::</span>dbReadTable</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>?DBI<span class="sc">::</span>dbListTables</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+</details></li>
+<li><details>
+<summary>
+<code>dbHasCompleted</code>
+</summary>
+<ul>
+<li><strong>Description</strong>
+<ul>
+<li>Takes an instance object of class <code>DBIResult</code> and returns a logical that indicates whether the request call execution has completed</li>
+</ul></li>
+<li><strong>Usage</strong>
+<ul>
+<li><code>dbHasCompleted(res, ...)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>res</code> is a request call instance-object of class <code>DBIResult</code> returned by the <code>dbSendQuery</code> or the <code>dbSendStatement</code> function</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</details></li>
+<li><details>
+<summary>
+<code>dbClearResult</code>
+</summary>
+<ul>
+<li><strong>Description</strong>
+<ul>
+<li>Takes an instance object of class <code>DBIResult</code> and frees all local and remote resources that have been used by a request call and its execution</li>
+<li>This is a necessity after a request call execution even if no rows have been affected/fetched or it led to an error</li>
+</ul></li>
+<li><strong>Usage</strong>
+<ul>
+<li><code>dbClearResult(res, ...)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>res</code> is a request call instance-object of class <code>DBIResult</code> returned by the <code>dbSendQuery</code> or the <code>dbSendStatement</code> function</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</details></li>
+<li><details>
+<summary>
+<code>dbQuoteIdentifier</code>
+</summary>
+<ul>
+<li><strong>Description</strong>
+<ul>
+<li>Takes a DBI DBMS connection object and DBMS table identifier object and generates an SQL statement in a safe way (e.g.&nbsp;ensure characters are escaped, avoid SQL injection attacks)</li>
+</ul></li>
+<li><strong>Usage</strong>
+<ul>
+<li><code>dbQuoteIdentifier(conn, x, ...)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>conn</code> is the DBMS connection instance-object of class <code>DBIConnection</code> returned by the <code>dbConnect</code> function</li>
+<li><code>x</code> is a character vector of column names and their data types, or an SQL statement (object of class <code>SQL</code>), or a DBMS table identifier (an object of class <code>Id</code>)</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</details></li>
+<li><details>
+<summary>
+<code>dbListTables</code>
+</summary>
+<ul>
+<li><strong>Description</strong>
+<ul>
+<li>Show tables in a DBI DBMS connection</li>
+</ul></li>
+<li><strong>Usage</strong>
+<ul>
+<li><code>dbListTables(conn, ...)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>conn</code> is the DBMS connection instance-object of class <code>DBIConnection</code> returned by the <code>dbConnect</code> function</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</details></li>
+</ul></li>
+<li><strong>Level 2 functions</strong>
+<ul>
+<li><details>
+<summary>
+<code>sqlAppendTable</code>
+</summary>
+<ul>
+<li><strong>Description</strong>
+<ul>
+<li>Takes a DBI DBMS connection instance object and DBMS table identifier and calls <code>dbQuoteIdentifier</code> to generate an SQL statement for appending an existing table</li>
+<li>This automates the process of typing the SQL statement for appending a table, which could be tedious if done manually on a large table</li>
+</ul></li>
+<li><strong>Usage</strong>
+<ul>
+<li><code>sqlAppendTable(con, table, values, ...)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>con</code> is the DBMS connection instance-object of class <code>DBIConnection</code> returned by the <code>dbConnect</code> function</li>
+<li><code>table</code> is the table identifier, which can be a character string with the unquoted DBMS table name (e.g.&nbsp;“table_name”), or an instance-object of class <code>Id</code> returned by the <code>DBI::Id</code> function, or an instance-object of class <code>SQL</code> returned by the <code>DBI::SQL</code> function</li>
+<li><code>values</code> is an instance object of class data.frame, this is the table in R to be defined in SQL in the SQL statement</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</details></li>
+<li><details>
+<summary>
+<code>sqlCreateTable</code>
+</summary>
+<ul>
+<li><strong>Description</strong>
+<ul>
+<li>Takes a DBI DBMS connection instance object and a DBMS table identifier and calls <code>dbQuoteIdentifier</code> to generate an SQL statement for creating a table</li>
+</ul></li>
+<li><strong>Usage</strong>
+<ul>
+<li><code>sqlCreateTable(con, table, values, ...)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>con</code> is the DBMS connection instance-object of class <code>DBIConnection</code> returned by the <code>dbConnect</code> function</li>
+<li><code>table</code> is the table identifier, which can be a character string with the unquoted DBMS table name (e.g.&nbsp;“table_name”), or an instance-object of class <code>Id</code> returned by the <code>DBI::Id</code> function, or an instance-object of class <code>SQL</code> returned by the <code>DBI::SQL</code> function</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</details></li>
+</ul></li>
+<li><strong>Level 3 functions</strong>
+<ul>
+<li><details>
+<summary>
+<code>dbExecute</code>
+</summary>
+<ul>
+<li><strong>Description</strong>
+<ul>
+<li>Takes an SQL statement and sequentially calls <code>dbSendStatement</code>, <code>dbGetRowsAffected</code>, and <code>dbClearResults</code></li>
+<li>Automates the process of sending an SQL statement to a specified DBMS for execution</li>
+</ul></li>
+<li><strong>Usage</strong>
+<ul>
+<li><code>dbExecute(conn, statement, ...)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>conn</code> is the DBMS connection instance-object of class <code>DBIConnection</code> returned by the <code>dbConnect</code> function</li>
+<li><code>statement</code> is an SQL statement as a string</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</details></li>
+<li><details>
+<summary>
+<code>dbGetQuery</code>
+</summary>
+<ul>
+<li><strong>Description</strong>
+<ul>
+<li>Takes an SQL select statement and sequentially calls <code>dbSendQuery</code>, <code>dbFetch</code>, and <code>dbClearResults</code></li>
+<li>Automates the process of sending a retrieval (select) request</li>
+</ul></li>
+<li><strong>Usage</strong>
+<ul>
+<li><code>dbGetQuery(conn, statement, ...)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>conn</code> is the DBMS connection instance-object of class <code>DBIConnection</code> returned by the <code>dbConnect</code> function</li>
+<li><code>statement</code> is an SQL select statement as a string</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</details></li>
+</ul></li>
+<li><strong>Level 4 functions</strong>
+<ul>
+<li><details>
+<summary>
+<code>dbReadTable</code>
+</summary>
+<ul>
+<li><strong>Description</strong>
+<ul>
+<li>Takes a DBI DBMS connection instance-object and table identifier and calls <code>dbQuoteIdentifier</code> to generate an SQL select statement for the specified table and passes the SQL select statement to and calls <code>dbGetQuery</code></li>
+<li>This automates the process of reading a table in a DBMS from R</li>
+</ul></li>
+<li><strong>Usage</strong>
+<ul>
+<li><code>dbReadTable(conn, name, ...)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>conn</code> is the DBMS connection instance-object of class <code>DBIConnection</code> returned by the <code>dbConnect</code> function</li>
+<li><code>name</code> is the table identifier, which can be a character string with the unquoted DBMS table name (e.g.&nbsp;“table_name”), or an instance-object of class <code>Id</code> returned by the <code>DBI::Id</code> function, or an instance-object of class <code>SQL</code> returned by the <code>DBI::SQL</code> function</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</details></li>
+<li><details>
+<summary>
+<code>dbCreateTable</code>
+</summary>
+<ul>
+<li><strong>Description</strong>
+<ul>
+<li>Takes a DBI DBMS connection instance-object and a table identifier and calls <code>sqlCreateTable</code> to generate an SQL statement for creating a specified table and passes the SQL statement to and calls <code>dbExecute</code></li>
+<li>This creates a table in a more automated and safer way</li>
+</ul></li>
+<li><strong>Usage</strong>
+<ul>
+<li><code>dbCreateTable(conn, name, fields, ...)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>conn</code> is a DBI DBMS connection instance-object of class <code>DBIConnection</code></li>
+<li><code>name</code> is the table identifier, which can be a character string with the unquoted DBMS table name (e.g.&nbsp;“table_name”), or an instance-object of class <code>Id</code> returned by the <code>DBI::Id</code> function, or an instance-object of class <code>SQL</code> returned by the <code>DBI::SQL</code> function</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</details></li>
+<li><details>
+<summary>
+<code>dbAppendTable</code>
+</summary>
+<ul>
+<li><strong>Description</strong>
+<ul>
+<li>Takes a DBI DBMS connection instance-object, a table identifier, and a table in R and calls <code>sqlAppendTable</code> to generate an SQL statement for appending a specified table in a specified way and passes the SQL statement to and calls <code>dbExecute</code></li>
+<li>This appends a table in a more automated and safer way</li>
+</ul></li>
+<li><strong>Usage</strong>
+<ul>
+<li><code>dbAppendTable(conn, name, value, ...)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>conn</code> is the DBMS connection instance-object of class <code>DBIConnection</code> returned by the <code>dbConnect</code> function</li>
+<li><code>name</code> is the table identifier, which can be a character string with the unquoted DBMS table name (e.g.&nbsp;“table_name”), or an instance-object of class <code>Id</code> returned by the <code>DBI::Id</code> function, or an instance-object of class <code>SQL</code> returned by the <code>DBI::SQL</code> function</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</details></li>
+<li><details>
+<summary>
+<code>dbRemoveTable</code>
+</summary>
+<ul>
+<li><strong>Description</strong>
+<ul>
+<li>Takes a DBMS connection and table identifier and call <code>dbQuoteIdentifier</code> to generate an SQL statement for removing the table in the DBMS and passing the SQL statement to and calls <code>dbExecute</code></li>
+<li>This removes a table in a more automated and safer way</li>
+</ul></li>
+<li><strong>Usage</strong>
+<ul>
+<li><code>dbRemoveTable(conn, name, ...)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>conn</code> is the DBMS connection instance-object of class <code>DBIConnection</code> returned by the <code>dbConnect</code> function<br>
+</li>
+<li><code>name</code> is the table identifier, which can be a character string with the unquoted DBMS table name (e.g.&nbsp;“table_name”), or an instance-object of class <code>Id</code> returned by the <code>DBI::Id</code> function, or an instance-object of class <code>SQL</code> returned by the <code>DBI::SQL</code> function</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</details></li>
+<li><details>
+<summary>
+<code>dbExistsTable</code>
+</summary>
+<ul>
+<li><strong>Description</strong>
+<ul>
+<li>Takes a DBMS connection and a table identifier and calls <code>dbQuoteIdentifier</code> to generate an SQL statement for checking if a table exists in the DBMS and passes the SQL statement to and calls <code>dbExecute</code></li>
+</ul></li>
+<li><strong>Usage</strong>
+<ul>
+<li><code>dbExistsTable(conn, name, ...)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>conn</code> is the DBMS connection instance-object of class <code>DBIConnection</code> returned by the <code>dbConnect</code> function</li>
+<li><code>name</code> is the table identifier, which can be a character string with the unquoted DBMS table name (e.g.&nbsp;“table_name”), or an instance-object of class <code>Id</code> returned by the <code>DBI::Id</code> function, or an instance-object of class <code>SQL</code> returned by the <code>DBI::SQL</code> function</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</details></li>
+</ul></li>
+<li><strong>Level 5 functions</strong>
+<ul>
+<li><details>
+<summary>
+<code>dbWriteTable</code>
+</summary>
+<ul>
+<li><strong>Description</strong>
+<ul>
+<li>A function for appending or overwriting an existing or non-existing table.</li>
+<li>For all cases, it first checks whether the specified table exists using dbExistsTable.
+<ul>
+<li>For appending, if the table exists, it calls dbAppendTable to append the table, if the table doesn’t exist, it calls dbCreateTable to create the table first and then dbAppendTable to append (or push) the table.</li>
+<li>For overwriting, if the table exists, it calls dbRemoveTable to remove the existing table, then calls dbCreateTable to create the table, and then calls dbAppendTable to append (or push) the table; if the table doesn’t exist, it calls dbCreateTable to create the table, and then calls dbAppendTable to append (or push) the table.</li>
+</ul></li>
+</ul></li>
+<li><strong>Usage</strong>
+<ul>
+<li><code>dbWriteTable(conn, name, value, ...)</code>
+<ul>
+<li><strong><em>Where</em></strong>
+<ul>
+<li><code>conn</code> is the DBMS connection instance-object of class <code>DBIConnection</code> returned by the <code>dbConnect</code> function<br>
+</li>
+<li><code>name</code> is the table identifier, which can be a character string with the unquoted DBMS table name (e.g.&nbsp;“table_name”), or an instance-object of class <code>Id</code> returned by the <code>DBI::Id</code> function, or an instance-object of class <code>SQL</code> returned by the <code>DBI::SQL</code> function</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></details></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
 <p>sdbGetRowCountsomethig - Something - <strong><em>Notes</em></strong> - The “Driver” and “Server” parameters are required while the “Database” parameter is optional and can be specified downstream when specifying a request call to the DBMS</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(<span class="fu">paste</span>(<span class="st">"open -a 'Google Chrome' "</span>,<span class="st">"_book/index.html"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(<span class="fu">paste</span>(<span class="st">"open -a 'Google Chrome' "</span>,<span class="st">"_book/index.html"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <pre><code>For Windows, Windows comes with an ODBC manager, </code></pre>
 <p>The ODBC interface is usually associated with the application, specifically, it is either a functionality of the application or an extension to the application (e.g.&nbsp;packages/modules/plug-ins). The ODBC-specific ODBC driver is usually a separate software associated with the DBMS The DBMS-specific ODBC driver is usually associated with the DBMS, - <strong>Some terms</strong> - <strong>DBMS</strong> - A system for managing data - Examples include Microsoft SQL Server, Microsoft Access, Oracle, MySQL, PostgreSQL, MariaDB, SQLite - <strong>Open Database Connectivity (ODBC)</strong> - An ODBC is a connection between a software/application (e.g.&nbsp;R, Python, SPSS, Excel) and a DBMS through an ODBC interface/system (a standardised connection) - <strong>ODBC-compliant DBMS</strong> - ODBC-compliant DBMSs are DBMSs that adheres to the ODBC standards to allow applications to access them through ODBC (a standardised way of doing so) - ODBC-compliant DBMSs include Microsoft SQL Server, Microsoft Access, MySQL, PostgreSQL, Oracle Database, IBM Db2, SQLite, MariaDB, Amazon Redshift, Google BigQuery, etc.</p>
@@ -566,6 +895,8 @@ that's in an R environment (e.g. R script, R console, R code chunk/block within 
 <li><p>Set up a connection between R and the ODBC interface</p></li>
 <li><p>R</p></li>
 </ul>
+<!--?xml version="1.0" encoding="UTF-8"?-->
+<p>&lt;!DOCTYPE plist PUBLIC “-//Apple Computer//DTD PLIST 1.0//EN” “http://www.apple.com/DTDs/PropertyList-1.0.dtd”&gt; <!-- Generated by: TmTheme-Editor                 --> <!-- ============================================ --> <!-- app:  http://tmtheme-editor.herokuapp.com    --> <!-- code: https://github.com/aziz/tmTheme-Editor --> <plist version="1.0"> <dict> <key>name</key> <string>19</string> <key>settings</key> <array> <dict> <key>settings</key> <dict> <key>background</key> <string>#0C161F</string> <key>caret</key> <string>#8899A6</string> <key>foreground</key> <string>#AFC9DE</string> <key>invisibles</key> <string>#3B3A32</string> <key>lineHighlight</key> <string>#303030</string> <key>selection</key> <string>#557EA9</string> </dict> </dict> <dict> <key>name</key> <string>Comment</string> <key>scope</key> <string>comment</string> <key>settings</key> <dict> <key>foreground</key> <string>#8899A6</string> </dict> </dict> <dict> <key>name</key> <string>String</string> <key>scope</key> <string>string</string> <key>settings</key> <dict> <key>foreground</key> <string>#2D9BF0</string> </dict> </dict> <dict> <key>name</key> <string>Number</string> <key>scope</key> <string>constant.numeric</string> <key>settings</key> <dict> <key>foreground</key> <string>#8CB896</string> </dict> </dict> <dict> <key>name</key> <string>Built-in constant</string> <key>scope</key> <string>constant.language</string> <key>settings</key> <dict> <key>foreground</key> <string>#E56DB1</string> </dict> </dict> <dict> <key>name</key> <string>User-defined constant</string> <key>scope</key> <string>constant.character, constant.other</string> <key>settings</key> <dict> <key>foreground</key> <string>#E56DB1</string> </dict> </dict> <dict> <key>name</key> <string>Variable</string> <key>scope</key> <string>variable</string> <key>settings</key> <dict> <key>foreground</key> <string>#AFC9DE</string> </dict> </dict> <dict> <key>name</key> <string>Keyword</string> <key>scope</key> <string>keyword</string> <key>settings</key> <dict> <key>foreground</key> <string>#2D9BF0</string> </dict> </dict> <dict> <key>name</key> <string>Storage</string> <key>scope</key> <string>storage</string> <key>settings</key> <dict> <key>foreground</key> <string>#E56DB1</string> </dict> </dict> <dict> <key>name</key> <string>Storage type</string> <key>scope</key> <string>storage.type</string> <key>settings</key> <dict> <key>fontStyle</key> <string>italic </string> <key>foreground</key> <string>#E56DB1</string> </dict> </dict> <dict> <key>name</key> <string>Class name</string> <key>scope</key> <string>entity.name.class</string> <key>settings</key> <dict> <key>foreground</key> <string>#A6E22E</string> </dict> </dict> <dict> <key>name</key> <string>Inherited class</string> <key>scope</key> <string>entity.other.inherited-class</string> <key>settings</key> <dict> <key>fontStyle</key> <string>italic </string> <key>foreground</key> <string>#A6E22E</string> </dict> </dict> <dict> <key>name</key> <string>Function name</string> <key>scope</key> <string>entity.name.function</string> <key>settings</key> <dict> <key>foreground</key> <string>#2D9BF0</string> </dict> </dict> <dict> <key>name</key> <string>Function argument</string> <key>scope</key> <string>variable.parameter</string> <key>settings</key> <dict> <key>fontStyle</key> <string>italic </string> <key>foreground</key> <string>#AFC9DE</string> </dict> </dict> <dict> <key>name</key> <string>Tag name</string> <key>scope</key> <string>entity.name.tag</string> <key>settings</key> <dict> <key>foreground</key> <string>#F92672</string> </dict> </dict> <dict> <key>name</key> <string>Tag attribute</string> <key>scope</key> <string>entity.other.attribute-name</string> <key>settings</key> <dict> <key>fontStyle</key> <string></string> <key>foreground</key> <string>#A6E22E</string> </dict> </dict> <dict> <key>name</key> <string>Library function</string> <key>scope</key> <string>support.function</string> <key>settings</key> <dict> <key>foreground</key> <string>#2D9BF0</string> </dict> </dict> <dict> <key>name</key> <string>Library constant</string> <key>scope</key> <string>support.constant</string> <key>settings</key> <dict> <key>foreground</key> <string>#66D9EF</string> </dict> </dict> <dict> <key>name</key> <string>Library class/type</string> <key>scope</key> <string>support.type, support.class</string> <key>settings</key> <dict> <key>fontStyle</key> <string>italic</string> <key>foreground</key> <string>#66D9EF</string> </dict> </dict> <dict> <key>name</key> <string>Library variable</string> <key>scope</key> <string>support.other.variable</string> <key>settings</key> <dict> <key>foreground</key> <string>#3B3B3B</string> </dict> </dict> <dict> <key>name</key> <string>Invalid</string> <key>scope</key> <string>invalid</string> <key>settings</key> <dict> <key>background</key> <string>#F92672</string> <key>foreground</key> <string>#F8F8F0</string> </dict> </dict> <dict> <key>name</key> <string>Invalid deprecated</string> <key>scope</key> <string>invalid.deprecated</string> <key>settings</key> <dict> <key>background</key> <string>#AE81FF</string> <key>foreground</key> <string>#F8F8F0</string> </dict> </dict> </array> <key>uuid</key> <string>D8D5E82E-3D5B-46B5-B38E-8C841C21347D</string> <key>colorSpaceName</key> <string>sRGB</string> <key>semanticClass</key> <string>theme.dark.11</string> </dict> </plist></p>
 
 
 
